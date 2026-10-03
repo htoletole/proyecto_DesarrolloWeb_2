@@ -11,8 +11,16 @@
   padding-bottom: 8px;
 }
 
+.navdiv.nav-tareas {
+  background-color: #326b59;
+}
+
+.navdiv.nav-ramos {
+  background-color: #ffa53d;
+}
+
 .custom-nav-link {
-  color: #c1d5f3 !important;
+  color: #d1d1d1 !important;
   font-weight: bold !important;
   position: relative;
   border-bottom: none !important;
