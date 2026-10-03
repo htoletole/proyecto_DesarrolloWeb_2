@@ -1,0 +1,132 @@
+.fondo-dashboard {
+  background-color: #fafbfd;
+}
+
+.navdiv {
+  background-color: #1b3f73;
+  border-radius: 35px;
+  margin: 8px;
+  margin-bottom: 20px;
+  padding-top: 2px;
+  padding-bottom: 8px;
+}
+
+.navdiv.nav-tareas {
+  background-color: #326b59;
+}
+
+.navdiv.nav-ramos {
+  background-color: #ffa53d;
+}
+
+.custom-nav-link {
+  color: #d1d1d1 !important;
+  font-weight: bold !important;
+  position: relative;
+  border-bottom: none !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-nav-link.active {
+  color: white !important;
+}
+
+.custom-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 5px;
+  border-radius: 35px;
+  background: linear-gradient(90deg, #c7e1f8, #14b2f8);
+  transition: width 0.2s ease;
+  transform: translateX(-50%);
+}
+
+.custom-nav-link:hover::after,
+.custom-nav-link.active::after {
+  width: 70%;
+}
+
+.custom-nav-link img {
+  width: 34px;
+  height: 34px;
+}
+
+.home-icon {
+  width: 30px !important;
+  height: 30px !important;
+  margin-top: 4px;
+}
+
+.subject-icon {
+  width: 44px !important;
+  height: 44px !important;
+  margin-bottom: -7px;
+  margin-top: -3px;
+}
+
+.header-dashboard {
+  background-color: #1b3f73;
+  color: white;
+  padding: 10px;
+  padding-left: 20px;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+  border-radius: 15px;
+}
+
+.header-dashboard h1 {
+  font-weight: 800;
+}
+
+.header-dashboard img {
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  margin-top: -10px;
+}
+
+.header-dashboard p {
+  line-height: normal;
+  font-weight: bold;
+}
+
+.header-dashboard .username {
+  color: #59b7ff;
+}
+
+.panel-progreso-semanal {
+  background: linear-gradient(to right, #0a5abb, #8b62df);
+  border-radius: 15px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+}
+
+.panel-progreso-semanal h3 {
+  background: linear-gradient(to right, #487ae8, #7771f3);
+  padding: 5px 25px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  font-weight: 800;
+}
+
+.panel-progreso-semanal p {
+  line-height: 0.5rem;
+}
+
+.panel-progreso-semanal .tareas {
+  background-color: #2cc4b0;
+  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 15px;
+}
+
+.panel-progreso-semanal .incompletas {
+  background-color: #8063fc !important;
+}
