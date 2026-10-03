@@ -68,3 +68,28 @@
   margin-bottom: -7px;
   margin-top: -3px;
 }
+
+.header-dashboard {
+  background-color: #1b3f73;
+  color: white;
+  padding: 10px;
+  padding-left: 20px;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+  border-radius: 15px;
+}
+
+.header-dashboard img {
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  margin-top: -10px;
+}
+
+.header-dashboard p {
+  line-height: normal;
+}
+
+.header-dashboard .username {
+  color: #59b7ff;
+}
