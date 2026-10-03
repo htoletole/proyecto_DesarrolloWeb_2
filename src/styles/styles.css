@@ -79,6 +79,10 @@
   border-radius: 15px;
 }
 
+.header-dashboard h1 {
+  font-weight: 800;
+}
+
 .header-dashboard img {
   width: 60px;
   height: 60px;
@@ -88,8 +92,41 @@
 
 .header-dashboard p {
   line-height: normal;
+  font-weight: bold;
 }
 
 .header-dashboard .username {
   color: #59b7ff;
+}
+
+.panel-progreso-semanal {
+  background: linear-gradient(to right, #0a5abb, #8b62df);
+  border-radius: 15px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+}
+
+.panel-progreso-semanal h3 {
+  background: linear-gradient(to right, #487ae8, #7771f3);
+  padding: 5px 25px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  font-weight: 800;
+}
+
+.panel-progreso-semanal p {
+  line-height: 0.5rem;
+}
+
+.panel-progreso-semanal .tareas {
+  background-color: #2cc4b0;
+  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 15px;
+}
+
+.panel-progreso-semanal .incompletas {
+  background-color: #8063fc !important;
 }

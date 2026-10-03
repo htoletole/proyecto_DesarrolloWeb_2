@@ -7,7 +7,7 @@ function Dashboard() {
   return (
     <div className="min-vh-100 w-100 p-2 fondo-dashboard">
       <HeaderDashboard username="Florencia" />
-      <WeeklyProgressPanel />
+      <WeeklyProgressPanel pendientes={5} />
       <KanbanBoard />
     </div>
   );
