@@ -1,19 +1,21 @@
 import AuthLayout, { Marca } from "../components/AuthLayout";
 import type { Usuario } from "../services/auth";
 
-interface Props {
+interface WelcomeProps {
   usuario: Usuario;
   onEntrar: () => void;
   onOtroUsuario: () => void;
 }
 
-// Pantalla para el usuario recordado: un clic en el avatar entra directo.
-export default function Welcome({ usuario, onEntrar, onOtroUsuario }: Props) {
+// pantalla del usuario recordado, un clic en el avatar entra
+export default function Welcome(props: WelcomeProps) {
+  const { usuario, onEntrar, onOtroUsuario } = props;
+
   return (
     <AuthLayout centrada>
-      <Marca titulo={`¡Bienvenido a ${usuario.username}!`} />
+      <Marca titulo={"¡Bienvenido a " + usuario.username + "!"} />
 
-      <button type="button" className="avatar-btn" onClick={onEntrar} aria-label={`Entrar como ${usuario.username}`}>
+      <button type="button" className="avatar-btn" onClick={onEntrar}>
         <span className="avatar">
           <svg viewBox="0 0 100 100" aria-hidden="true">
             <circle cx="50" cy="34" r="16" fill="none" stroke="#111" strokeWidth="3" />

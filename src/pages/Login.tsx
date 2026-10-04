@@ -4,14 +4,16 @@ import AuthLayout, { Campo, Marca } from "../components/AuthLayout";
 import { iniciarSesion } from "../services/auth";
 import type { Usuario } from "../services/auth";
 
-interface Props {
+interface LoginProps {
   aviso: string;
   onLogin: (usuario: Usuario, recordar: boolean) => void;
   onIrRegistro: () => void;
   onIrRecuperar: () => void;
 }
 
-export default function Login({ aviso, onLogin, onIrRegistro, onIrRecuperar }: Props) {
+export default function Login(props: LoginProps) {
+  const { aviso, onLogin, onIrRegistro, onIrRecuperar } = props;
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [recordar, setRecordar] = useState(true);
@@ -19,23 +21,29 @@ export default function Login({ aviso, onLogin, onIrRegistro, onIrRecuperar }: P
 
   function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const resultado = iniciarSesion(username, password);
-    if (!resultado.ok) {
+    if (resultado.usuario === null) {
       setError(resultado.error);
       return;
     }
     onLogin(resultado.usuario, recordar);
   }
 
-  const mensaje = error || aviso;
+  // el error y el aviso van en el mismo lugar
+  let mensaje = aviso;
+  let claseMensaje = "mensaje";
+  if (error !== "") {
+    mensaje = error;
+    claseMensaje = "mensaje mensaje-error";
+  }
 
   return (
     <AuthLayout>
       <Marca />
 
-      {/* "Sesión cerrada" y los errores comparten el mismo lugar, como en el diseño */}
-      {mensaje && (
-        <p className={error ? "mensaje mensaje-error" : "mensaje"} role="alert">
+      {mensaje !== "" && (
+        <p className={claseMensaje} role="alert">
           {mensaje}
         </p>
       )}
@@ -46,16 +54,16 @@ export default function Login({ aviso, onLogin, onIrRegistro, onIrRecuperar }: P
         <Campo
           id="login-usuario"
           etiqueta="Nombre de usuario:"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          valor={username}
+          onCambio={setUsername}
           autoComplete="username"
         />
         <Campo
           id="login-password"
           etiqueta="Contraseña:"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          tipo="password"
+          valor={password}
+          onCambio={setPassword}
           autoComplete="current-password"
         />
 
