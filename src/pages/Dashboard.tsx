@@ -3,10 +3,14 @@ import WeeklyProgressPanel from "../components/WeeklyProgressPanel";
 import KanbanBoard from "../components/KanbanBoard";
 import "../styles/styles.css";
 
-function Dashboard() {
+interface DashboardProps {
+  username?: string;
+}
+
+function Dashboard({ username = "Florencia" }: DashboardProps) {
   return (
     <div className="min-vh-100 w-100 p-2 fondo-dashboard">
-      <HeaderDashboard username="Florencia" />
+      <HeaderDashboard username={username} />
       <WeeklyProgressPanel pendientes={5} />
       <KanbanBoard />
     </div>
