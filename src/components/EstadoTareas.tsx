@@ -1,14 +1,38 @@
-interface EstadoProps {
+interface Tarea {
+  nombre: string;
   estado: string;
+  descripcion: string;
+}
+
+interface EstadoProps {
+  estadoClase: string;
+  estado: string;
+  tareas: Tarea[];
 }
 
 function EstadoTareas(props: EstadoProps) {
-  const { estado } = props;
+  const { estadoClase, estado, tareas } = props;
 
   return (
     <div className="div-estado">
-      <div className={`d-flex align-middle linea-estado ${estado}`}>
-        <h4>Pendientes</h4>
+      <div className={`d-flex align-middle linea-estado ${estadoClase}`}>
+        <h4>{estado}</h4>
+      </div>
+      <div className="d-flex overflow-auto colores-claros">
+        {tareas.length != 0 ? (
+          tareas.map((tarea) => (
+            <div className={`tarjeta-tarea ${estadoClase}`}>
+              <h5 className="textos">{tarea.nombre}</h5>
+              <p className="textos">{tarea.descripcion}</p>
+              <p className="mas-info">Click para más info</p>
+            </div>
+          ))
+        ) : (
+          <div className="sin-tareas">
+            <h5>No hay tareas en este estado.</h5>
+          </div>
+        )}
+        {}
       </div>
     </div>
   );
