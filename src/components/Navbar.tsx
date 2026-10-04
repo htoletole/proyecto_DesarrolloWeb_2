@@ -53,9 +53,7 @@ function Navbar() {
   ];
 
   return (
-    <nav
-      className={`fixed-bottom d-flex align-items-center navdiv ${navClass[location.pathname] ?? ""}`}
-    >
+    <nav className={`fixed-bottom navdiv ${navClass[location.pathname] ?? ""}`}>
       <div className="container">
         <ul className="nav nav-justified nav-underline">
           {navItems.map((item) => (

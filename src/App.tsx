@@ -7,16 +7,18 @@ import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
+    <div className="contenedor-principal">
+      <BrowserRouter>
+        <Navbar />
 
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/tareas" element={<Tareas />} />
-        <Route path="/ramos" element={<Ramos />} />
-        <Route path="/calendario" element={<Calendario />} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/tareas" element={<Tareas />} />
+          <Route path="/ramos" element={<Ramos />} />
+          <Route path="/calendario" element={<Calendario />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
