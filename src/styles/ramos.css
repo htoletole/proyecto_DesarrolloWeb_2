@@ -1,8 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
-
+/* Ramos */
 .ramos-page {
   --ramos-naranjo: #ffae52;
-  --ramos-card: #d9d9d9;
   --ramos-seleccion: #fac990;
 }
 
@@ -11,19 +10,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 20px 15px;
   margin-bottom: 10px;
-
   background-color: var(--ramos-naranjo);
   color: white;
-
   border-radius: 0 0 15px 15px;
 }
-
 .ramos-page .header-ramos h1 {
   margin: 0;
-
   font-size: 32px;
   font-weight: 700;
   letter-spacing: -1px;
@@ -35,7 +29,6 @@
 .ramos-page .ramos-view-selector {
   background-color: var(--ramos-naranjo);
 }
-
 .ramos-page .btn-crear.btn-crear-ramos:hover {
   background-color: var(--ramos-naranjo);
 }
@@ -43,90 +36,240 @@
 /* selector vista */
 .ramos-page .ramos-view-selector {
   display: flex;
-
   padding: 3px;
-
   border-radius: 20px;
 }
-
 .ramos-page .ramos-view-button {
   width: 42px;
   height: 32px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border: 0;
   border-radius: 17px;
-
   background-color: transparent;
   color: #202020;
-
   font-size: 22px;
-
   cursor: pointer;
 }
-
 .ramos-page .ramos-view-button.active {
   background-color: var(--ramos-seleccion);
 }
 
-/* Vista 1 */
+/* cuadricula */
 .ramos-page .ramos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-
-  gap: 14px 25px;
-
+  gap: 16px;
   width: 100%;
 }
 
-/* Vista 2 */
+/* lista */
 .ramos-page .ramos-list {
   display: flex;
   flex-direction: column;
-
-  gap: 16px;
-
+  gap: 14px;
   width: 100%;
 }
 
-/* Cards (place holder por ahora) */
+/* Card */
 .ramos-page .ramo-card {
   width: 100%;
-  min-height: 110px;
-
-  border-radius: 3px;
-
-  background-color: var(--ramos-card);
+  min-height: 185px;
+  padding: 15px;
+  border: 1px solid rgb(0 0 0 / 7%);
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 10%);
+  color: #111827;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+  cursor: pointer;
+  overflow: hidden;
 }
 
+/* Parte superior */
+.ramos-page .ramo-card-superior {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+/* Logo */
+.ramos-page .ramo-card-logo-contenedor {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 10px;
+  background-color: transparent;
+}
+.ramos-page .ramo-card-logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+}
+.ramos-page .ramo-card-logo-vacio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: rgb(255 255 255 / 35%);
+  color: #222222;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+/* nombre e ID */
+.ramos-page .ramo-card-info {
+  flex: 1;
+  min-width: 0;
+}
+.ramos-page .ramo-card-info h3 {
+  margin: 0 0 4px;
+  color: #0f172a;
+  font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ramos-page .ramo-card-info .ramo-card-id {
+  margin: 0;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* Flecha */
+.ramos-page .ramo-card-flecha {
+  flex-shrink: 0;
+  color: #4b5563;
+  font-size: 36px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* Divisor */
+.ramos-page .ramo-card-divisor {
+  width: 100%;
+  height: 1px;
+  margin: 16px 0;
+  background-color: rgb(17 24 39 / 15%);
+}
+
+/* Detalle inferior */
+.ramos-page .ramo-card-detalle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ramos-page .ramo-card-detalle-icono {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: rgb(255 255 255 / 45%);
+  color: #374151;
+  font-size: 16px;
+}
+.ramos-page .ramo-card-detalle-titulo {
+  display: block;
+  margin-bottom: 1px;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 500;
+}
+.ramos-page .ramo-card-detalle p {
+  margin: 0;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Vista lista */
 .ramos-page .ramos-list .ramo-card {
-  min-height: 95px;
+  min-height: auto;
+}
+.ramos-page .ramos-list .ramo-card-logo-contenedor {
+  width: 62px;
+  height: 62px;
 }
 
-/* responsive */
+/* responsive "pc" */
 @media (min-width: 768px) {
   .ramos-page .ramos-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-
   .ramos-page .ramo-card {
-    min-height: 130px;
+    min-height: 195px;
   }
 }
 
+/* responsive celular */
 @media (max-width: 420px) {
-  .ramos-page .ramos-grid {
-    gap: 12px 15px;
-  }
-
-  .ramos-page .ramo-card {
-    min-height: 95px;
-  }
-
   .ramos-page .ramos-view-button {
     width: 36px;
+  }
+  .ramos-page .ramos-grid {
+    gap: 12px;
+  }
+  .ramos-page .ramo-card {
+    min-height: 170px;
+    padding: 12px;
+    border-radius: 12px;
+  }
+  .ramos-page .ramo-card-superior {
+    gap: 9px;
+  }
+  .ramos-page .ramo-card-logo-contenedor {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+  }
+  .ramos-page .ramo-card-logo {
+    border-radius: 8px;
+  }
+  .ramos-page .ramo-card-info h3 {
+    font-size: 16px;
+  }
+  .ramos-page .ramo-card-info .ramo-card-id {
+    font-size: 12px;
+  }
+  .ramos-page .ramo-card-flecha {
+    font-size: 30px;
+  }
+  .ramos-page .ramo-card-divisor {
+    margin: 13px 0;
+  }
+  .ramos-page .ramo-card-detalle p {
+    font-size: 13px;
+  }
+  .ramos-page .ramo-card-detalle-titulo {
+    font-size: 11px;
+  }
+  .ramos-page .ramo-card-detalle-icono {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 }
