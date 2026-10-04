@@ -1,0 +1,199 @@
+/* Fondo oscuro */
+
+.formulario-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  background-color: rgb(0 0 0 / 45%);
+
+  z-index: 2000;
+}
+
+/* Formulario */
+
+.formulario-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+
+  padding: 30px 35px 35px;
+
+  overflow-y: auto;
+
+  background-color: #f4f4f4;
+
+  border-radius: 32px 32px 0 0;
+
+  animation: formularioSubir 0.3s ease-out;
+}
+
+/* Animación desde abajo */
+
+@keyframes formularioSubir {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Colores según formulario */
+
+.formulario-modal-ramo {
+  --formulario-color: #ffae52;
+}
+
+.formulario-modal-tarea {
+  --formulario-color: rgb(70 147 124);
+}
+
+/* Botón cerrar */
+
+.formulario-cerrar {
+  position: absolute;
+
+  top: 18px;
+  right: 25px;
+
+  border: none;
+
+  background: transparent;
+  color: #202020;
+
+  font-size: 35px;
+  font-weight: 300;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+/* Título */
+
+.formulario-titulo {
+  margin: 0 0 22px;
+
+  color: #111111;
+
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.formulario-titulo span {
+  color: var(--formulario-color);
+}
+
+/* Contenido */
+
+.formulario-contenido {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.formulario-contenido label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  color: #202020;
+
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Inputs */
+
+.formulario-contenido input,
+.formulario-contenido select,
+.formulario-contenido textarea {
+  width: 100%;
+
+  padding: 8px 10px;
+
+  border: none;
+  border-radius: 4px;
+
+  background-color: #d9d9d9;
+
+  outline: none;
+}
+
+.formulario-contenido textarea {
+  min-height: 90px;
+
+  resize: vertical;
+}
+
+/* Logo */
+
+.formulario-logo {
+  min-height: 70px;
+
+  cursor: pointer;
+}
+
+/* Selector de color */
+
+.formulario-contenido input.formulario-color-picker {
+  width: 100%;
+  height: 50px;
+
+  padding: 4px;
+
+  border: none;
+  border-radius: 4px;
+
+  background-color: #d9d9d9;
+
+  cursor: pointer;
+}
+
+/* Botón aceptar */
+
+.formulario-aceptar {
+  width: 80%;
+
+  margin: 18px auto 0;
+  padding: 8px 20px;
+
+  border: none;
+  border-radius: 30px;
+
+  background-color: var(--formulario-color);
+  color: #202020;
+
+  font-size: 22px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+/* Celular */
+
+@media (max-width: 480px) {
+  .formulario-modal {
+    max-width: none;
+
+    padding: 28px 25px 30px;
+
+    border-radius: 28px 28px 0 0;
+  }
+
+  .formulario-titulo {
+    font-size: 27px;
+  }
+
+  .formulario-contenido input.formulario-color-picker {
+    height: 55px;
+  }
+}
