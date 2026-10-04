@@ -1,0 +1,132 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+.ramos-page {
+  --ramos-naranjo: #ffae52;
+  --ramos-card: #d9d9d9;
+  --ramos-seleccion: #fac990;
+}
+
+/* Header */
+.ramos-page .header-ramos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px 15px;
+  margin-bottom: 10px;
+
+  background-color: var(--ramos-naranjo);
+  color: white;
+
+  border-radius: 0 0 15px 15px;
+}
+
+.ramos-page .header-ramos h1 {
+  margin: 0;
+
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+/* Banner y boton crear */
+.ramos-page .info-banner.info-banner-ramos,
+.ramos-page .btn-crear.btn-crear-ramos,
+.ramos-page .ramos-view-selector {
+  background-color: var(--ramos-naranjo);
+}
+
+.ramos-page .btn-crear.btn-crear-ramos:hover {
+  background-color: var(--ramos-naranjo);
+}
+
+/* selector vista */
+.ramos-page .ramos-view-selector {
+  display: flex;
+
+  padding: 3px;
+
+  border-radius: 20px;
+}
+
+.ramos-page .ramos-view-button {
+  width: 42px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 17px;
+
+  background-color: transparent;
+  color: #202020;
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+.ramos-page .ramos-view-button.active {
+  background-color: var(--ramos-seleccion);
+}
+
+/* Vista 1 */
+.ramos-page .ramos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 14px 25px;
+
+  width: 100%;
+}
+
+/* Vista 2 */
+.ramos-page .ramos-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  width: 100%;
+}
+
+/* Cards (place holder por ahora) */
+.ramos-page .ramo-card {
+  width: 100%;
+  min-height: 110px;
+
+  border-radius: 3px;
+
+  background-color: var(--ramos-card);
+}
+
+.ramos-page .ramos-list .ramo-card {
+  min-height: 95px;
+}
+
+/* responsive */
+@media (min-width: 768px) {
+  .ramos-page .ramos-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ramos-page .ramo-card {
+    min-height: 130px;
+  }
+}
+
+@media (max-width: 420px) {
+  .ramos-page .ramos-grid {
+    gap: 12px 15px;
+  }
+
+  .ramos-page .ramo-card {
+    min-height: 95px;
+  }
+
+  .ramos-page .ramos-view-button {
+    width: 36px;
+  }
+}
