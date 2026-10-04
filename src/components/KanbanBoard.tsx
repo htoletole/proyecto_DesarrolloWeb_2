@@ -1,5 +1,13 @@
+import EstadoTareas from "../components/EstadoTareas";
+
 function KanbanBoard() {
-  return <h1>Tablero kanban</h1>;
+  return (
+    <div className="container panel-estados">
+      <EstadoTareas estado="pendientes" />
+      <EstadoTareas estado="en-progreso" />
+      <EstadoTareas estado="completadas" />
+    </div>
+  );
 }
 
 export default KanbanBoard;

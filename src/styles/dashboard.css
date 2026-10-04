@@ -75,3 +75,40 @@
 .panel-progreso-semanal .incompletas {
   background-color: #8063fc !important;
 }
+
+.panel-estados {
+  background-color: white;
+  margin-top: 10px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+}
+
+.div-estado {
+  background-color: #f2f4fa;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-radius: 15px;
+}
+
+.linea-estado {
+  border-radius: 15px 15px 0 0;
+  padding-top: 0.5rem;
+  padding-left: 2rem;
+}
+
+.pendientes {
+  background-color: #ff989a;
+  color: #ff3739;
+}
+
+.en-progreso {
+  background-color: #fff2e3;
+  color: #f9b73d;
+}
+
+.completadas {
+  background-color: #d0f1e6;
+  color: #10823c;
+}
