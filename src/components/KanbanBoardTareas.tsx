@@ -1,34 +1,45 @@
-import React from 'react';
 import iconoReloj from '../assets/icons/reloj.png';
 import iconoGrafico from '../assets/icons/grafico.png';
 import iconoCheck from '../assets/icons/check.png';
+import type { Tarea } from '../pages/Tareas';
 
-const KanbanBoard = () => {
+//plantilla visual de la tarjeta
+const TarjetaTarea = ({ tarea }: { tarea: Tarea }) => (
+  <div className="tarjeta-tarea">
+    <h4 className="tarjeta-tarea-titulo">{tarea.nombre}</h4>
+    <span className="tarjeta-tarea-subtitulo">{tarea.asignatura}</span>
+  </div>
+);
+
+const KanbanBoardTareas = ({ tareas = [] }: { tareas?: Tarea[] }) => {
   const columnas = [
-    { id: 'pendiente', titulo: 'Pendiente', icono: iconoReloj },
-    { id: 'progreso', titulo: 'En progreso', icono: iconoGrafico },
-    { id: 'completado', titulo: 'Completado', icono: iconoCheck }
+    { id: 'Pendiente', titulo: 'Pendiente', icono: iconoReloj },
+    { id: 'En progreso', titulo: 'En progreso', icono: iconoGrafico },
+    { id: 'Completada', titulo: 'Completado', icono: iconoCheck }
   ];
-
-  const tareasDePrueba = [1, 2, 3, 4];
 
   return (
     <div className="kanban-board">
-      {columnas.map((col) => (
-        <div key={col.id} className="kanban-row">
-          <div className="kanban-header">
-            <h3>{col.titulo}</h3>
-            <img src={col.icono} alt={col.titulo} className="kanban-icon-img" />
+      {columnas.map((col) => {
+        const tareasColumna = tareas.filter(t => t.estado === col.id);
+        return (
+          <div key={col.id} className="kanban-row">
+            <div className="kanban-header">
+              <h3>{col.titulo}</h3>
+              <img src={col.icono} alt={col.titulo} className="kanban-icon-img" />
+            </div>
+            <div className="kanban-cards-container">
+              {tareasColumna.length > 0 ? (
+                tareasColumna.map(tarea => <TarjetaTarea key={tarea.id} tarea={tarea} />)
+              ) : (
+                <div className="task-card-placeholder"></div>
+              )}
+            </div>
           </div>
-          <div className="kanban-cards-container">
-            {tareasDePrueba.map((tarea) => (
-              <div key={tarea} className="task-card-placeholder"></div>
-            ))}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
 
-export default KanbanBoard;
+export default KanbanBoardTareas;
