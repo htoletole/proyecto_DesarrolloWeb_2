@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface Tarea {
   nombre: string;
   estado: string;
@@ -15,9 +17,16 @@ function EstadoTareas(props: EstadoProps) {
 
   return (
     <div className="div-estado">
-      <div className={`d-flex align-middle linea-estado ${estadoClase}`}>
-        <h4>{estado}</h4>
-      </div>
+      <Link to={"/tareas"} className="link-tareas">
+        <div
+          className={`row g-0 d-flex justify-content-between linea-estado ${estadoClase}`}
+        >
+          <div className="col-auto">
+            <h4>{estado}</h4>
+          </div>
+          <div className="col-auto">›</div>
+        </div>
+      </Link>
       <div className="d-flex overflow-auto colores-claros">
         {tareas.length != 0 ? (
           tareas.map((tarea) => (

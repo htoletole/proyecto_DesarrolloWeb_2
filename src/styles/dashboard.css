@@ -15,6 +15,7 @@
     "Segoe UI",
     Roboto,
     sans-serif;
+  top: 8px !important;
 }
 
 .header-dashboard h1 {
@@ -97,6 +98,7 @@
   border-radius: 15px 15px 0 0;
   padding-top: 0.5rem;
   padding-left: 2rem;
+  padding-right: 1rem;
 }
 
 .tarjeta-tarea {
@@ -168,4 +170,13 @@
 .colores-claros {
   scrollbar-width: thin;
   scrollbar-color: #98b9ff #cccccc;
+}
+
+.link-tareas {
+  color: #495e85;
+  text-decoration: none;
+  flex-shrink: 0;
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 0.5;
 }
