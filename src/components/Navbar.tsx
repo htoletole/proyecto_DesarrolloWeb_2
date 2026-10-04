@@ -10,7 +10,7 @@ import taskIconGray from "../assets/icons/portapapeles.png";
 import subjectIconGray from "../assets/icons/birrete.png";
 import calendarIconGray from "../assets/icons/calendario.png";
 
-import "../styles/styles.css";
+import "../styles/navbar.css";
 
 function Navbar() {
   const location = useLocation();
@@ -53,7 +53,9 @@ function Navbar() {
   ];
 
   return (
-    <nav className={`fixed-bottom navdiv ${navClass[location.pathname] ?? ""}`}>
+    <nav
+      className={`fixed-bottom d-flex align-items-center navdiv ${navClass[location.pathname] ?? ""}`}
+    >
       <div className="container">
         <ul className="nav nav-justified nav-underline">
           {navItems.map((item) => (

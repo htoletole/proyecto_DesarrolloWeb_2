@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+.header-dashboard {
+  background-color: #1b3f73;
+  color: white;
+  padding: 10px;
+  padding-left: 20px;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+.header-dashboard h1 {
+  font-weight: 800;
+}
+
+.header-dashboard img {
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  margin-top: -10px;
+}
+
+.header-dashboard p {
+  line-height: normal;
+  font-weight: bold;
+}
+
+.header-dashboard .username {
+  color: #59b7ff;
+}
+
+.panel-progreso-semanal {
+  background: linear-gradient(to right, #0a5abb, #8b62df);
+  border-radius: 15px;
+  padding: 10px 20px;
+  color: white;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-weight: bold;
+}
+
+.panel-progreso-semanal h3 {
+  background: linear-gradient(to right, #487ae8, #7771f3);
+  padding: 5px 25px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  font-weight: 800;
+}
+
+.panel-progreso-semanal p {
+  line-height: 0.5rem;
+}
+
+.panel-progreso-semanal .tareas {
+  background-color: #2cc4b0;
+  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 15px;
+}
+
+.panel-progreso-semanal .incompletas {
+  background-color: #8063fc !important;
+}
