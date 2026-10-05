@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import HeaderGeneral from '../components/HeaderGeneral';
 import Navbar from '../components/Navbar';
 import SearchBarTareas from '../components/SearchBarTareas';
@@ -157,6 +158,21 @@ function Tareas() {
   const tareasFiltradas = tareas.filter(tarea => 
     tarea.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
+
+  // Abrir el Modal Detalles con el ID desde el link
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tareaId = searchParams.get("id");
+  useEffect(() => {
+    if (tareaId) {
+      const tareaPorId = tareas.find((t) => t.id === tareaId);
+      if (tareaPorId) {
+        abrirDetalle(tareaPorId);
+        setSearchParams({});
+      }
+    } else {
+      return;
+    }
+  }, [tareaId, tareas]);
 
   return (
     <div className="min-vh-100 w-100 page-container">

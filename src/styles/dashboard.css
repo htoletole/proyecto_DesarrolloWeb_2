@@ -99,6 +99,7 @@
   padding-top: 0.5rem;
   padding-left: 2rem;
   padding-right: 1rem;
+  cursor:pointer;
 }
 
 .tarjeta-tarea {
@@ -110,6 +111,7 @@
   line-height: normal;
   color: #495e85;
   text-align: start;
+  cursor:pointer;
 }
 
 .tarjeta-tarea .textos {

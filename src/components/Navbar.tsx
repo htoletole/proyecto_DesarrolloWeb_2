@@ -59,7 +59,7 @@ function Navbar() {
       <div className="container">
         <ul className="nav nav-justified nav-underline">
           {navItems.map((item) => (
-            <li className="nav-item">
+            <li key={item.label} className="nav-item">
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
