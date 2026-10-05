@@ -14,6 +14,7 @@ import {
   guardarTareas,
   listarAsignaturas,
   reemplazarTarea,
+  TAREA_VACIA,
 } from "../services/tareasCalendario";
 import type { Tarea } from "../services/tareasCalendario";
 import "../styles/calendario.css";
@@ -26,7 +27,7 @@ function Calendario() {
   const [seleccionado, setSeleccionado] = useState(hoy);
 
   const [tareas, setTareas] = useState<Tarea[]>(cargarTareas);
-  const [tareaAbierta, setTareaAbierta] = useState<Tarea | null>(null);
+  const [tareaAbierta, setTareaAbierta] = useState<Tarea>(TAREA_VACIA);
   const [editando, setEditando] = useState(false);
 
   const [feriados, setFeriados] = useState<Feriado[]>([]);
@@ -64,7 +65,7 @@ function Calendario() {
 
   // guarda lo que se edito, incluida la fecha
   function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
-    if (tareaAbierta === null) {
+    if (tareaAbierta.id === "") {
       return;
     }
 
@@ -135,18 +136,22 @@ function Calendario() {
           <TareasDelDia
             titulo="Tareas sin fecha"
             tareas={tareasSinFecha}
-            feriado={null}
+            feriado=""
             mensajeVacio=""
             onElegir={setTareaAbierta}
           />
         )}
       </main>
 
-      {tareaAbierta !== null && !editando && (
-        <DetalleTarea tarea={tareaAbierta} onCerrar={() => setTareaAbierta(null)} onEditar={() => setEditando(true)} />
+      {tareaAbierta.id !== "" && !editando && (
+        <DetalleTarea
+          tarea={tareaAbierta}
+          onCerrar={() => setTareaAbierta(TAREA_VACIA)}
+          onEditar={() => setEditando(true)}
+        />
       )}
 
-      {tareaAbierta !== null && (
+      {tareaAbierta.id !== "" && (
         <Formulario
           abierto={editando}
           tipo="tarea"

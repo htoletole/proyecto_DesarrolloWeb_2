@@ -10,6 +10,18 @@ export interface Tarea {
   fecha?: string; // formato 2026-10-06
 }
 
+// tarea vacia, sirve cuando no hay ninguna tarea abierta (su id es texto vacio)
+export const TAREA_VACIA: Tarea = {
+  id: "",
+  nombre: "",
+  descripcion: "",
+  asignatura: "",
+  estado: "",
+  prioridad: "",
+  horaEntrega: "",
+  fecha: "",
+};
+
 // clave donde la vista de Tareas guarda sus tareas en localStorage
 const CLAVE_TAREAS = "tareas";
 
@@ -17,7 +29,7 @@ const CLAVE_TAREAS = "tareas";
 export function cargarTareas(): Tarea[] {
   const texto = localStorage.getItem(CLAVE_TAREAS);
 
-  if (texto === null) {
+  if (!texto) {
     return [];
   }
 
