@@ -8,7 +8,6 @@ interface TareasDelDiaProps {
   onElegir: (tarea: Tarea) => void;
 }
 
-// cada estado tiene su propio color de tarjeta
 function claseSegunEstado(estado: string): string {
   if (estado === "Completada") {
     return "cal-tarea cal-tarea-completada";
@@ -19,7 +18,6 @@ function claseSegunEstado(estado: string): string {
   }
 }
 
-// lista de tareas con un titulo, sirve para un dia y para las tareas sin fecha
 function TareasDelDia(props: TareasDelDiaProps) {
   const { titulo, tareas, feriado, mensajeVacio, onElegir } = props;
 

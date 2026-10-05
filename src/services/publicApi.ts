@@ -3,7 +3,7 @@ export interface Feriado {
   nombre: string;
 }
 
-// nombre del feriado de esa fecha, o texto vacio si no es feriado
+// nombre del feriado, o texto vacio si no es feriado
 export function buscarFeriado(feriados: Feriado[], fecha: string): string {
   for (let i = 0; i < feriados.length; i++) {
     if (feriados[i].fecha === fecha) {
@@ -14,7 +14,7 @@ export function buscarFeriado(feriados: Feriado[], fecha: string): string {
   return "";
 }
 
-// pide los feriados de chile a Nager.Date, si falla la pagina avisa
+// pide los feriados de Chile a Nager.Date
 export function obtenerFeriados(anio: number): Promise<Feriado[]> {
   return fetch("https://date.nager.at/api/v3/PublicHolidays/" + anio + "/CL")
     .then((respuesta) => {

@@ -33,7 +33,7 @@ function Calendario() {
   const [feriados, setFeriados] = useState<Feriado[]>([]);
   const [estadoFeriados, setEstadoFeriados] = useState("cargando");
 
-  // pide los feriados cada vez que cambia el anio
+  // pide los feriados cuando cambia el año
   useEffect(() => {
     obtenerFeriados(anio)
       .then((lista) => {
@@ -57,13 +57,11 @@ function Calendario() {
     setSeleccionado(armarFecha(nuevoAnio, mes, 1));
   }
 
-  // lo que se muestra del dia elegido
   const tareasDelDia = filtrarPorFecha(tareas, seleccionado);
   const tareasSinFecha = filtrarSinFecha(tareas);
   const feriadoDelDia = buscarFeriado(feriados, seleccionado);
   const asignaturas = listarAsignaturas(tareas);
 
-  // guarda lo que se edito, incluida la fecha
   function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
     if (tareaAbierta.id === "") {
       return;
@@ -95,7 +93,6 @@ function Calendario() {
     }
   }
 
-  // mensaje segun como va la consulta de feriados
   let mensaje = "";
   if (estadoFeriados === "cargando") {
     mensaje = "Cargando feriados...";

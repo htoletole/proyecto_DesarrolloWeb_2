@@ -16,7 +16,6 @@ interface CalendarioMesProps {
   onSeleccionar: (fecha: string) => void;
 }
 
-// arma la clase del boton de un dia segun lo que tenga
 function claseDelDia(esHoy: boolean, estaElegido: boolean, esFeriado: boolean, tieneTareas: boolean): string {
   let clase = "cal-dia";
 
@@ -36,7 +35,6 @@ function claseDelDia(esHoy: boolean, estaElegido: boolean, esFeriado: boolean, t
   return clase;
 }
 
-// cuadricula del mes con selectores de mes y anio
 function CalendarioMes(props: CalendarioMesProps) {
   const { anio, mes, hoy, seleccionado, tareas, feriados } = props;
   const { onCambioMes, onCambioAnio, onSeleccionar } = props;
@@ -53,7 +51,6 @@ function CalendarioMes(props: CalendarioMesProps) {
     celdas.push(dia);
   }
 
-  // anios que se pueden elegir, alrededor del anio de hoy
   const anioDeHoy = Number(hoy.slice(0, 4));
   const anios: number[] = [];
   for (let a = anioDeHoy - 1; a <= anioDeHoy + 2; a++) {

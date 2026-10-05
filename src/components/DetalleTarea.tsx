@@ -7,7 +7,6 @@ interface DetalleTareaProps {
   onEditar: () => void;
 }
 
-// ventana con los datos de la tarea que se eligio
 function DetalleTarea(props: DetalleTareaProps) {
   const { tarea, onCerrar, onEditar } = props;
 
