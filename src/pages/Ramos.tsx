@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import HeaderRamos from "../components/HeaderRamos";
+import HeaderGeneral from "../components/HeaderGeneral";
 import Formulario from "../components/Formulario";
 import iconoInfo from "../assets/icons/info.png";
 import iconoMas from "../assets/icons/mas.png";
@@ -118,7 +118,7 @@ function Ramos() {
 
   return (
     <div className="min-vh-100 w-100 page-container ramos-page">
-      <HeaderRamos />
+      <HeaderGeneral titulo="Ramos" />
 
       <main className="content-container">
         <div className="info-banner info-banner-ramos">

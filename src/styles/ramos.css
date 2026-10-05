@@ -28,21 +28,8 @@
 }
 
 /* Header */
-.ramos-page .header-ramos {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 15px;
-  margin-bottom: 10px;
+.ramos-page .header-general {
   background-color: var(--ramos-naranjo);
-  color: white;
-  border-radius: 0 0 15px 15px;
-}
-.ramos-page .header-ramos h1 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -1px;
 }
 
 /* Banner y boton crear */
