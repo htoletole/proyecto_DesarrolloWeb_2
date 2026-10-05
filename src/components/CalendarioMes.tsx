@@ -6,7 +6,7 @@ import type { Tarea } from "../services/tareasCalendario";
 
 interface CalendarioMesProps {
   anio: number;
-  mes: number; // de 0 a 11
+  mes: number; 
   hoy: string;
   seleccionado: string;
   tareas: Tarea[];

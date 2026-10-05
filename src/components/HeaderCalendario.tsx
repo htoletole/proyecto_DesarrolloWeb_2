@@ -6,7 +6,7 @@ interface HeaderCalendarioProps {
   hoy: string;
 }
 
-// mismo encabezado del inicio (usa sus clases), solo cambia el texto
+// mismo encabezado del inicio , solo cambia el texto
 function HeaderCalendario(props: HeaderCalendarioProps) {
   const { hoy } = props;
 

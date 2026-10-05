@@ -6,11 +6,10 @@ export interface Tarea {
   asignatura: string;
   estado: string;
   prioridad: string;
-  horaEntrega: string; // formato 10:00
-  fecha?: string; // se guarda año-mes-dia (2026-10-06), igual que en Tareas
+  horaEntrega: string; 
+  fecha?: string; 
 }
 
-// tarea vacia, para cuando no hay ninguna abierta
 export const TAREA_VACIA: Tarea = {
   id: "",
   nombre: "",
@@ -22,7 +21,7 @@ export const TAREA_VACIA: Tarea = {
   fecha: "",
 };
 
-// clave donde Tareas guarda sus tareas
+
 const CLAVE_TAREAS = "tareas";
 
 export function cargarTareas(): Tarea[] {

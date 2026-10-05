@@ -10,7 +10,7 @@ interface DetalleTareaProps {
 function DetalleTarea(props: DetalleTareaProps) {
   const { tarea, onCerrar, onEditar } = props;
 
-  // la fecha y la hora pueden venir vacias
+  
   let fecha = "Sin fecha";
   if (tarea.fecha) {
     fecha = fechaCorta(tarea.fecha);

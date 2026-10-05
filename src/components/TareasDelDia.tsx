@@ -3,7 +3,7 @@ import type { Tarea } from "../services/tareasCalendario";
 interface TareasDelDiaProps {
   titulo: string;
   tareas: Tarea[];
-  feriado: string | null; // null si el dia no es feriado
+  feriado: string | null; 
   mensajeVacio: string;
   onElegir: (tarea: Tarea) => void;
 }
