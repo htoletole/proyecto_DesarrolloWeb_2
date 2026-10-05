@@ -7,6 +7,7 @@ import KanbanBoardTareasFiltro from '../components/KanbanBoardTareasFiltro';
 import KanbanBoardTareasFiltroDia from '../components/KanbanBoardTareasFiltroDia';
 import KanbarBoardTareasFiltroRamo from '../components/KanbanBoardTareasFiltroRamo';
 import Formulario from '../components/Formulario';
+import ModalConfirmacionTareas from '../components/ModalConfirmacionTareas';
 import iconoInfo from '../assets/icons/info.png';
 import iconoMas from '../assets/icons/mas.png';
 import iconoFiltro from '../assets/icons/filtro.png';
@@ -21,25 +22,27 @@ export type Tarea = {
   estado: string;
   prioridad: string;
   horaEntrega: string;
+  dia?: string;
 };
 
 function Tareas() {
   const [tipoFiltro, setTipoFiltro] = useState('normal');
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [formularioAbierto, setFormularioAbierto] = useState(false);
-  
   const [opcionesRamos, setOpcionesRamos] = useState<string[]>([]);
   const [tareas, setTareas] = useState<Tarea[]>([]);
-  
-  // Nuevo estado para la barra de búsqueda
   const [busqueda, setBusqueda] = useState('');
+
+  //estados de lapiz
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [tareasSeleccionadas, setTareasSeleccionadas] = useState<string[]>([]);
+  const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
 
   useEffect(() => {
     const ramosGuardados = localStorage.getItem("ramos");
     if (ramosGuardados) {
       try {
-        const ramosParseados = JSON.parse(ramosGuardados);
-        setOpcionesRamos(ramosParseados.map((ramo: { nombre: string }) => ramo.nombre));
+        setOpcionesRamos(JSON.parse(ramosGuardados).map((ramo: { nombre: string }) => ramo.nombre));
       } catch (error) {
         console.error("Error al cargar ramos:", error);
       }
@@ -77,6 +80,29 @@ function Tareas() {
     setFormularioAbierto(false);
   };
 
+  //modo seleccion y borrado
+  const toggleModoEdicion = () => {
+    setModoEdicion(!modoEdicion);
+    setTareasSeleccionadas([]); //limpia la seleccion
+  }
+
+  const toggleSeleccionTarea = (id: string) => {
+    if (tareasSeleccionadas.includes(id)) {
+      setTareasSeleccionadas(tareasSeleccionadas.filter(tId => tId !== id));
+    } else {
+      setTareasSeleccionadas([...tareasSeleccionadas, id]);
+    }
+  };
+
+  const eliminarTareasSeleccionadas = () => {
+    const nuevasTareas = tareas.filter(tarea => !tareasSeleccionadas.includes(tarea.id));
+    setTareas(nuevasTareas);
+    localStorage.setItem("tareas", JSON.stringify(nuevasTareas));
+    setModalEliminarAbierto(false);
+    setModoEdicion(false);
+    setTareasSeleccionadas([]);
+  };
+
   const tareasFiltradas = tareas.filter(tarea => 
     tarea.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
@@ -86,7 +112,6 @@ function Tareas() {
       <HeaderTareas />
       
       <main className="content-container">
-        {/* Pasamos el estado de búsqueda a la barra */}
         <SearchBarTareas busqueda={busqueda} setBusqueda={setBusqueda} />
 
         <div className="info-banner">
@@ -95,22 +120,29 @@ function Tareas() {
         </div>
 
         <div className="action-buttons-container">
-          <button className="btn-crear" onClick={() => setFormularioAbierto(true)}>
-            Crear Tarea <img src={iconoMas} alt="Crear" className="btn-icon" />
-          </button>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button className="btn-crear" onClick={() => setFormularioAbierto(true)}>
+              Crear Tarea <img src={iconoMas} alt="Crear" className="btn-icon" />
+            </button>
+
+            {modoEdicion && tareasSeleccionadas.length > 0 && (
+              <button className="btn-eliminar" onClick={() => setModalEliminarAbierto(true)}>
+                Eliminar
+              </button>
+            )}
+          </div>
         
-          {/* Contenedor Flexbox agrupando ambos botones a la derecha */}
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             
-            <button className="btn-editar" onClick={() => console.log('Botón editar presionado')}>
+            <button 
+              className={`btn-editar ${modoEdicion ? 'activo' : ''}`} 
+              onClick={toggleModoEdicion}
+              title={modoEdicion ? "Cancelar edición" : "Activar edición"}>
               <img src={iconoLapiz} alt="Editar" className="btn-icon-lapiz" />
             </button>
 
             <div style={{ position: 'relative' }}>
-              <button 
-                className="btn-filtrar" 
-                onClick={() => setMenuAbierto(!menuAbierto)}
-              >
+              <button className="btn-filtrar" onClick={() => setMenuAbierto(!menuAbierto)}>
                 Filtrar <img src={iconoFiltro} alt="Filtrar" className="btn-icon" />
               </button>
 
@@ -123,15 +155,13 @@ function Tareas() {
                 </div>
               )}
             </div>
-
           </div>
         </div>
 
-        {/* Le entregamos 'tareasFiltradas' a los tableros en lugar de 'tareas' */}
-        {tipoFiltro === 'normal' && <KanbanBoardTareas tareas={tareasFiltradas} />}
-        {tipoFiltro === 'prioridad' && <KanbanBoardTareasFiltro tareas={tareasFiltradas} />}
-        {tipoFiltro === 'dia' && <KanbanBoardTareasFiltroDia tareas={tareasFiltradas} />}
-        {tipoFiltro === 'ramo' && <KanbarBoardTareasFiltroRamo tareas={tareasFiltradas} ramos={opcionesRamos} />}
+        {tipoFiltro === 'normal' && <KanbanBoardTareas tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
+        {tipoFiltro === 'prioridad' && <KanbanBoardTareasFiltro tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
+        {tipoFiltro === 'dia' && <KanbanBoardTareasFiltroDia tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
+        {tipoFiltro === 'ramo' && <KanbarBoardTareasFiltroRamo tareas={tareasFiltradas} ramos={opcionesRamos} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
 
       </main>
 
@@ -144,6 +174,13 @@ function Tareas() {
         onCerrar={() => setFormularioAbierto(false)}
         onAceptar={crearTarea}
         opcionesAsignatura={opcionesRamos}
+      />
+
+      <ModalConfirmacionTareas 
+        abierto={modalEliminarAbierto}
+        mensaje="¿Desea Confirmar la eliminación de la tarea ?"
+        onConfirmar={eliminarTareasSeleccionadas}
+        onDenegar={() => setModalEliminarAbierto(false)}
       />
     </div>
   );
