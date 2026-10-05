@@ -15,6 +15,7 @@
     "Segoe UI",
     Roboto,
     sans-serif;
+  top: 8px !important;
 }
 
 .header-dashboard h1 {
@@ -74,4 +75,121 @@
 
 .panel-progreso-semanal .incompletas {
   background-color: #8063fc !important;
+}
+
+.panel-estados {
+  background-color: white;
+  margin-top: 15px;
+  margin-bottom: 110px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+}
+
+.div-estado {
+  background-color: #f2f4fa;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 1px;
+  border-radius: 15px;
+}
+
+.linea-estado {
+  border-radius: 15px 15px 0 0;
+  padding-top: 0.5rem;
+  padding-left: 2rem;
+  padding-right: 1rem;
+}
+
+.tarjeta-tarea {
+  width: 15rem;
+  border-radius: 15px;
+  padding: 10px 15px;
+  padding-bottom: 0;
+  margin: 10px 5px 10px 15px;
+  line-height: normal;
+  color: #495e85;
+  text-align: start;
+}
+
+.tarjeta-tarea .textos {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mas-info {
+  color: rgba(73, 94, 133, 0.7);
+}
+
+.sin-tareas {
+  padding: 10px 15px;
+  padding-bottom: 0;
+  margin: 10px 5px 10px 15px;
+  line-height: normal;
+  color: #495e85;
+  min-height: 80px;
+}
+
+.pendientes {
+  background-color: #ff989a;
+}
+
+.pendientes h4 {
+  color: #ff3739;
+}
+
+.colores-claros .pendientes {
+  background-color: #f6e0ea;
+}
+
+.en-progreso {
+  background-color: #ffddb7;
+}
+
+.en-progreso h4 {
+  color: #f9b73d;
+}
+
+.colores-claros .en-progreso {
+  background-color: #fff2e3;
+}
+
+.completadas {
+  background-color: #a0dfca;
+}
+
+.completadas h4 {
+  color: #10823c;
+}
+
+.colores-claros .completadas {
+  background-color: #d0f1e6;
+}
+
+.colores-claros {
+  scrollbar-width: thin;
+  scrollbar-color: #98b9ff #cccccc;
+}
+
+.link-estados {
+  color: #495e85;
+  text-decoration: none;
+  flex-shrink: 0;
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 0.5;
+}
+
+.badge-prioridad {
+  font-weight: bold;
+  font-size: small;
+}
+
+.boton-tarea {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: red;
+  text-align: start;
 }

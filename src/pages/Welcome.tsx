@@ -13,7 +13,7 @@ export default function Welcome(props: WelcomeProps) {
 
   return (
     <AuthLayout centrada>
-      <Marca titulo={"¡Bienvenido a " + usuario.username + "!"} />
+      <Marca titulo={"¡Te damos la bienvenida, " + usuario.username + "!"} />
 
       <button type="button" className="avatar-btn" onClick={onEntrar}>
         <span className="avatar">

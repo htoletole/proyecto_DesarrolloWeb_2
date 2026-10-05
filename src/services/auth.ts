@@ -28,6 +28,9 @@ const CLAVE_USUARIOS = "syllab_usuarios";
 const CLAVE_RECORDADO = "syllab_recordado";
 const CLAVE_SESION = "syllab_sesion";
 
+// nombre del aviso que se manda cuando alguien entra o sale
+export const EVENTO_SESION = "syllab_sesion_cambio";
+
 // usuarios, se guardan en localStorage
 
 export function obtenerUsuarios(): Usuario[] {
@@ -168,4 +171,7 @@ export function guardarSesion(usuario: Usuario | null) {
     const sesion: Sesion = { id: usuario.id, username: usuario.username };
     sessionStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
   }
+
+  // avisa a las pantallas que la sesion cambio
+  window.dispatchEvent(new Event(EVENTO_SESION));
 }

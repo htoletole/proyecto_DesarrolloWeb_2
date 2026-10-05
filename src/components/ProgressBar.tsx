@@ -42,9 +42,7 @@ function ProgressBar(props: ProgressProps) {
       </svg>
 
       <div className="position-absolute text-center" style={{ top: "60px" }}>
-        <span className="fs-2 fw-bold d-block text-dark">
-          {porcentajeValido}%
-        </span>
+        <span className="fs-2 fw-bold d-block">{porcentajeValido}%</span>
       </div>
     </div>
   );
