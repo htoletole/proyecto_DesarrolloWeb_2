@@ -75,7 +75,7 @@ function Calendario() {
     }
   }
 
-  // el formulario no tiene fecha, asi que la fecha de la tarea no cambia
+  // guarda lo que se edito, incluida la fecha
   function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
     if (tareaAbierta === null) {
       return;
@@ -89,7 +89,7 @@ function Calendario() {
       estado: String(datos.estado),
       prioridad: String(datos.prioridad),
       horaEntrega: String(datos.horaEntrega),
-      fecha: tareaAbierta.fecha,
+      fecha: String(datos.fecha),
     };
 
     const nuevas: Tarea[] = [];
@@ -105,6 +105,13 @@ function Calendario() {
     setTareas(nuevas);
     setTareaAbierta(editada);
     setEditando(false);
+
+    // si cambio de dia, el calendario se mueve a esa fecha
+    if (editada.fecha) {
+      setAnio(Number(editada.fecha.slice(0, 4)));
+      setMes(Number(editada.fecha.slice(5, 7)) - 1);
+      setSeleccionado(editada.fecha);
+    }
   }
 
   // mensaje segun como va la consulta de feriados
@@ -174,6 +181,7 @@ function Calendario() {
             estado: tareaAbierta.estado,
             prioridad: tareaAbierta.prioridad,
             horaEntrega: tareaAbierta.horaEntrega,
+            fecha: tareaAbierta.fecha ? tareaAbierta.fecha : "",
           }}
         />
       )}
