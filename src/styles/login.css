@@ -1,14 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
-/* Estilos del módulo de acceso (login). Solo afectan a las clases de las pantallas de acceso. */
-:root {
-  --azul-claro: #2a5fb0;
-  --azul-oscuro: #0d2a5c;
-  --boton: #1e4a8f;
-  --rojo: #e0262a;
+/* estilos del login, solo para sus clases */
+
+/* tapa la app mientras no hay sesion */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow-y: auto;
+  background: #0d2a5c;
 }
 
-/* Base = smartphone: el degradado ocupa toda la pantalla */
+/* base: celular, el degradado ocupa toda la pantalla */
 .auth-screen {
   font-family: "Montserrat", system-ui, sans-serif;
   color: #fff;
@@ -17,7 +20,7 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
-  background: linear-gradient(180deg, var(--azul-claro) 0%, var(--azul-oscuro) 100%);
+  background: linear-gradient(180deg, #2a5fb0 0%, #0d2a5c 100%);
 }
 
 .auth-card {
@@ -59,7 +62,7 @@
   padding: .65rem 1.5rem;
   border: 0;
   border-radius: 2rem;
-  background: var(--boton);
+  background: #1e4a8f;
   color: #fff;
   font: inherit;
   font-size: .85rem;
@@ -70,7 +73,7 @@
 .boton:hover { background: #2559a8; }
 .boton-crear { margin-top: 2.5rem; }
 
-.mensaje { text-align: center; font-size: .8rem; font-weight: 600; margin: 0 0 .5rem; color: var(--rojo); }
+.mensaje { text-align: center; font-size: .8rem; font-weight: 600; margin: 0 0 .5rem; color: #e0262a; }
 .mensaje-error { background: rgba(255, 255, 255, .92); padding: .4rem; border-radius: .35rem; }
 
 .pie { margin-top: auto; text-align: center; font-size: .7rem; padding-top: 1.5rem; }
@@ -87,7 +90,7 @@
 }
 .enlace-pie { margin-top: auto; align-self: center; font-size: .8rem; text-decoration: none; }
 
-/* Bienvenida con avatar */
+/* bienvenida con avatar */
 .auth-card-centrada { align-items: center; }
 .auth-card-centrada .marca { margin-top: 1rem; }
 .avatar-btn {
@@ -103,7 +106,7 @@
 .avatar-nombre { font-size: .8rem; }
 
 
-/* Tablet y escritorio: página web con tarjeta centrada sobre el fondo */
+/* tablet y pc: tarjeta centrada */
 @media (min-width: 768px) {
   .auth-screen {
     align-items: center;
@@ -111,7 +114,7 @@
     background:
       radial-gradient(circle at 15% 20%, rgba(255, 255, 255, .12), transparent 45%),
       radial-gradient(circle at 85% 85%, rgba(76, 140, 230, .35), transparent 50%),
-      linear-gradient(135deg, var(--azul-claro) 0%, var(--azul-oscuro) 100%);
+      linear-gradient(135deg, #2a5fb0 0%, #0d2a5c 100%);
   }
 
   .auth-card {
@@ -139,7 +142,7 @@
   .avatar-nombre, .enlace-pie { font-size: 1rem; }
 }
 
-/* Pantallas bajas (móvil en horizontal): sin alturas mínimas rígidas */
+/* pantallas bajas: sin alturas minimas */
 @media (max-height: 560px) {
   .auth-card { min-height: 0; }
 }

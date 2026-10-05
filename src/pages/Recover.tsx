@@ -3,12 +3,14 @@ import type { SyntheticEvent } from "react";
 import AuthLayout, { Campo } from "../components/AuthLayout";
 import { MIN_PASSWORD, restablecerPassword } from "../services/auth";
 
-interface Props {
+interface RecoverProps {
   onRestablecida: () => void;
   onIrLogin: () => void;
 }
 
-export default function Recover({ onRestablecida, onIrLogin }: Props) {
+export default function Recover(props: RecoverProps) {
+  const { onRestablecida, onIrLogin } = props;
+
   const [username, setUsername] = useState("");
   const [nueva, setNueva] = useState("");
   const [repetida, setRepetida] = useState("");
@@ -16,8 +18,9 @@ export default function Recover({ onRestablecida, onIrLogin }: Props) {
 
   function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const resultado = restablecerPassword(username, nueva, repetida);
-    if (!resultado.ok) {
+    if (resultado.usuario === null) {
       setError(resultado.error);
       return;
     }
@@ -28,7 +31,7 @@ export default function Recover({ onRestablecida, onIrLogin }: Props) {
     <AuthLayout>
       <h1 className="titulo-recuperar">Restablecer Contraseña</h1>
 
-      {error && (
+      {error !== "" && (
         <p className="mensaje mensaje-error" role="alert">
           {error}
         </p>
@@ -38,25 +41,25 @@ export default function Recover({ onRestablecida, onIrLogin }: Props) {
         <Campo
           id="rec-usuario"
           etiqueta="Nombre de Usuario (*)"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          valor={username}
+          onCambio={setUsername}
           autoComplete="username"
         />
         <Campo
           id="rec-nueva"
           etiqueta="Nueva contraseña (*)"
-          ayuda={`Te recomendamos elegir una contraseña larga (mínimo ${MIN_PASSWORD} caracteres)`}
-          type="password"
-          value={nueva}
-          onChange={(e) => setNueva(e.target.value)}
+          ayuda={"Te recomendamos elegir una contraseña larga (mínimo " + MIN_PASSWORD + " caracteres)"}
+          tipo="password"
+          valor={nueva}
+          onCambio={setNueva}
           autoComplete="new-password"
         />
         <Campo
           id="rec-repetida"
           etiqueta="Repetir Nueva contraseña (*)"
-          type="password"
-          value={repetida}
-          onChange={(e) => setRepetida(e.target.value)}
+          tipo="password"
+          valor={repetida}
+          onCambio={setRepetida}
           autoComplete="new-password"
         />
 

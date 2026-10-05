@@ -1,16 +1,33 @@
-﻿import type { InputHTMLAttributes, ReactNode } from "react";
+import type { ReactNode } from "react";
 import "../styles/login.css";
 
-// Contenedor común de las pantallas de acceso: fondo azul y tarjeta centrada.
-export default function AuthLayout({ children, centrada = false }: { children: ReactNode; centrada?: boolean }) {
+// marco azul con la tarjeta
+
+interface AuthLayoutProps {
+  children: ReactNode;
+  centrada?: boolean;
+}
+
+export default function AuthLayout({ children, centrada }: AuthLayoutProps) {
+  let claseTarjeta = "auth-card";
+  if (centrada) {
+    claseTarjeta = "auth-card auth-card-centrada";
+  }
+
   return (
     <main className="auth-screen">
-      <section className={centrada ? "auth-card auth-card-centrada" : "auth-card"}>{children}</section>
+      <section className={claseTarjeta}>{children}</section>
     </main>
   );
 }
 
-export function Marca({ titulo = "¡Bienvenido a Syllab!" }: { titulo?: string }) {
+// titulo y subtitulo
+
+interface MarcaProps {
+  titulo?: string;
+}
+
+export function Marca({ titulo = "¡Bienvenido a Syllab!" }: MarcaProps) {
   return (
     <header className="marca">
       <h1>{titulo}</h1>
@@ -19,18 +36,32 @@ export function Marca({ titulo = "¡Bienvenido a Syllab!" }: { titulo?: string }
   );
 }
 
-interface CampoProps extends InputHTMLAttributes<HTMLInputElement> {
+// etiqueta, ayuda y cuadro de texto
+
+interface CampoProps {
   id: string;
   etiqueta: string;
+  valor: string;
+  onCambio: (valor: string) => void;
+  tipo?: string;
   ayuda?: string;
+  autoComplete?: string;
 }
 
-export function Campo({ id, etiqueta, ayuda, ...props }: CampoProps) {
+export function Campo(props: CampoProps) {
+  const { id, etiqueta, valor, onCambio, tipo = "text", ayuda, autoComplete } = props;
+
   return (
     <div className="campo">
       <label htmlFor={id}>{etiqueta}</label>
       {ayuda && <small>{ayuda}</small>}
-      <input id={id} {...props} />
+      <input
+        id={id}
+        type={tipo}
+        value={valor}
+        onChange={(e) => onCambio(e.target.value)}
+        autoComplete={autoComplete}
+      />
     </div>
   );
 }
