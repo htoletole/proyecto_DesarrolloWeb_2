@@ -133,7 +133,7 @@ function Calendario() {
           <TareasDelDia
             titulo="Tareas sin fecha"
             tareas={tareasSinFecha}
-            feriado=""
+            feriado={null}
             mensajeVacio=""
             onElegir={setTareaAbierta}
           />

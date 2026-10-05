@@ -90,7 +90,7 @@ function CalendarioMes(props: CalendarioMesProps) {
           }
 
           const fecha = armarFecha(anio, mes, dia);
-          const esFeriado = buscarFeriado(feriados, fecha) !== "";
+          const esFeriado = buscarFeriado(feriados, fecha) !== null;
           const tieneTareas = filtrarPorFecha(tareas, fecha).length > 0;
           const clase = claseDelDia(fecha === hoy, fecha === seleccionado, esFeriado, tieneTareas);
 

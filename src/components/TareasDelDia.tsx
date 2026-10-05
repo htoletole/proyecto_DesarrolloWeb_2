@@ -3,7 +3,7 @@ import type { Tarea } from "../services/tareasCalendario";
 interface TareasDelDiaProps {
   titulo: string;
   tareas: Tarea[];
-  feriado: string; // texto vacio si el dia no es feriado
+  feriado: string | null; // null si el dia no es feriado
   mensajeVacio: string;
   onElegir: (tarea: Tarea) => void;
 }
@@ -25,7 +25,7 @@ function TareasDelDia(props: TareasDelDiaProps) {
     <section className="cal-dia-detalle">
       <h2>{titulo}</h2>
 
-      {feriado !== "" && <p className="cal-aviso-feriado">Feriado: {feriado}</p>}
+      {feriado !== null && <p className="cal-aviso-feriado">Feriado: {feriado}</p>}
 
       {tareas.length === 0 && <p className="cal-sin-tareas">{mensajeVacio}</p>}
 

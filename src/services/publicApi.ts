@@ -3,15 +3,15 @@ export interface Feriado {
   nombre: string;
 }
 
-// nombre del feriado, o texto vacio si no es feriado
-export function buscarFeriado(feriados: Feriado[], fecha: string): string {
+// nombre del feriado, o null si no es feriado
+export function buscarFeriado(feriados: Feriado[], fecha: string): string | null {
   for (let i = 0; i < feriados.length; i++) {
     if (feriados[i].fecha === fecha) {
       return feriados[i].nombre;
     }
   }
 
-  return "";
+  return null;
 }
 
 // pide los feriados de Chile a Nager.Date
