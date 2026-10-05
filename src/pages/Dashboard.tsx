@@ -8,6 +8,7 @@ import "../styles/dashboard.css";
 
 function Dashboard() {
   const sesion = useSesion();
+  const username = "qué gusto verte"
   
   const [tareas, setTareas] = useState<Tarea[]>([]);
 
@@ -59,6 +60,7 @@ function Dashboard() {
         enProgreso={tareasProgreso}
         completadas={tareasCompletadas}
       />
+    </div>
   );
 }
 
