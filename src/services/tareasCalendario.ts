@@ -7,7 +7,7 @@ export interface Tarea {
   estado: string;
   prioridad: string;
   horaEntrega: string; // formato 10:00
-  fecha?: string; // formato 2026-10-06
+  fecha?: string; // se guarda año-mes-dia (2026-10-06), igual que en Tareas
 }
 
 // tarea vacia, para cuando no hay ninguna abierta

@@ -15,7 +15,7 @@ export const MESES = [
 
 export const DIAS_SEMANA = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
 
-// arma un texto 2026-10-06, el mes va de 0 a 11
+// arma el texto año-mes-dia (2026-10-06), el mes va de 0 a 11
 export function armarFecha(anio: number, mes: number, dia: number): string {
   const mesTexto = String(mes + 1).padStart(2, "0");
   const diaTexto = String(dia).padStart(2, "0");

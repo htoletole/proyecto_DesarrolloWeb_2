@@ -1,5 +1,5 @@
 export interface Feriado {
-  fecha: string; // formato 2026-12-25
+  fecha: string; // se guarda año-mes-dia (2026-12-25), igual que la API
   nombre: string;
 }
 
