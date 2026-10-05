@@ -1,3 +1,7 @@
+html {
+  scrollbar-gutter: stable;
+}
+
 .contenedor-principal {
   width: 100%;
   max-width: 900px;

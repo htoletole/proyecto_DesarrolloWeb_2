@@ -1,20 +1,61 @@
+import { useState, useEffect } from "react";
 import HeaderDashboard from "../components/HeaderDashboard";
 import WeeklyProgressPanel from "../components/WeeklyProgressPanel";
 import KanbanBoard from "../components/KanbanBoard";
+import type { Tarea } from "./Tareas";
 import "../styles/dashboard.css";
 
-interface DashboardProps {
-  username: string;
-}
+function Dashboard() {
+  const [tareas, setTareas] = useState<Tarea[]>([]);
 
-function Dashboard(props: DashboardProps) {
-  const { username } = props;
+  useEffect(() => {
+    const tareasGuardadas = localStorage.getItem("tareas");
+    if (!tareasGuardadas) return;
+
+    try {
+      const parseadas = JSON.parse(tareasGuardadas);
+      if (Array.isArray(parseadas)) {
+        setTareas(parseadas as Tarea[]);
+      }
+    } catch (error) {
+      console.error("Error al cargar tareas:", error);
+    }
+  }, []);
+
+  const ordenPrioridad: Record<Tarea["prioridad"], number> = {
+    Urgente: 1,
+    Alta: 2,
+    Media: 3,
+    Baja: 4,
+  };
+
+  const tareasOrdenadas = [...tareas].sort((a, b) => {
+    return ordenPrioridad[a.prioridad] - ordenPrioridad[b.prioridad];
+  });
+
+  const tareasPendientes = tareasOrdenadas.filter(
+    (tarea) => tarea.estado === "Pendiente",
+  );
+  const tareasProgreso = tareasOrdenadas.filter(
+    (tarea) => tarea.estado === "En progreso",
+  );
+  const tareasCompletadas = tareasOrdenadas.filter(
+    (tarea) => tarea.estado === "Completada",
+  );
 
   return (
     <div className="min-vh-100 w-100 p-2 fondo-dashboard">
-      <HeaderDashboard username={username} />
-      <WeeklyProgressPanel pendientes={5} />
-      <KanbanBoard />
+      <HeaderDashboard username="vane" />
+      <WeeklyProgressPanel
+        pendientes={tareasPendientes.length}
+        enProgreso={tareasProgreso.length}
+        completadas={tareasCompletadas.length}
+      />
+      <KanbanBoard
+        pendientes={tareasPendientes}
+        enProgreso={tareasProgreso}
+        completadas={tareasCompletadas}
+      />
     </div>
   );
 }

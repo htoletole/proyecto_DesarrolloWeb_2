@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
-
-interface Tarea {
-  nombre: string;
-  estado: string;
-  descripcion: string;
-}
+import type { Tarea } from "../pages/Tareas";
+import type { MouseEvent } from "react";
 
 interface EstadoProps {
   estadoClase: string;
@@ -15,9 +11,13 @@ interface EstadoProps {
 function EstadoTareas(props: EstadoProps) {
   const { estadoClase, estado, tareas } = props;
 
+  const handleClick = (e: MouseEvent) => {
+    console.log(e);
+  };
+
   return (
     <div className="div-estado">
-      <Link to={"/tareas"} className="link-tareas">
+      <Link to={"/tareas"} className="link-estados">
         <div
           className={`row g-0 d-flex justify-content-between linea-estado ${estadoClase}`}
         >
@@ -30,11 +30,15 @@ function EstadoTareas(props: EstadoProps) {
       <div className="d-flex overflow-auto colores-claros">
         {tareas.length != 0 ? (
           tareas.map((tarea) => (
-            <div className={`tarjeta-tarea ${estadoClase}`}>
-              <h5 className="textos">{tarea.nombre}</h5>
-              <p className="textos">{tarea.descripcion}</p>
+            <button
+              onClick={handleClick}
+              className={`tarjeta-tarea ${estadoClase}`}
+            >
+              <h5 className="textos mb-0">{tarea.nombre}</h5>
+              <span className="badge-prioridad">{tarea.prioridad}</span>
+              <p className="textos mb-0">{tarea.descripcion}</p>
               <p className="mas-info">Click para más info</p>
-            </div>
+            </button>
           ))
         ) : (
           <div className="sin-tareas">

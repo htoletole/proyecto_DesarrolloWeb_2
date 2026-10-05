@@ -69,10 +69,7 @@ function App() {
           <Navbar />
 
           <Routes>
-            <Route
-              path="/"
-              element={<Dashboard username={sesion.username} />}
-            />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/tareas" element={<Tareas />} />
             <Route path="/ramos" element={<Ramos />} />
             <Route path="/calendario" element={<Calendario />} />
