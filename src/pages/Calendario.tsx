@@ -5,9 +5,16 @@ import TareasDelDia from "../components/TareasDelDia";
 import DetalleTarea from "../components/DetalleTarea";
 import Formulario from "../components/Formulario";
 import { armarFecha, fechaDeHoy, fechaLarga } from "../services/fechas";
-import { obtenerFeriados } from "../services/publicApi";
+import { buscarFeriado, obtenerFeriados } from "../services/publicApi";
 import type { Feriado } from "../services/publicApi";
-import { cargarTareas, guardarTareas } from "../services/tareasCalendario";
+import {
+  cargarTareas,
+  filtrarPorFecha,
+  filtrarSinFecha,
+  guardarTareas,
+  listarAsignaturas,
+  reemplazarTarea,
+} from "../services/tareasCalendario";
 import type { Tarea } from "../services/tareasCalendario";
 import "../styles/calendario.css";
 
@@ -25,7 +32,7 @@ function Calendario() {
   const [feriados, setFeriados] = useState<Feriado[]>([]);
   const [estadoFeriados, setEstadoFeriados] = useState("cargando");
 
-  // pide los feriados cada vez que cambia el año
+  // pide los feriados cada vez que cambia el anio
   useEffect(() => {
     obtenerFeriados(anio)
       .then((lista) => {
@@ -49,31 +56,11 @@ function Calendario() {
     setSeleccionado(armarFecha(nuevoAnio, mes, 1));
   }
 
-  // tareas del dia elegido, y las que todavia no tienen fecha
-  const tareasDelDia: Tarea[] = [];
-  const tareasSinFecha: Tarea[] = [];
-  for (let i = 0; i < tareas.length; i++) {
-    if (tareas[i].fecha === seleccionado) {
-      tareasDelDia.push(tareas[i]);
-    } else if (!tareas[i].fecha) {
-      tareasSinFecha.push(tareas[i]);
-    }
-  }
-
-  let feriadoDelDia: string | null = null;
-  for (let i = 0; i < feriados.length; i++) {
-    if (feriados[i].fecha === seleccionado) {
-      feriadoDelDia = feriados[i].nombre;
-    }
-  }
-
-  // asignaturas que se pueden elegir al editar, sin repetir
-  const asignaturas: string[] = [];
-  for (let i = 0; i < tareas.length; i++) {
-    if (!asignaturas.includes(tareas[i].asignatura)) {
-      asignaturas.push(tareas[i].asignatura);
-    }
-  }
+  // lo que se muestra del dia elegido
+  const tareasDelDia = filtrarPorFecha(tareas, seleccionado);
+  const tareasSinFecha = filtrarSinFecha(tareas);
+  const feriadoDelDia = buscarFeriado(feriados, seleccionado);
+  const asignaturas = listarAsignaturas(tareas);
 
   // guarda lo que se edito, incluida la fecha
   function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
@@ -92,14 +79,7 @@ function Calendario() {
       fecha: String(datos.fecha),
     };
 
-    const nuevas: Tarea[] = [];
-    for (let i = 0; i < tareas.length; i++) {
-      if (tareas[i].id === editada.id) {
-        nuevas.push(editada);
-      } else {
-        nuevas.push(tareas[i]);
-      }
-    }
+    const nuevas = reemplazarTarea(tareas, editada);
 
     guardarTareas(nuevas);
     setTareas(nuevas);

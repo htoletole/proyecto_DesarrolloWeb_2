@@ -1,5 +1,7 @@
 import { armarFecha, DIAS_SEMANA, MESES } from "../services/fechas";
+import { buscarFeriado } from "../services/publicApi";
 import type { Feriado } from "../services/publicApi";
+import { filtrarPorFecha } from "../services/tareasCalendario";
 import type { Tarea } from "../services/tareasCalendario";
 
 interface CalendarioMesProps {
@@ -14,42 +16,44 @@ interface CalendarioMesProps {
   onSeleccionar: (fecha: string) => void;
 }
 
-function tieneTarea(tareas: Tarea[], fecha: string): boolean {
-  for (let i = 0; i < tareas.length; i++) {
-    if (tareas[i].fecha === fecha) {
-      return true;
-    }
+// arma la clase del boton de un dia segun lo que tenga
+function claseDelDia(esHoy: boolean, estaElegido: boolean, esFeriado: boolean, tieneTareas: boolean): string {
+  let clase = "cal-dia";
+
+  if (esHoy) {
+    clase += " cal-dia-hoy";
   }
-  return false;
+  if (estaElegido) {
+    clase += " cal-dia-seleccionado";
+  }
+  if (esFeriado) {
+    clase += " cal-dia-feriado";
+  }
+  if (tieneTareas) {
+    clase += " cal-dia-con-tarea";
+  }
+
+  return clase;
 }
 
-function esFeriado(feriados: Feriado[], fecha: string): boolean {
-  for (let i = 0; i < feriados.length; i++) {
-    if (feriados[i].fecha === fecha) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// cuadricula del mes con selectores de mes y año
+// cuadricula del mes con selectores de mes y anio
 function CalendarioMes(props: CalendarioMesProps) {
   const { anio, mes, hoy, seleccionado, tareas, feriados } = props;
   const { onCambioMes, onCambioAnio, onSeleccionar } = props;
 
-  // los dias vacios del comienzo son null
+  // los dias vacios del comienzo del mes se guardan como 0
   const primerDia = new Date(anio, mes, 1).getDay();
   const diasDelMes = new Date(anio, mes + 1, 0).getDate();
-  const celdas: (number | null)[] = [];
+  const celdas: number[] = [];
 
   for (let i = 0; i < primerDia; i++) {
-    celdas.push(null);
+    celdas.push(0);
   }
   for (let dia = 1; dia <= diasDelMes; dia++) {
     celdas.push(dia);
   }
 
-  // años que se pueden elegir, alrededor del año de hoy
+  // anios que se pueden elegir, alrededor del anio de hoy
   const anioDeHoy = Number(hoy.slice(0, 4));
   const anios: number[] = [];
   for (let a = anioDeHoy - 1; a <= anioDeHoy + 2; a++) {
@@ -84,17 +88,14 @@ function CalendarioMes(props: CalendarioMesProps) {
         ))}
 
         {celdas.map((dia, indice) => {
-          if (dia === null) {
+          if (dia === 0) {
             return <span key={"vacio-" + indice} />;
           }
 
           const fecha = armarFecha(anio, mes, dia);
-
-          let clase = "cal-dia";
-          if (fecha === hoy) clase += " cal-dia-hoy";
-          if (fecha === seleccionado) clase += " cal-dia-seleccionado";
-          if (esFeriado(feriados, fecha)) clase += " cal-dia-feriado";
-          if (tieneTarea(tareas, fecha)) clase += " cal-dia-con-tarea";
+          const esFeriado = buscarFeriado(feriados, fecha) !== null;
+          const tieneTareas = filtrarPorFecha(tareas, fecha).length > 0;
+          const clase = claseDelDia(fecha === hoy, fecha === seleccionado, esFeriado, tieneTareas);
 
           return (
             <button key={fecha} type="button" className={clase} onClick={() => onSeleccionar(fecha)}>
