@@ -4,20 +4,23 @@ import AuthLayout, { Campo, Marca } from "../components/AuthLayout";
 import { MIN_PASSWORD, registrar } from "../services/auth";
 import type { Usuario } from "../services/auth";
 
-interface Props {
+interface RegisterProps {
   onRegistrado: (usuario: Usuario) => void;
   onIrLogin: () => void;
 }
 
-export default function Register({ onRegistrado, onIrLogin }: Props) {
+export default function Register(props: RegisterProps) {
+  const { onRegistrado, onIrLogin } = props;
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const resultado = registrar(username, password);
-    if (!resultado.ok) {
+    if (resultado.usuario === null) {
       setError(resultado.error);
       return;
     }
@@ -28,7 +31,7 @@ export default function Register({ onRegistrado, onIrLogin }: Props) {
     <AuthLayout>
       <Marca />
 
-      {error && (
+      {error !== "" && (
         <p className="mensaje mensaje-error" role="alert">
           {error}
         </p>
@@ -40,17 +43,17 @@ export default function Register({ onRegistrado, onIrLogin }: Props) {
         <Campo
           id="reg-usuario"
           etiqueta="Crea tu nombre de usuario:"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          valor={username}
+          onCambio={setUsername}
           autoComplete="username"
         />
         <Campo
           id="reg-password"
           etiqueta="Crea tu contraseña:"
-          ayuda={`Mínimo ${MIN_PASSWORD} caracteres`}
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          ayuda={"Mínimo " + MIN_PASSWORD + " caracteres"}
+          tipo="password"
+          valor={password}
+          onCambio={setPassword}
           autoComplete="new-password"
         />
 
