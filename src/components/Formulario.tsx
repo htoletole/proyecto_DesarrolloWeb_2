@@ -1,5 +1,4 @@
 import type { FormEvent } from "react";
-
 import "../styles/formulario.css";
 
 type TipoFormulario = "ramo" | "tarea";
@@ -9,15 +8,11 @@ type FormularioProps = {
   abierto: boolean;
   tipo: TipoFormulario;
   modo: ModoFormulario;
-
   onCerrar: () => void;
-
   onAceptar?: (
     datos: Record<string, FormDataEntryValue>,
   ) => void;
-
   valoresIniciales?: Record<string, string>;
-
   opcionesAsignatura?: string[];
 };
 
@@ -48,15 +43,12 @@ const Formulario = ({
     evento: FormEvent<HTMLFormElement>,
   ) => {
     evento.preventDefault();
-
     const formData = new FormData(
       evento.currentTarget,
     );
-
     const datos = Object.fromEntries(
       formData.entries(),
     );
-
     onAceptar?.(datos);
   };
 
@@ -100,7 +92,6 @@ const Formulario = ({
                   required
                 />
               </label>
-
               <label>
                 ID:
                 <input
@@ -112,7 +103,6 @@ const Formulario = ({
                   required
                 />
               </label>
-
               <label>
                 Modalidad:
                 <select
@@ -125,21 +115,17 @@ const Formulario = ({
                   <option value="">
                     Seleccionar
                   </option>
-
                   <option value="Online">
                     Online
                   </option>
-
                   <option value="Presencial">
                     Presencial
                   </option>
-
                   <option value="Asincrónico">
                     Asincrónico
                   </option>
                 </select>
               </label>
-
               <label>
                 Seleccionar/cargar logo:
                 <input
@@ -149,7 +135,6 @@ const Formulario = ({
                   className="formulario-logo"
                 />
               </label>
-
               <label>
                 Seleccionar color del ramo:
                 <input
@@ -175,7 +160,6 @@ const Formulario = ({
                   required
                 />
               </label>
-
               <label>
                 Descripción:
                 <textarea
@@ -185,7 +169,6 @@ const Formulario = ({
                   }
                 />
               </label>
-
               <label>
                 Asignatura:
                 <select
@@ -198,7 +181,6 @@ const Formulario = ({
                   <option value="">
                     Seleccionar
                   </option>
-
                   {opcionesAsignatura.map(
                     (asignatura) => (
                       <option
@@ -211,7 +193,6 @@ const Formulario = ({
                   )}
                 </select>
               </label>
-
               <label>
                 Estado:
                 <select
@@ -224,21 +205,17 @@ const Formulario = ({
                   <option value="">
                     Seleccionar
                   </option>
-
                   <option value="Pendiente">
                     Pendiente
                   </option>
-
                   <option value="En progreso">
                     En progreso
                   </option>
-
                   <option value="Completada">
                     Completada
                   </option>
                 </select>
               </label>
-
               <label>
                 Prioridad:
                 <select
@@ -251,23 +228,32 @@ const Formulario = ({
                   <option value="">
                     Seleccionar
                   </option>
-
                   <option value="Baja">
                     Baja
                   </option>
-
                   <option value="Media">
                     Media
                   </option>
-
                   <option value="Alta">
                     Alta
                   </option>
-
                   <option value="Urgente">
                     Urgente
                   </option>
                 </select>
+              </label>
+              
+              {/* CAMBIO: Campo de fecha movido arriba y marcado como obligatorio */}
+              <label>
+                Fecha:
+                <input
+                  type="date"
+                  name="fecha"
+                  defaultValue={
+                    valoresIniciales.fecha ?? ""
+                  }
+                  required
+                />
               </label>
 
               <label>

@@ -8,6 +8,7 @@ import KanbanBoardTareasFiltroDia from '../components/KanbanBoardTareasFiltroDia
 import KanbarBoardTareasFiltroRamo from '../components/KanbanBoardTareasFiltroRamo';
 import Formulario from '../components/Formulario';
 import ModalConfirmacionTareas from '../components/ModalConfirmacionTareas';
+import ModalDetalleTarea from '../components/ModalDetalleTarea';
 import iconoInfo from '../assets/icons/info.png';
 import iconoMas from '../assets/icons/mas.png';
 import iconoFiltro from '../assets/icons/filtro.png';
@@ -23,26 +24,34 @@ export type Tarea = {
   prioridad: string;
   horaEntrega: string;
   dia?: string;
+  fecha?: string;
 };
 
 function Tareas() {
   const [tipoFiltro, setTipoFiltro] = useState('normal');
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [formularioAbierto, setFormularioAbierto] = useState(false);
+  
   const [opcionesRamos, setOpcionesRamos] = useState<string[]>([]);
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [busqueda, setBusqueda] = useState('');
 
-  //estados de lapiz
+  // Estados de modo selección/borrado
   const [modoEdicion, setModoEdicion] = useState(false);
   const [tareasSeleccionadas, setTareasSeleccionadas] = useState<string[]>([]);
   const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
+
+  // estados modales para el formulario, crear y editar
+  const [tareaEnDetalle, setTareaEnDetalle] = useState<Tarea | null>(null);
+  const [modoFormulario, setModoFormulario] = useState<"crear" | "editar">("crear");
+  const [tareaAEditar, setTareaAEditar] = useState<Tarea | null>(null);
 
   useEffect(() => {
     const ramosGuardados = localStorage.getItem("ramos");
     if (ramosGuardados) {
       try {
-        setOpcionesRamos(JSON.parse(ramosGuardados).map((ramo: { nombre: string }) => ramo.nombre));
+        const ramosParseados = JSON.parse(ramosGuardados);
+        setOpcionesRamos(ramosParseados.map((ramo: { nombre: string }) => ramo.nombre));
       } catch (error) {
         console.error("Error al cargar ramos:", error);
       }
@@ -63,28 +72,69 @@ function Tareas() {
     setMenuAbierto(false);
   };
 
-  const crearTarea = (datos: Record<string, FormDataEntryValue>) => {
-    const nuevaTarea: Tarea = {
-      id: Date.now().toString(),
-      nombre: String(datos.nombre ?? ""),
-      descripcion: String(datos.descripcion ?? ""),
-      asignatura: String(datos.asignatura ?? ""),
-      estado: String(datos.estado ?? "Pendiente"),
-      prioridad: String(datos.prioridad ?? "Baja"),
-      horaEntrega: String(datos.horaEntrega ?? ""),
-    };
-
-    const nuevasTareas = [...tareas, nuevaTarea];
-    setTareas(nuevasTareas);
-    localStorage.setItem("tareas", JSON.stringify(nuevasTareas));
-    setFormularioAbierto(false);
+  // formulario
+  const abrirFormularioCrear = () => {
+    setModoFormulario("crear");
+    setTareaAEditar(null);
+    setFormularioAbierto(true);
   };
 
-  //modo seleccion y borrado
+  const abrirFormularioEditar = (tarea: Tarea) => {
+    setModoFormulario("editar");
+    setTareaAEditar(tarea);
+    setFormularioAbierto(true);
+    setTareaEnDetalle(null); //cierra el popup de detalles al abrir el formulario
+  };
+
+  const guardarTarea = (datos: Record<string, FormDataEntryValue>) => {
+    if (modoFormulario === "crear") {
+      //creacion
+      const nuevaTarea: Tarea = {
+        id: Date.now().toString(),
+        nombre: String(datos.nombre ?? ""),
+        descripcion: String(datos.descripcion ?? ""),
+        asignatura: String(datos.asignatura ?? ""),
+        estado: String(datos.estado ?? "Pendiente"),
+        prioridad: String(datos.prioridad ?? "Baja"),
+        horaEntrega: String(datos.horaEntrega ?? ""),
+        fecha: String(datos.fecha ?? ""),
+      };
+
+      const nuevasTareas = [...tareas, nuevaTarea];
+      setTareas(nuevasTareas);
+      localStorage.setItem("tareas", JSON.stringify(nuevasTareas));
+    } 
+    else if (modoFormulario === "editar" && tareaAEditar) {
+      //edicion
+      const tareasActualizadas = tareas.map(t => {
+        if (t.id === tareaAEditar.id) {
+          return {
+            ...t,
+            nombre: String(datos.nombre ?? ""),
+            descripcion: String(datos.descripcion ?? ""),
+            asignatura: String(datos.asignatura ?? ""),
+            estado: String(datos.estado ?? "Pendiente"),
+            prioridad: String(datos.prioridad ?? "Baja"),
+            horaEntrega: String(datos.horaEntrega ?? ""),
+            fecha: String(datos.fecha ?? ""),
+          };
+        }
+        return t;
+      });
+
+      setTareas(tareasActualizadas);
+      localStorage.setItem("tareas", JSON.stringify(tareasActualizadas));
+    }
+
+    setFormularioAbierto(false);
+    setTareaAEditar(null);
+  };
+
+  //seccion seleccion y borrado
   const toggleModoEdicion = () => {
     setModoEdicion(!modoEdicion);
-    setTareasSeleccionadas([]); //limpia la seleccion
-  }
+    setTareasSeleccionadas([]); 
+  };
 
   const toggleSeleccionTarea = (id: string) => {
     if (tareasSeleccionadas.includes(id)) {
@@ -102,6 +152,10 @@ function Tareas() {
     setModoEdicion(false);
     setTareasSeleccionadas([]);
   };
+
+//Funciones Modal Detalles
+  const abrirDetalle = (tarea: Tarea) => setTareaEnDetalle(tarea);
+  const cerrarDetalle = () => setTareaEnDetalle(null);
 
   const tareasFiltradas = tareas.filter(tarea => 
     tarea.nombre.toLowerCase().includes(busqueda.toLowerCase())
@@ -121,7 +175,7 @@ function Tareas() {
 
         <div className="action-buttons-container">
           <div style={{ display: 'flex', gap: '12px' }}>
-            <button className="btn-crear" onClick={() => setFormularioAbierto(true)}>
+            <button className="btn-crear" onClick={abrirFormularioCrear}>
               Crear Tarea <img src={iconoMas} alt="Crear" className="btn-icon" />
             </button>
 
@@ -142,7 +196,10 @@ function Tareas() {
             </button>
 
             <div style={{ position: 'relative' }}>
-              <button className="btn-filtrar" onClick={() => setMenuAbierto(!menuAbierto)}>
+              <button 
+                className="btn-filtrar" 
+                onClick={() => setMenuAbierto(!menuAbierto)}
+              >
                 Filtrar <img src={iconoFiltro} alt="Filtrar" className="btn-icon" />
               </button>
 
@@ -158,21 +215,23 @@ function Tareas() {
           </div>
         </div>
 
-        {tipoFiltro === 'normal' && <KanbanBoardTareas tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
-        {tipoFiltro === 'prioridad' && <KanbanBoardTareasFiltro tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
-        {tipoFiltro === 'dia' && <KanbanBoardTareasFiltroDia tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
-        {tipoFiltro === 'ramo' && <KanbarBoardTareasFiltroRamo tareas={tareasFiltradas} ramos={opcionesRamos} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} />}
+        {tipoFiltro === 'normal' && <KanbanBoardTareas tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
+        {tipoFiltro === 'prioridad' && <KanbanBoardTareasFiltro tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
+        {tipoFiltro === 'dia' && <KanbanBoardTareasFiltroDia tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
+        {tipoFiltro === 'ramo' && <KanbarBoardTareasFiltroRamo tareas={tareasFiltradas} ramos={opcionesRamos} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
 
       </main>
 
       <Navbar />
 
+      {/* se entregan los valores iniciales si se esta editando */}
       <Formulario 
         abierto={formularioAbierto}
         tipo="tarea"
-        modo="crear"
+        modo={modoFormulario}
+        valoresIniciales={tareaAEditar || undefined}
         onCerrar={() => setFormularioAbierto(false)}
-        onAceptar={crearTarea}
+        onAceptar={guardarTarea}
         opcionesAsignatura={opcionesRamos}
       />
 
@@ -181,6 +240,14 @@ function Tareas() {
         mensaje="¿Desea Confirmar la eliminación de la tarea ?"
         onConfirmar={eliminarTareasSeleccionadas}
         onDenegar={() => setModalEliminarAbierto(false)}
+      />
+
+      {/* el boton de editar se conecta con la función abrirFormularioEditar */}
+      <ModalDetalleTarea 
+        abierto={tareaEnDetalle !== null}
+        tarea={tareaEnDetalle}
+        onCerrar={cerrarDetalle}
+        onEditar={abrirFormularioEditar} 
       />
     </div>
   );

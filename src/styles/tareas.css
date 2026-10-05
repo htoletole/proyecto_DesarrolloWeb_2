@@ -392,3 +392,125 @@
   background-color: #b11616;
   transform: scale(0.95);
 }
+
+/* --- Modal Detalle Tarea --- */
+.modal-detalle-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.modal-detalle-content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-detalle-header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.modal-detalle-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.btn-cerrar-detalle {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-detalle-body {
+  padding: 20px;
+  color: #1a4d3a;
+}
+
+.modal-detalle-titulo {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f2e22;
+}
+
+.modal-detalle-info-box {
+  background-color: #eef6f1;
+  border-radius: 12px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.info-box-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.info-box-textos {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-box-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3b876e;
+}
+
+.info-box-valor {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a4d3a;
+  word-break: break-word;
+}
+
+.modal-detalle-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.btn-editar-detalle {
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  transition: opacity 0.2s;
+}
+
+.btn-editar-detalle:hover {
+  opacity: 0.85;
+}
+
+.btn-editar-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1); /* Pone el lapiz blanco */
+}
