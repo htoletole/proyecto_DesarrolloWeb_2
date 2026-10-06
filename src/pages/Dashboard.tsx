@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import HeaderDashboard from "../components/HeaderDashboard";
+import HeaderDashboard from "../components/HeaderFlotante";
 import WeeklyProgressPanel from "../components/WeeklyProgressPanel";
 import KanbanBoard from "../components/KanbanBoard";
 import type { Tarea } from "./Tareas";
@@ -49,7 +49,7 @@ function Dashboard() {
 
   return (
     <div className="min-vh-100 w-100 p-2 fondo-dashboard">
-      <HeaderDashboard username={sesion ? sesion.username : username} />
+      <HeaderDashboard username={sesion ? sesion.username : username} titulo="¡Hola, " />
       <WeeklyProgressPanel
         pendientes={tareasPendientes.length}
         enProgreso={tareasProgreso.length}

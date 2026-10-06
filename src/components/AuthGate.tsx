@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import Welcome from "../pages/Welcome";
 import Login from "../pages/Login";
@@ -6,6 +6,7 @@ import Register from "../pages/Register";
 import Recover from "../pages/Recover";
 import { guardarSesion, obtenerRecordado, obtenerSesion, recordarUsuario } from "../services/auth";
 import type { Sesion, Usuario } from "../services/auth";
+import { registrarCerrarSesion } from "../services/authEvents";
 import "../styles/login.css";
 
 type Pantalla = "bienvenida" | "login" | "registro" | "recuperar" | "home";
@@ -38,22 +39,17 @@ export default function AuthGate() {
     setPantalla("login");
   }
 
+  useEffect(() => {
+    registrarCerrarSesion(cerrarSesion);
+  }, []);
+
   function irA(destino: Pantalla) {
     setAviso("");
     setPantalla(destino);
   }
 
   if (pantalla === "home" && sesion) {
-    return (
-      <button
-        type="button"
-        className="btn btn-sm btn-light position-fixed top-0 end-0 m-3"
-        style={{ zIndex: 1030 }}
-        onClick={cerrarSesion}
-      >
-        Cerrar sesión
-      </button>
-    );
+    return
   }
 
   const recordado = obtenerRecordado();

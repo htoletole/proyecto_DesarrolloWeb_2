@@ -2,11 +2,12 @@ import profilePicture from "../assets/images/usuario.png";
 import { ejecutarCerrarSesion } from "../services/authEvents";
 
 interface HeaderProps {
-  username: string;
+  username?: string;
+  titulo: string;
 }
 
 function HeaderDashboard(props: HeaderProps) {
-  const { username } = props;
+  const { username, titulo } = props;
 
   const fecha = new Date();
 
@@ -22,7 +23,8 @@ function HeaderDashboard(props: HeaderProps) {
       <div className="row g-0">
         <div className="col-8 p-0">
           <h1>
-            ¡Hola, <span className="username">{username}</span>!
+            {titulo}
+            {username && <><span className="username">{username}</span>!</>}
           </h1>
           <p>Hoy es {fechaString}</p>
         </div>

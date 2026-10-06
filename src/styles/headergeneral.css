@@ -15,3 +15,13 @@
   font-weight: 700;
   letter-spacing: -1px;
 }
+
+.header-general .dropdown-toggle::after {
+  display: none !important;
+}
+
+.boton-cerrar-sesion:hover {
+  background-color: #2181ff52 !important;
+  border-radius: 5px;
+  cursor: default;
+}
