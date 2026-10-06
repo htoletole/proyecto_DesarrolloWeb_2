@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import HeaderTareas from '../components/HeaderTareas';
+import { useSearchParams } from 'react-router-dom';
+import HeaderGeneral from '../components/HeaderGeneral';
 import Navbar from '../components/Navbar';
 import SearchBarTareas from '../components/SearchBarTareas';
-import KanbanBoardTareas from '../components/KanbanBoardTareas';
-import KanbanBoardTareasFiltro from '../components/KanbanBoardTareasFiltro';
-import KanbanBoardTareasFiltroDia from '../components/KanbanBoardTareasFiltroDia';
-import KanbarBoardTareasFiltroRamo from '../components/KanbanBoardTareasFiltroRamo';
+import KanbanBoardTareas from '../components/KanbanBoardTareasDefinitivo';
 import Formulario from '../components/Formulario';
 import ModalConfirmacionTareas from '../components/ModalConfirmacionTareas';
 import ModalDetalleTarea from '../components/ModalDetalleTarea';
@@ -161,9 +159,24 @@ function Tareas() {
     tarea.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
+  // Abrir el Modal Detalles con el ID desde el link
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tareaId = searchParams.get("id");
+  useEffect(() => {
+    if (tareaId) {
+      const tareaPorId = tareas.find((t) => t.id === tareaId);
+      if (tareaPorId) {
+        abrirDetalle(tareaPorId);
+        setSearchParams({});
+      }
+    } else {
+      return;
+    }
+  }, [tareaId, tareas]);
+
   return (
     <div className="min-vh-100 w-100 page-container">
-      <HeaderTareas />
+      <HeaderGeneral titulo="Tareas" />
       
       <main className="content-container">
         <SearchBarTareas busqueda={busqueda} setBusqueda={setBusqueda} />
@@ -215,10 +228,15 @@ function Tareas() {
           </div>
         </div>
 
-        {tipoFiltro === 'normal' && <KanbanBoardTareas tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
-        {tipoFiltro === 'prioridad' && <KanbanBoardTareasFiltro tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
-        {tipoFiltro === 'dia' && <KanbanBoardTareasFiltroDia tareas={tareasFiltradas} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
-        {tipoFiltro === 'ramo' && <KanbarBoardTareasFiltroRamo tareas={tareasFiltradas} ramos={opcionesRamos} modoEdicion={modoEdicion} tareasSeleccionadas={tareasSeleccionadas} onToggleSeleccion={toggleSeleccionTarea} onVerDetalle={abrirDetalle} />}
+        <KanbanBoardTareas 
+          tareas={tareasFiltradas} 
+          ramos={opcionesRamos} 
+          modoEdicion={modoEdicion} 
+          tareasSeleccionadas={tareasSeleccionadas} 
+          onToggleSeleccion={toggleSeleccionTarea} 
+          onVerDetalle={abrirDetalle}
+          filtro={tipoFiltro}
+        />
 
       </main>
 
