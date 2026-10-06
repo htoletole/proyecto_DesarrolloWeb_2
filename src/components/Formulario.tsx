@@ -9,9 +9,7 @@ type FormularioProps = {
   tipo: TipoFormulario;
   modo: ModoFormulario;
   onCerrar: () => void;
-  onAceptar?: (
-    datos: Record<string, FormDataEntryValue>,
-  ) => void;
+  onAceptar?: (datos: Record<string, FormDataEntryValue>) => void;
   valoresIniciales?: Record<string, string>;
   opcionesAsignatura?: string[];
 };
@@ -29,26 +27,14 @@ const Formulario = ({
     return null;
   }
 
-  const nombreElemento =
-    tipo === "ramo"
-      ? "Ramo"
-      : "Tarea";
+  const nombreElemento = tipo === "ramo" ? "Ramo" : "Tarea";
 
-  const accion =
-    modo === "crear"
-      ? "Crea tu"
-      : "Edita tu";
+  const accion = modo === "crear" ? "Crea tu" : "Edita tu";
 
-  const manejarSubmit = (
-    evento: FormEvent<HTMLFormElement>,
-  ) => {
+  const manejarSubmit = (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
-    const formData = new FormData(
-      evento.currentTarget,
-    );
-    const datos = Object.fromEntries(
-      formData.entries(),
-    );
+    const formData = new FormData(evento.currentTarget);
+    const datos = Object.fromEntries(formData.entries());
     onAceptar?.(datos);
   };
 
@@ -69,16 +55,10 @@ const Formulario = ({
         </button>
 
         <h2 className="formulario-titulo">
-          {accion}{" "}
-          <span>
-            {nombreElemento}
-          </span>
+          {accion} <span>{nombreElemento}</span>
         </h2>
 
-        <form
-          className="formulario-contenido"
-          onSubmit={manejarSubmit}
-        >
+        <form className="formulario-contenido" onSubmit={manejarSubmit}>
           {tipo === "ramo" ? (
             <>
               <label>
@@ -86,9 +66,7 @@ const Formulario = ({
                 <input
                   type="text"
                   name="nombre"
-                  defaultValue={
-                    valoresIniciales.nombre ?? ""
-                  }
+                  defaultValue={valoresIniciales.nombre ?? ""}
                   required
                 />
               </label>
@@ -97,9 +75,7 @@ const Formulario = ({
                 <input
                   type="text"
                   name="id"
-                  defaultValue={
-                    valoresIniciales.id ?? ""
-                  }
+                  defaultValue={valoresIniciales.id ?? ""}
                   required
                 />
               </label>
@@ -107,23 +83,13 @@ const Formulario = ({
                 Modalidad:
                 <select
                   name="modalidad"
-                  defaultValue={
-                    valoresIniciales.modalidad ?? ""
-                  }
+                  defaultValue={valoresIniciales.modalidad ?? ""}
                   required
                 >
-                  <option value="">
-                    Seleccionar
-                  </option>
-                  <option value="Online">
-                    Online
-                  </option>
-                  <option value="Presencial">
-                    Presencial
-                  </option>
-                  <option value="Asincrónico">
-                    Asincrónico
-                  </option>
+                  <option value="">Seleccionar</option>
+                  <option value="Online">Online</option>
+                  <option value="Presencial">Presencial</option>
+                  <option value="Asincrónico">Asincrónico</option>
                 </select>
               </label>
               <label>
@@ -140,9 +106,7 @@ const Formulario = ({
                 <input
                   type="color"
                   name="colorRamo"
-                  defaultValue={
-                    valoresIniciales.colorRamo ?? "#FFAE52"
-                  }
+                  defaultValue={valoresIniciales.colorRamo ?? "#FFAE52"}
                   className="formulario-color-picker"
                 />
               </label>
@@ -154,9 +118,7 @@ const Formulario = ({
                 <input
                   type="text"
                   name="nombre"
-                  defaultValue={
-                    valoresIniciales.nombre ?? ""
-                  }
+                  defaultValue={valoresIniciales.nombre ?? ""}
                   required
                 />
               </label>
@@ -164,94 +126,59 @@ const Formulario = ({
                 Descripción:
                 <textarea
                   name="descripcion"
-                  defaultValue={
-                    valoresIniciales.descripcion ?? ""
-                  }
+                  defaultValue={valoresIniciales.descripcion ?? ""}
                 />
               </label>
               <label>
                 Asignatura:
                 <select
                   name="asignatura"
-                  defaultValue={
-                    valoresIniciales.asignatura ?? ""
-                  }
+                  defaultValue={valoresIniciales.asignatura ?? ""}
                   required
                 >
-                  <option value="">
-                    Seleccionar
-                  </option>
-                  {opcionesAsignatura.map(
-                    (asignatura) => (
-                      <option
-                        key={asignatura}
-                        value={asignatura}
-                      >
-                        {asignatura}
-                      </option>
-                    ),
-                  )}
+                  <option value="">Seleccionar</option>
+                  {opcionesAsignatura.map((asignatura) => (
+                    <option key={asignatura} value={asignatura}>
+                      {asignatura}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label>
                 Estado:
                 <select
                   name="estado"
-                  defaultValue={
-                    valoresIniciales.estado ?? ""
-                  }
+                  defaultValue={valoresIniciales.estado ?? ""}
                   required
                 >
-                  <option value="">
-                    Seleccionar
-                  </option>
-                  <option value="Pendiente">
-                    Pendiente
-                  </option>
-                  <option value="En progreso">
-                    En progreso
-                  </option>
-                  <option value="Completada">
-                    Completada
-                  </option>
+                  <option value="">Seleccionar</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="En progreso">En progreso</option>
+                  <option value="Completada">Completada</option>
                 </select>
               </label>
               <label>
                 Prioridad:
                 <select
                   name="prioridad"
-                  defaultValue={
-                    valoresIniciales.prioridad ?? ""
-                  }
+                  defaultValue={valoresIniciales.prioridad ?? ""}
                   required
                 >
-                  <option value="">
-                    Seleccionar
-                  </option>
-                  <option value="Baja">
-                    Baja
-                  </option>
-                  <option value="Media">
-                    Media
-                  </option>
-                  <option value="Alta">
-                    Alta
-                  </option>
-                  <option value="Urgente">
-                    Urgente
-                  </option>
+                  <option value="">Seleccionar</option>
+                  <option value="Baja">Baja</option>
+                  <option value="Media">Media</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Urgente">Urgente</option>
                 </select>
               </label>
-              
+
               {/* CAMBIO: Campo de fecha movido arriba y marcado como obligatorio */}
               <label>
                 Fecha:
                 <input
                   type="date"
                   name="fecha"
-                  defaultValue={
-                    valoresIniciales.fecha ?? ""
-                  }
+                  defaultValue={valoresIniciales.fecha ?? ""}
                   required
                 />
               </label>
@@ -261,18 +188,13 @@ const Formulario = ({
                 <input
                   type="time"
                   name="horaEntrega"
-                  defaultValue={
-                    valoresIniciales.horaEntrega ?? ""
-                  }
+                  defaultValue={valoresIniciales.horaEntrega ?? ""}
                 />
               </label>
             </>
           )}
 
-          <button
-            type="submit"
-            className="formulario-aceptar"
-          >
+          <button type="submit" className="formulario-aceptar">
             Aceptar
           </button>
         </form>
