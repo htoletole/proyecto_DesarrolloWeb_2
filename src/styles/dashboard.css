@@ -25,8 +25,6 @@
 .header-dashboard img {
   width: 60px;
   height: 60px;
-  margin-right: 10px;
-  margin-top: -10px;
 }
 
 .header-dashboard p {
@@ -36,6 +34,24 @@
 
 .header-dashboard .username {
   color: #59b7ff;
+}
+
+.header-dashboard .perfil-user {
+  padding: 0 0 0 0 !important;
+  height: 62px;
+  width: 62px;
+  margin-right: 10px;
+  margin-top: -10px;
+}
+
+.header-dashboard .dropdown-toggle::after {
+  display: none !important;
+}
+
+.header-dashboard .boton-cerrar-sesion:hover {
+  background-color: #cbc8ff !important;
+  border-radius: 5px;
+  cursor: default;
 }
 
 .panel-progreso-semanal {
@@ -99,7 +115,7 @@
   padding-top: 0.5rem;
   padding-left: 2rem;
   padding-right: 1rem;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .tarjeta-tarea {
@@ -111,7 +127,7 @@
   line-height: normal;
   color: #495e85;
   text-align: start;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .tarjeta-tarea .textos {

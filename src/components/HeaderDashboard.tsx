@@ -1,4 +1,5 @@
 import profilePicture from "../assets/images/usuario.png";
+import { ejecutarCerrarSesion } from "../services/authEvents";
 
 interface HeaderProps {
   username: string;
@@ -26,7 +27,26 @@ function HeaderDashboard(props: HeaderProps) {
           <p>Hoy es {fechaString}</p>
         </div>
         <div className="col-4 p-0 d-flex align-items-center justify-content-end">
-          <img src={profilePicture} alt="Profile picture" />
+          <div className="dropdown">
+            <button
+              className="btn dropdown-toggle rounded-circle perfil-user"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img src={profilePicture} alt="Profile picture" />
+            </button>
+            <ul className="dropdown-menu dropdown-menu-end p-0">
+              <li>
+                <a
+                  className="dropdown-item boton-cerrar-sesion"
+                  onClick={ejecutarCerrarSesion}
+                >
+                  Cerrar sesión
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
