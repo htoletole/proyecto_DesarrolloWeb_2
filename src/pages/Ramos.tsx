@@ -8,6 +8,7 @@ import iconoMas from "../assets/icons/mas.png";
 import iconoLapiz from "../assets/icons/lapiz.png";
 import iconoCheck from "../assets/icons/check.png";
 import "../styles/ramos.css";
+import Toast from "../components/Toast";
 
 type VistaRamos = "grid" | "lista";
 type ModoFormulario = "crear" | "editar";
@@ -75,6 +76,10 @@ function Ramos() {
   const [ramosSeleccionados, setRamosSeleccionados] = useState<string[]>([]);
   const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
   const [ramosConTareas, setRamosConTareas] = useState<string[]>([]);
+
+  const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = useState("");
+  const [tituloAlerta, setTituloAlerta] = useState("");
 
   useEffect(() => {
     try {
@@ -151,6 +156,9 @@ function Ramos() {
 
     if (modoFormulario === "crear") {
       setRamos((actuales) => [...actuales, { ...datosRamo, logo }]);
+      setTituloAlerta("Ramo creado");
+      setMensajeAlerta(`¡Ramo "${datosRamo.nombre}" creado con éxito!`);
+      setMostrarAlerta(true);
     } else if (ramoAEditar) {
       setRamos((actuales) =>
         actuales.map((ramo) =>
@@ -166,6 +174,11 @@ function Ramos() {
         );
 
         localStorage.setItem("tareas", JSON.stringify(tareasActualizadas));
+        setTituloAlerta("Ramo editado");
+        setMensajeAlerta(
+          `¡El ramo "${ramoAEditar.nombre}" se editó con éxito!`,
+        );
+        setMostrarAlerta(true);
       }
     }
 
@@ -212,6 +225,9 @@ function Ramos() {
     );
 
     localStorage.setItem("tareas", JSON.stringify(tareasRestantes));
+    setTituloAlerta("Ramo eliminado");
+    setMensajeAlerta(`¡Se eliminaron con éxito los ramos eliminados!`);
+    setMostrarAlerta(true);
 
     setRamos((actuales) =>
       actuales.filter((ramo) => !ramosSeleccionados.includes(ramo.id)),
@@ -398,6 +414,13 @@ function Ramos() {
         textoAdvertencia="Al confirmar, también se eliminarán las tareas asignadas a estos ramos. ¿Desea continuar?"
         onConfirmar={eliminarRamosSeleccionados}
         onDenegar={() => setModalEliminarAbierto(false)}
+      />
+
+      <Toast
+        mostrar={mostrarAlerta}
+        mensaje={mensajeAlerta}
+        titulo={tituloAlerta}
+        onClose={() => setMostrarAlerta(false)}
       />
     </div>
   );
