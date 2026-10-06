@@ -1,48 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
-
 .page-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
   background-color: #ffffff;
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-
 .content-container {
   flex: 1;
-  padding: 15px;
+  padding: 15px 15px 130px;
   overflow-y: auto;
-  padding-bottom: 130px;
 }
-
-/* Ramos */
-.ramos-page {
-  --ramos-naranjo: #ffae52;
-  --ramos-seleccion: #fac990;
-}
-
-/* Header */
-.ramos-page .header-general {
-  background-color: var(--ramos-naranjo);
-}
-
-/* Banner y boton crear */
+.ramos-page { --ramos-naranjo: #ffae52; --ramos-seleccion: #fac990; }
+.ramos-page .header-general,
 .ramos-page .info-banner.info-banner-ramos,
 .ramos-page .btn-crear.btn-crear-ramos,
-.ramos-page .ramos-view-selector {
-  background-color: var(--ramos-naranjo);
-}
-.ramos-page .btn-crear.btn-crear-ramos:hover {
-  background-color: var(--ramos-naranjo);
-}
+.ramos-page .ramos-view-selector { background-color: var(--ramos-naranjo); }
+.ramos-page .btn-crear.btn-crear-ramos:hover { background-color: var(--ramos-naranjo); }
 
-/* selector vista */
 .ramos-page .ramos-view-selector {
   display: flex;
   padding: 3px;
@@ -61,55 +36,36 @@
   font-size: 22px;
   cursor: pointer;
 }
-.ramos-page .ramos-view-button.active {
-  background-color: var(--ramos-seleccion);
-}
+.ramos-page .ramos-view-button.active { background-color: var(--ramos-seleccion); }
 
-/* cuadricula */
+.ramos-page .ramos-grid,
+.ramos-page .ramos-list { width: 100%; }
 .ramos-page .ramos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  width: 100%;
 }
-
-/* lista */
 .ramos-page .ramos-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  width: 100%;
 }
 
-/* Card */
 .ramos-page .ramo-card {
+  position: relative;
   width: 100%;
   min-height: 185px;
   padding: 15px;
+  overflow: hidden;
   border: 1px solid rgb(0 0 0 / 7%);
   border-radius: 14px;
   box-shadow: 0 3px 10px rgb(0 0 0 / 10%);
   color: #111827;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif;
   cursor: pointer;
-  overflow: hidden;
 }
-
-/* Parte superior */
-.ramos-page .ramo-card-superior {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 12px;
-}
-
-/* Logo */
+.ramos-page .ramo-card-superior,
+.ramos-page .ramo-card-detalle { display: flex; align-items: center; }
+.ramos-page .ramo-card-superior { width: 100%; gap: 12px; }
 .ramos-page .ramo-card-logo-contenedor {
   width: 58px;
   height: 58px;
@@ -121,40 +77,31 @@
   border-radius: 10px;
   background-color: transparent;
 }
-.ramos-page .ramo-card-logo {
+.ramos-page .ramo-card-logo,
+.ramos-page .ramo-card-logo-vacio {
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  object-fit: cover;
-  display: block;
 }
+.ramos-page .ramo-card-logo { display: block; object-fit: cover; }
 .ramos-page .ramo-card-logo-vacio {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
   background-color: rgb(255 255 255 / 35%);
   color: #222222;
   font-size: 25px;
   font-weight: 700;
 }
-
-/* nombre e ID */
-.ramos-page .ramo-card-info {
-  flex: 1;
-  min-width: 0;
-}
+.ramos-page .ramo-card-info { flex: 1; min-width: 0; }
 .ramos-page .ramo-card-info h3 {
   margin: 0 0 4px;
+  overflow: hidden;
   color: #0f172a;
-  font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 17px;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.3px;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -165,8 +112,6 @@
   font-weight: 400;
   line-height: 1.2;
 }
-
-/* Flecha */
 .ramos-page .ramo-card-flecha {
   flex-shrink: 0;
   color: #4b5563;
@@ -174,21 +119,13 @@
   font-weight: 300;
   line-height: 1;
 }
-
-/* Divisor */
 .ramos-page .ramo-card-divisor {
   width: 100%;
   height: 1px;
   margin: 16px 0;
   background-color: rgb(17 24 39 / 15%);
 }
-
-/* Detalle inferior */
-.ramos-page .ramo-card-detalle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.ramos-page .ramo-card-detalle { gap: 10px; }
 .ramos-page .ramo-card-detalle-icono {
   width: 32px;
   height: 32px;
@@ -214,68 +151,307 @@
   font-size: 15px;
   font-weight: 600;
 }
+.ramos-page .ramos-list .ramo-card { min-height: auto; }
+.ramos-page .ramos-list .ramo-card-logo-contenedor { width: 62px; height: 62px; }
 
-/* Vista lista */
-.ramos-page .ramos-list .ramo-card {
-  min-height: auto;
+.ramos-acciones-principales,
+.ramos-controles {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.ramos-page .ramos-list .ramo-card-logo-contenedor {
-  width: 62px;
-  height: 62px;
+.btn-seleccionar-ramos {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--ramos-naranjo);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.btn-seleccionar-ramos:hover,
+.btn-eliminar-ramos:hover { transform: scale(1.05); }
+.btn-seleccionar-ramos.activo { background-color: #de2928; transform: scale(0.95); }
+.btn-seleccionar-ramos-icono {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+.btn-eliminar-ramos {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: #de2928;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.ramos-page .ramo-card.seleccionado {
+  background-color: var(--ramos-seleccion) !important;
+  border-color: #ff9d2e;
+  box-shadow: 0 0 0 2px rgb(255 165 61 / 25%);
+}
+.ramo-check-seleccion {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 25px;
+  height: 25px;
+  padding: 4px;
+  border-radius: 50%;
+  background-color: #7a4a13;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  object-fit: contain;
+  z-index: 2;
 }
 
-/* responsive "pc" */
+.modal-confirmacion-ramos-overlay,
+.modal-detalle-ramo-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgb(0 0 0 / 50%);
+}
+.modal-confirmacion-ramos-overlay { z-index: 3200; }
+.modal-detalle-ramo-overlay { z-index: 3100; }
+
+.modal-confirmacion-ramos-content {
+  width: 100%;
+  max-width: 350px;
+  padding: 35px 25px;
+  border-radius: 20px;
+  background-color: #f94645;
+  color: white;
+  text-align: center;
+  box-shadow: 0 10px 25px rgb(0 0 0 / 20%);
+}
+.modal-confirmacion-ramos-content h3 {
+  margin: 0 0 25px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.modal-confirmacion-ramos-lista {
+  margin: -10px 0 20px;
+  padding-left: 24px;
+  text-align: left;
+}
+.modal-confirmacion-ramos-lista li { margin-bottom: 6px; font-weight: 600; }
+.modal-confirmacion-ramos-texto-final {
+  margin: -5px 0 25px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.modal-confirmacion-ramos-botones {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.btn-confirmar-ramos,
+.btn-denegar-ramos {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 20px;
+  color: #111111;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-confirmar-ramos { background-color: #d0f0e0; }
+.btn-denegar-ramos { background-color: #ffd7d7; }
+
+.modal-detalle-ramo-content {
+  width: 100%;
+  max-width: 460px;
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 20px;
+  background-color: #f4f4f4;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 25%);
+}
+.modal-detalle-ramo-header {
+  position: relative;
+  height: 42px;
+  background-color: var(--ramos-naranjo);
+}
+.modal-detalle-ramo-cerrar {
+  position: absolute;
+  top: 4px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  color: #202020;
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+.modal-detalle-ramo-body { padding: 18px 24px 20px; }
+.modal-detalle-ramo-identidad {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.modal-detalle-ramo-logo-contenedor {
+  width: 90px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #d9d9d9;
+}
+.modal-detalle-ramo-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.modal-detalle-ramo-logo-vacio {
+  color: #202020;
+  font-size: 20px;
+  font-weight: 600;
+}
+.modal-detalle-ramo-datos { min-width: 0; }
+.modal-detalle-ramo-datos h2 {
+  margin: 0 0 2px;
+  color: #111827;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.modal-detalle-ramo-datos p {
+  margin: 0;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 500;
+}
+.modal-detalle-ramo-modalidad,
+.modal-detalle-ramo-tareas { margin-top: 18px; }
+.modal-detalle-ramo-modalidad > span {
+  display: block;
+  margin-bottom: 5px;
+  color: #202020;
+  font-size: 15px;
+  font-weight: 500;
+}
+.modal-detalle-ramo-modalidad-valor {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background-color: #d9d9d9;
+  color: #202020;
+  font-size: 14px;
+}
+.modal-detalle-ramo-tareas h3 {
+  margin: 0 0 10px;
+  color: #111111;
+  font-size: 24px;
+  font-weight: 600;
+}
+.modal-detalle-ramo-lista-tareas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modal-detalle-ramo-tarea {
+  width: 100%;
+  min-height: 34px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 5px;
+  color: #202020;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+.modal-detalle-ramo-tarea.pendientes { background-color: #ff989a; }
+.modal-detalle-ramo-tarea.en-progreso { background-color: #ffddb7; }
+.modal-detalle-ramo-tarea.completadas { background-color: #a0dfca; }
+.modal-detalle-ramo-tarea.sin-estado { background-color: #d9d9d9; }
+.modal-detalle-ramo-tarea:hover { filter: brightness(0.97); }
+.modal-detalle-ramo-sin-tareas {
+  margin: 0;
+  padding: 12px;
+  border-radius: 5px;
+  background-color: #e3e3e3;
+  color: #5b5b5b;
+  font-size: 13px;
+}
+.modal-detalle-ramo-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+.btn-editar-ramo-detalle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: var(--ramos-naranjo);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-editar-ramo-icono {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
 @media (min-width: 768px) {
-  .ramos-page .ramos-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .ramos-page .ramo-card {
-    min-height: 195px;
-  }
+  .ramos-page .ramos-grid { grid-template-columns: repeat(3, 1fr); }
+  .ramos-page .ramo-card { min-height: 195px; }
 }
 
-/* responsive celular */
+@media (max-width: 480px) {
+  .ramos-acciones-principales,
+  .ramos-controles { gap: 8px; }
+  .btn-seleccionar-ramos { width: 38px; height: 38px; }
+  .btn-eliminar-ramos { padding: 7px 14px; font-size: 14px; }
+  .modal-detalle-ramo-overlay { padding: 14px; }
+  .modal-detalle-ramo-body { padding: 16px 18px 18px; }
+  .modal-detalle-ramo-logo-contenedor { width: 74px; height: 62px; }
+  .modal-detalle-ramo-datos h2 { font-size: 24px; }
+  .modal-detalle-ramo-tareas h3 { font-size: 21px; }
+}
+
 @media (max-width: 420px) {
-  .ramos-page .ramos-view-button {
-    width: 36px;
-  }
-  .ramos-page .ramos-grid {
-    gap: 12px;
-  }
+  .ramos-page .ramos-view-button { width: 36px; }
+  .ramos-page .ramos-grid { gap: 12px; }
   .ramos-page .ramo-card {
     min-height: 170px;
     padding: 12px;
     border-radius: 12px;
   }
-  .ramos-page .ramo-card-superior {
-    gap: 9px;
-  }
+  .ramos-page .ramo-card-superior { gap: 9px; }
   .ramos-page .ramo-card-logo-contenedor {
     width: 48px;
     height: 48px;
     border-radius: 8px;
   }
-  .ramos-page .ramo-card-logo {
-    border-radius: 8px;
-  }
-  .ramos-page .ramo-card-info h3 {
-    font-size: 16px;
-  }
-  .ramos-page .ramo-card-info .ramo-card-id {
-    font-size: 12px;
-  }
-  .ramos-page .ramo-card-flecha {
-    font-size: 30px;
-  }
-  .ramos-page .ramo-card-divisor {
-    margin: 13px 0;
-  }
-  .ramos-page .ramo-card-detalle p {
-    font-size: 13px;
-  }
-  .ramos-page .ramo-card-detalle-titulo {
-    font-size: 11px;
-  }
+  .ramos-page .ramo-card-logo { border-radius: 8px; }
+  .ramos-page .ramo-card-info h3 { font-size: 16px; }
+  .ramos-page .ramo-card-info .ramo-card-id { font-size: 12px; }
+  .ramos-page .ramo-card-flecha { font-size: 30px; }
+  .ramos-page .ramo-card-divisor { margin: 13px 0; }
+  .ramos-page .ramo-card-detalle p { font-size: 13px; }
+  .ramos-page .ramo-card-detalle-titulo { font-size: 11px; }
   .ramos-page .ramo-card-detalle-icono {
     width: 28px;
     height: 28px;
