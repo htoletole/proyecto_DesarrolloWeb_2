@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import HeaderGeneral from "../components/HeaderGeneral";
+import HeaderGeneral from "../components/HeaderFixed";
 import Formulario from "../components/Formulario";
 import ModalDetalleRamo from "../components/ModalDetalleRamo";
 import ModalConfirmacionRamos from "../components/ModalConfirmacionRamos";

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import HeaderGeneral from '../components/HeaderGeneral';
+import HeaderGeneral from '../components/HeaderFixed';
 import Navbar from '../components/Navbar';
 import SearchBarTareas from '../components/SearchBarTareas';
 import KanbanBoardTareas from '../components/KanbanBoardTareasDefinitivo';

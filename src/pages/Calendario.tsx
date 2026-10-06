@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import HeaderCalendario from "../components/HeaderCalendario";
+import HeaderFlotante from "../components/HeaderFlotante";
 import CalendarioMes from "../components/CalendarioMes";
 import TareasDelDia from "../components/TareasDelDia";
 import DetalleTarea from "../components/DetalleTarea";
@@ -104,7 +104,7 @@ function Calendario() {
 
   return (
     <div className="pagina-calendario">
-      <HeaderCalendario hoy={hoy} />
+      <HeaderFlotante titulo="Calendario" />
 
       <main className="cal-contenido">
         <CalendarioMes
