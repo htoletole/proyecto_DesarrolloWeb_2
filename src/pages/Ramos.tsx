@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import HeaderGeneral from "../components/HeaderFixed";
+import HeaderGeneral from "../components/HeaderGeneral";
 import Formulario from "../components/Formulario";
 import ModalDetalleRamo from "../components/ModalDetalleRamo";
 import ModalConfirmacionRamos from "../components/ModalConfirmacionRamos";
@@ -26,6 +26,8 @@ type TareaGuardada = {
   asignatura: string;
   estado?: string;
 };
+
+const TAMANO_MAX_LOGO = 500000;
 
 const cargarTareasGuardadas = (): TareaGuardada[] => {
   const guardadas = localStorage.getItem("tareas");
@@ -67,8 +69,7 @@ function Ramos() {
   });
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
-  const [modoFormulario, setModoFormulario] =
-    useState<ModoFormulario>("crear");
+  const [modoFormulario, setModoFormulario] = useState<ModoFormulario>("crear");
   const [ramoAEditar, setRamoAEditar] = useState<Ramo | null>(null);
   const [ramoEnDetalle, setRamoEnDetalle] = useState<Ramo | null>(null);
   const [modoSeleccion, setModoSeleccion] = useState(false);
@@ -77,7 +78,13 @@ function Ramos() {
   const [ramosConTareas, setRamosConTareas] = useState<string[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("ramos", JSON.stringify(ramos));
+    try {
+      localStorage.setItem("ramos", JSON.stringify(ramos));
+    } catch {
+      alert(
+        "No hay suficiente espacio para guardar los ramos. Intenta usar logos más pequeños.",
+      );
+    }
   }, [ramos]);
 
   useEffect(() => {
@@ -135,6 +142,11 @@ function Ramos() {
     let logo = ramoAEditar?.logo;
 
     if (datos.logo instanceof File && datos.logo.size > 0) {
+      if (datos.logo.size > TAMANO_MAX_LOGO) {
+        alert("El logo debe pesar menos de 500 KB.");
+        return;
+      }
+
       logo = await convertirImagenBase64(datos.logo);
     }
 
@@ -156,10 +168,7 @@ function Ramos() {
             : tarea,
         );
 
-        localStorage.setItem(
-          "tareas",
-          JSON.stringify(tareasActualizadas),
-        );
+        localStorage.setItem("tareas", JSON.stringify(tareasActualizadas));
       }
     }
 
