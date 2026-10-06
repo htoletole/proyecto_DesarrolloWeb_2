@@ -22,7 +22,7 @@ function WeeklyProgressPanel(props: PanelProps) {
 
   return (
     <div className="d-flex flex-column align-items-center panel-progreso-semanal">
-      <h3>Progreso semanal</h3>
+      <h3>Progreso global</h3>
       {tareasIncompletas == 0 ? (
         <>
           <p>Hay 0 tareas incompletas</p>
