@@ -87,6 +87,7 @@
   padding-top: 8px;
   padding-bottom: 8px;
   border-radius: 15px;
+  white-space:nowrap;
 }
 
 .panel-progreso-semanal .incompletas {
