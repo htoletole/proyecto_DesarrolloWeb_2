@@ -500,3 +500,38 @@
   height: 16px;
   filter: brightness(0) invert(1); /* Pone el lapiz blanco */
 }
+
+@media (max-width: 420px) {
+  .action-buttons-container > div {
+    gap: 6px !important;
+  }
+  
+  /*-- Achicar los botones-- */
+  .btn-crear, .btn-filtrar {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+ 
+  .btn-eliminar {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+
+  .btn-editar {
+    width: 34px;
+    height: 34px;
+  }
+
+
+  .btn-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .btn-icon-lapiz {
+    width: 16px;
+    height: 16px;
+  }
+}
