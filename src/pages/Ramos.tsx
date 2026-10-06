@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import HeaderGeneral from "../components/HeaderGeneral";
+import HeaderFixed from "../components/HeaderFixed";
 import Formulario from "../components/Formulario";
 import ModalDetalleRamo from "../components/ModalDetalleRamo";
 import ModalConfirmacionRamos from "../components/ModalConfirmacionRamos";
@@ -48,8 +48,7 @@ const convertirImagenBase64 = (archivo: File): Promise<string> =>
     lector.readAsDataURL(archivo);
   });
 
-const normalizarTexto = (texto: string) =>
-  texto.trim().toLowerCase();
+const normalizarTexto = (texto: string) => texto.trim().toLowerCase();
 
 function Ramos() {
   const [vista, setVista] = useState<VistaRamos>(() => {
@@ -155,9 +154,7 @@ function Ramos() {
     } else if (ramoAEditar) {
       setRamos((actuales) =>
         actuales.map((ramo) =>
-          ramo.id === ramoAEditar.id
-            ? { ...ramo, ...datosRamo, logo }
-            : ramo,
+          ramo.id === ramoAEditar.id ? { ...ramo, ...datosRamo, logo } : ramo,
         ),
       );
 
@@ -243,15 +240,11 @@ function Ramos() {
 
   return (
     <div className="min-vh-100 w-100 page-container ramos-page">
-      <HeaderGeneral titulo="Ramos" />
+      <HeaderFixed titulo="Ramos" />
 
       <main className="content-container">
         <div className="info-banner info-banner-ramos">
-          <img
-            src={iconoInfo}
-            alt="Información"
-            className="info-icon-img"
-          />
+          <img src={iconoInfo} alt="Información" className="info-icon-img" />
           <p>Presiona un ramo para ver más información sobre este.</p>
         </div>
 
@@ -263,11 +256,7 @@ function Ramos() {
               onClick={abrirFormularioCrear}
             >
               Crear Ramo
-              <img
-                src={iconoMas}
-                alt="Crear ramo"
-                className="btn-icon"
-              />
+              <img src={iconoMas} alt="Crear ramo" className="btn-icon" />
             </button>
 
             {modoSeleccion && ramosSeleccionados.length > 0 && (
@@ -288,15 +277,9 @@ function Ramos() {
                 modoSeleccion ? "activo" : ""
               }`}
               onClick={toggleModoSeleccion}
-              title={
-                modoSeleccion
-                  ? "Cancelar selección"
-                  : "Seleccionar ramos"
-              }
+              title={modoSeleccion ? "Cancelar selección" : "Seleccionar ramos"}
               aria-label={
-                modoSeleccion
-                  ? "Cancelar selección"
-                  : "Seleccionar ramos"
+                modoSeleccion ? "Cancelar selección" : "Seleccionar ramos"
               }
             >
               <img
@@ -382,9 +365,7 @@ function Ramos() {
                   <span className="ramo-card-detalle-icono">◉</span>
 
                   <div>
-                    <span className="ramo-card-detalle-titulo">
-                      Modalidad
-                    </span>
+                    <span className="ramo-card-detalle-titulo">Modalidad</span>
                     <p>{ramo.modalidad}</p>
                   </div>
                 </div>
