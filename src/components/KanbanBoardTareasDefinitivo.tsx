@@ -1,13 +1,9 @@
 import iconoReloj from "../assets/icons/reloj.png";
 import iconoGrafico from "../assets/icons/grafico.png";
-
 import iconoBaja from "../assets/icons/baja.png";
 import iconoNormal from "../assets/icons/normal.png";
 import iconoAlta from "../assets/icons/alta.png";
 import iconoUrgente from "../assets/icons/urgente.png";
-
-import iconoCalendario from "../assets/icons/calendario.png";
-
 import iconoCheck from "../assets/icons/check.png";
 import type { Tarea } from "../pages/Tareas";
 
@@ -91,15 +87,6 @@ function KanbanBoardTareas({
       { id: "Alta", icono: iconoAlta },
       { id: "Urgente", icono: iconoUrgente },
     ];
-  } else if (filtro === "dia") {
-    propiedadFiltro = "dia";
-    secciones = [
-      { id: "Lunes", icono: iconoCalendario },
-      { id: "Martes", icono: iconoCalendario },
-      { id: "Miercoles", icono: iconoCalendario },
-      { id: "Jueves", icono: iconoCalendario },
-      { id: "Viernes", icono: iconoCalendario },
-    ];
   } else {
     propiedadFiltro = "asignatura";
     secciones = ramos.map((r) => {
@@ -111,33 +98,19 @@ function KanbanBoardTareas({
     <div className="kanban-board">
       {secciones.map((seccion) => {
         const tareasColumna = tareas.filter(
-          (t) => t[propiedadFiltro] === seccion.id,
+          (t) => t[propiedadFiltro] === seccion.id
         );
+
         return (
           <div key={seccion.id} className="kanban-row">
             <div className="kanban-header">
-              {propiedadFiltro === "dia" ? (
-                <>
-                  {seccion.icono && (
-                    <img
-                      src={seccion.icono}
-                      alt="Calendario"
-                      className="kanban-icon-img"
-                    />
-                  )}
-                  <h3>{seccion.id}</h3>
-                </>
-              ) : (
-                <>
-                  <h3>{seccion.id}</h3>
-                  {seccion.icono && (
-                    <img
-                      src={seccion.icono}
-                      alt="Calendario"
-                      className="kanban-icon-img"
-                    />
-                  )}
-                </>
+              <h3>{seccion.id}</h3>
+              {seccion.icono && (
+                <img
+                  src={seccion.icono}
+                  alt="Icono de sección"
+                  className="kanban-icon-img"
+                />
               )}
             </div>
             <div className="kanban-cards-container">
