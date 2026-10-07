@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import HeaderGeneral from "../components/HeaderFixed";
-import Navbar from "../components/Navbar";
-import SearchBarTareas from "../components/SearchBarTareas";
-import KanbanBoardTareas from "../components/KanbanBoardTareasDefinitivo";
-import Formulario from "../components/Formulario";
-import ModalConfirmacionTareas from "../components/ModalConfirmacionTareas";
-import ModalDetalleTarea from "../components/ModalDetalleTarea";
-import Toast from "../components/Toast";
-import iconoInfo from "../assets/icons/info.png";
-import iconoMas from "../assets/icons/mas.png";
-import iconoFiltro from "../assets/icons/filtro.png";
-import iconoLapiz from "../assets/icons/lapiz.png";
-import "../styles/tareas.css";
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import HeaderGeneral from '../components/HeaderFixed';
+import Navbar from '../components/Navbar';
+import SearchBarTareas from '../components/SearchBarTareas';
+import KanbanBoardTareas from '../components/KanbanBoardTareasDefinitivo';
+import Formulario from '../components/Formulario';
+import ModalConfirmacionTareas from '../components/ModalConfirmacionTareas';
+import ModalDetalleTarea from '../components/ModalDetalleTarea';
+
+import iconoInfo from '../assets/icons/info.png';
+import iconoMas from '../assets/icons/mas.png';
+import iconoFiltro from '../assets/icons/filtro.png';
+import iconoLapiz from '../assets/icons/lapiz.png';
+import '../styles/tareas.css';
 
 export type Tarea = {
   id: string;
@@ -22,18 +22,16 @@ export type Tarea = {
   estado: string;
   prioridad: string;
   horaEntrega: string;
-  dia?: string;
   fecha?: string;
 };
 
 function Tareas() {
-  const [tipoFiltro, setTipoFiltro] = useState("normal");
+  const [tipoFiltro, setTipoFiltro] = useState('normal');
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [formularioAbierto, setFormularioAbierto] = useState(false);
-
   const [opcionesRamos, setOpcionesRamos] = useState<string[]>([]);
   const [tareas, setTareas] = useState<Tarea[]>([]);
-  const [busqueda, setBusqueda] = useState("");
+  const [busqueda, setBusqueda] = useState('');
 
   // Estados de modo selección/borrado
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -42,23 +40,15 @@ function Tareas() {
 
   // estados modales para el formulario, crear y editar
   const [tareaEnDetalle, setTareaEnDetalle] = useState<Tarea | null>(null);
-  const [modoFormulario, setModoFormulario] = useState<"crear" | "editar">(
-    "crear",
-  );
+  const [modoFormulario, setModoFormulario] = useState<"crear" | "editar">("crear");
   const [tareaAEditar, setTareaAEditar] = useState<Tarea | null>(null);
-
-  const [mostrarAlerta, setMostrarAlerta] = useState(false);
-  const [mensajeAlerta, setMensajeAlerta] = useState("");
-  const [tituloAlerta, setTituloAlerta] = useState("");
 
   useEffect(() => {
     const ramosGuardados = localStorage.getItem("ramos");
     if (ramosGuardados) {
       try {
         const ramosParseados = JSON.parse(ramosGuardados);
-        setOpcionesRamos(
-          ramosParseados.map((ramo: { nombre: string }) => ramo.nombre),
-        );
+        setOpcionesRamos(ramosParseados.map((ramo: { nombre: string }) => ramo.nombre));
       } catch (error) {
         console.error("Error al cargar ramos:", error);
       }
@@ -106,16 +96,13 @@ function Tareas() {
         horaEntrega: String(datos.horaEntrega ?? ""),
         fecha: String(datos.fecha ?? ""),
       };
-
       const nuevasTareas = [...tareas, nuevaTarea];
       setTareas(nuevasTareas);
       localStorage.setItem("tareas", JSON.stringify(nuevasTareas));
-      setTituloAlerta("Tarea creada");
-      setMensajeAlerta(`¡Tarea "${nuevaTarea.nombre}" creada con éxito!`);
-      setMostrarAlerta(true);
-    } else if (modoFormulario === "editar" && tareaAEditar) {
+    } 
+    else if (modoFormulario === "editar" && tareaAEditar) {
       //edicion
-      const tareasActualizadas = tareas.map((t) => {
+      const tareasActualizadas = tareas.map(t => {
         if (t.id === tareaAEditar.id) {
           return {
             ...t,
@@ -130,16 +117,9 @@ function Tareas() {
         }
         return t;
       });
-
       setTareas(tareasActualizadas);
       localStorage.setItem("tareas", JSON.stringify(tareasActualizadas));
-      setTituloAlerta("Tarea actualizada");
-      setMensajeAlerta(
-        `¡Se editó con éxito la tarea "${tareaAEditar.nombre}"!`,
-      );
-      setMostrarAlerta(true);
     }
-
     setFormularioAbierto(false);
     setTareaAEditar(null);
   };
@@ -147,26 +127,21 @@ function Tareas() {
   //seccion seleccion y borrado
   const toggleModoEdicion = () => {
     setModoEdicion(!modoEdicion);
-    setTareasSeleccionadas([]);
+    setTareasSeleccionadas([]); 
   };
 
   const toggleSeleccionTarea = (id: string) => {
     if (tareasSeleccionadas.includes(id)) {
-      setTareasSeleccionadas(tareasSeleccionadas.filter((tId) => tId !== id));
+      setTareasSeleccionadas(tareasSeleccionadas.filter(tId => tId !== id));
     } else {
       setTareasSeleccionadas([...tareasSeleccionadas, id]);
     }
   };
 
   const eliminarTareasSeleccionadas = () => {
-    const nuevasTareas = tareas.filter(
-      (tarea) => !tareasSeleccionadas.includes(tarea.id),
-    );
+    const nuevasTareas = tareas.filter(tarea => !tareasSeleccionadas.includes(tarea.id));
     setTareas(nuevasTareas);
     localStorage.setItem("tareas", JSON.stringify(nuevasTareas));
-    setTituloAlerta("Tarea eliminada");
-    setMensajeAlerta(`¡Se eliminaron correctamente las tareas seleccionadas!`);
-    setMostrarAlerta(true);
     setModalEliminarAbierto(false);
     setModoEdicion(false);
     setTareasSeleccionadas([]);
@@ -176,13 +151,14 @@ function Tareas() {
   const abrirDetalle = (tarea: Tarea) => setTareaEnDetalle(tarea);
   const cerrarDetalle = () => setTareaEnDetalle(null);
 
-  const tareasFiltradas = tareas.filter((tarea) =>
-    tarea.nombre.toLowerCase().includes(busqueda.toLowerCase()),
+  const tareasFiltradas = tareas.filter(tarea => 
+    tarea.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   // Abrir el Modal Detalles con el ID desde el link
   const [searchParams, setSearchParams] = useSearchParams();
   const tareaId = searchParams.get("id");
+
   useEffect(() => {
     if (tareaId) {
       const tareaPorId = tareas.find((t) => t.id === tareaId);
@@ -198,7 +174,7 @@ function Tareas() {
   return (
     <div className="min-vh-100 w-100 page-container">
       <HeaderGeneral titulo="Tareas" />
-
+      
       <main className="content-container">
         <SearchBarTareas busqueda={busqueda} setBusqueda={setBusqueda} />
 
@@ -208,60 +184,47 @@ function Tareas() {
         </div>
 
         <div className="action-buttons-container">
-          <div style={{ display: "flex", gap: "12px" }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
             <button className="btn-crear" onClick={abrirFormularioCrear}>
-              Crear Tarea{" "}
-              <img src={iconoMas} alt="Crear" className="btn-icon" />
+              Crear Tarea <img src={iconoMas} alt="Crear" className="btn-icon" />
             </button>
-
             {modoEdicion && tareasSeleccionadas.length > 0 && (
-              <button
-                className="btn-eliminar"
-                onClick={() => setModalEliminarAbierto(true)}
-              >
+              <button className="btn-eliminar" onClick={() => setModalEliminarAbierto(true)}>
                 Eliminar
               </button>
             )}
           </div>
-
-          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <button
-              className={`btn-editar ${modoEdicion ? "activo" : ""}`}
+          
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            
+            <button 
+              className={`btn-editar ${modoEdicion ? 'activo' : ''}`} 
               onClick={toggleModoEdicion}
-              title={modoEdicion ? "Cancelar edición" : "Activar edición"}
-            >
+              title={modoEdicion ? "Cancelar edición" : "Activar edición"}>
               <img src={iconoLapiz} alt="Editar" className="btn-icon-lapiz" />
             </button>
 
-            <div style={{ position: "relative" }}>
-              <button
-                className="btn-filtrar"
+            <div style={{ position: 'relative' }}>
+              <button 
+                className="btn-filtrar" 
                 onClick={() => setMenuAbierto(!menuAbierto)}
               >
-                Filtrar{" "}
-                <img src={iconoFiltro} alt="Filtrar" className="btn-icon" />
+                Filtrar <img src={iconoFiltro} alt="Filtrar" className="btn-icon" />
               </button>
 
               {menuAbierto && (
                 <div className="filtro-dropdown">
-                  <button onClick={() => aplicarFiltro("normal")}>
-                    Por Estado
-                  </button>
-                  <button onClick={() => aplicarFiltro("prioridad")}>
-                    Por Prioridad
-                  </button>
-                  <button onClick={() => aplicarFiltro("dia")}>Por Día</button>
-                  <button onClick={() => aplicarFiltro("ramo")}>
-                    Por Ramo
-                  </button>
+                  <button onClick={() => aplicarFiltro('normal')}>Por Estado</button>
+                  <button onClick={() => aplicarFiltro('prioridad')}>Por Prioridad</button>
+                  <button onClick={() => aplicarFiltro('ramo')}>Por Ramo</button>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <KanbanBoardTareas
-          tareas={tareasFiltradas}
+        <KanbanBoardTareas 
+          tareas={tareasFiltradas} 
           ramos={opcionesRamos}
           modoEdicion={modoEdicion}
           tareasSeleccionadas={tareasSeleccionadas}
@@ -269,12 +232,13 @@ function Tareas() {
           onVerDetalle={abrirDetalle}
           filtro={tipoFiltro}
         />
-      </main>
 
+      </main>
+      
       <Navbar />
 
       {/* se entregan los valores iniciales si se esta editando */}
-      <Formulario
+      <Formulario 
         abierto={formularioAbierto}
         tipo="tarea"
         modo={modoFormulario}
@@ -284,7 +248,7 @@ function Tareas() {
         opcionesAsignatura={opcionesRamos}
       />
 
-      <ModalConfirmacionTareas
+      <ModalConfirmacionTareas 
         abierto={modalEliminarAbierto}
         mensaje="¿Desea Confirmar la eliminación de la tarea ?"
         onConfirmar={eliminarTareasSeleccionadas}
@@ -292,18 +256,11 @@ function Tareas() {
       />
 
       {/* el boton de editar se conecta con la función abrirFormularioEditar */}
-      <ModalDetalleTarea
+      <ModalDetalleTarea 
         abierto={tareaEnDetalle !== null}
         tarea={tareaEnDetalle}
         onCerrar={cerrarDetalle}
-        onEditar={abrirFormularioEditar}
-      />
-
-      <Toast
-        mostrar={mostrarAlerta}
-        mensaje={mensajeAlerta}
-        titulo={tituloAlerta}
-        onClose={() => setMostrarAlerta(false)}
+        onEditar={abrirFormularioEditar} 
       />
     </div>
   );
