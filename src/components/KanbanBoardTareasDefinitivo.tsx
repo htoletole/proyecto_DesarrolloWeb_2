@@ -98,7 +98,7 @@ function KanbanBoardTareas({
     <div className="kanban-board">
       {secciones.map((seccion) => {
         const tareasColumna = tareas.filter(
-          (t) => t[propiedadFiltro] === seccion.id
+          (t) => t[propiedadFiltro] === seccion.id,
         );
 
         return (

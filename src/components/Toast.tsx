@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 interface ToastProps {
   mostrar: boolean;
   mensaje: string;
@@ -7,6 +9,16 @@ interface ToastProps {
 
 function Toast(props: ToastProps) {
   const { mostrar, mensaje, titulo, onClose } = props;
+
+  useEffect(() => {
+    if (!mostrar) return;
+
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000); // 3 segundos
+
+    return () => clearTimeout(timer);
+  }, [mostrar, onClose]);
 
   return (
     <div className={`toast-container position-fixed bottom-0 end-0 p-3`}>
