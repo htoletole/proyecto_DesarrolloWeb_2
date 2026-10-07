@@ -153,7 +153,7 @@ La app incluye una interfaz basada en paneles, tarjetas y formularios, con enfoq
 
 ## Autor
 
-Proyecto desarrollado por `htoletole`.
+Proyecto desarrollado por `htoletole`, `vlagostorres`, `sebastianihg05` y `claudio6767`.
 
 ## Licencia
 
