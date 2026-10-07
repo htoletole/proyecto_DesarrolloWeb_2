@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+.navdiv {
+  background-color: #1b3f73;
+  border-radius: 35px;
+  margin: 8px auto 20px;
+  padding-top: 2px;
+  padding-bottom: 8px;
+  width: calc(100% - 16px);
+  max-width: 900px;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+.navdiv.nav-tareas {
+  background-color: #326b59;
+}
+
+.navdiv.nav-ramos {
+  background-color: #ffa53d;
+}
+
+.custom-nav-link {
+  color: #d1d1d1 !important;
+  font-weight: bold !important;
+  position: relative;
+  border-bottom: none !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-nav-link.active {
+  color: white !important;
+}
+
+.custom-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 5px;
+  border-radius: 35px;
+  background: linear-gradient(90deg, #c7e1f8, #14b2f8);
+  transition: width 0.2s ease;
+  transform: translateX(-50%);
+}
+
+.custom-nav-link:hover::after,
+.custom-nav-link.active::after {
+  width: 70%;
+}
+
+.custom-nav-link img {
+  width: 34px;
+  height: 34px;
+}
+
+.home-icon {
+  width: 30px !important;
+  height: 30px !important;
+  margin-top: 4px;
+}
+
+.subject-icon {
+  width: 44px !important;
+  height: 44px !important;
+  margin-bottom: -7px;
+  margin-top: -3px;
+}

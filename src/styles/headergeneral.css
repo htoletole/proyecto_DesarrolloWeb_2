@@ -1,0 +1,27 @@
+.header-general {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  padding: 20px 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  margin-bottom: 10px;
+}
+
+.header-general h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.header-general .dropdown-toggle::after {
+  display: none !important;
+}
+
+.boton-cerrar-sesion:hover {
+  background-color: #2181ff52 !important;
+  border-radius: 5px;
+  cursor: default;
+}

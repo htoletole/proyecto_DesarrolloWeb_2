@@ -1,0 +1,537 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+.header-general {
+  background-color: rgb(70 147 124);
+}
+.user-profile-btn {
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+.user-profile-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ffffff;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+.content-container {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto; /*scroll en las tareas */
+  padding-bottom: 130px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #e9ecef;
+  border-radius: 20px;
+  padding: 5px 15px;
+  margin-bottom: 15px;
+}
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  outline: none;
+  font-size: 13px;
+  font-weight: 400;
+}
+.search-icon {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.info-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(59 135 110);
+  color: white;
+  border-radius: 20px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.info-banner p {
+  margin: 0; 
+}
+
+.info-icon-img {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+.action-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.btn-crear,
+.btn-filtrar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgb(70 147 124);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+}
+.btn-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.kanban-board {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.kanban-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kanban-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgb(70 147 124);
+  color: white;
+  padding: 6px 15px;
+  border-radius: 20px;
+  width: fit-content;
+}
+.kanban-header h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+}
+.kanban-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.kanban-cards-container {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto; /*scroll horizontal  */
+  padding-bottom: 15px;
+  padding-top: 15px;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+.task-card-placeholder {
+  min-width: 75px;
+  height: 75px;
+  background-color: #d1d5db;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.filtro-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 100; 
+  min-width: 160px;
+}
+
+.filtro-dropdown button {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  color: #333333;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.filtro-dropdown button:last-child {
+  border-bottom: none;
+}
+
+.filtro-dropdown button:hover {
+  background-color: #f5f5f5; 
+}
+.tarjeta-tarea {
+  background-color: #ffffff;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  min-width: 200px;
+  min-height: 90px; 
+  flex-shrink: 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.tarjeta-tarea:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.tarjeta-tarea-titulo {
+  font-size: 16px;
+  color: #111827;
+  margin: 0;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* puntos suspensivos */
+}
+
+.tarjeta-tarea-subtitulo {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-editar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(70 147 124);
+  border: none;
+  width: 42px;  
+  height: 42px;
+  border-radius: 50%; 
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-editar:hover {
+  background-color: rgb(59 135 110);
+  transform: scale(1.05); 
+}
+
+.btn-icon-lapiz {
+  width: 22px; 
+  height: 22px;
+  object-fit: contain;
+}
+
+/* --- Funcionalidad de Selección y Eliminación --- */
+.tarjeta-tarea.modo-edicion {
+  cursor: pointer;
+}
+
+.tarjeta-tarea.seleccionada {
+  background-color: #d1f4d9; /* Verde clarito del mockup */
+  border-color: #3b876e;
+  position: relative;
+}
+
+.icono-check-seleccion {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  background-color: #1a4d3a; /* Fondo oscuro para el check */
+  border-radius: 50%;
+  padding: 4px;
+  object-fit: contain;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-eliminar {
+  background-color: #e0262a; /* Rojo vibrante */
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.btn-eliminar:hover {
+  transform: scale(1.05);
+  background-color: #c91f22;
+}
+
+.modal-confirmacion-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.modal-confirmacion-content {
+  background-color: #ff4d4d;
+  padding: 35px 25px;
+  border-radius: 20px;
+  text-align: center;
+  color: white;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-confirmacion-content h3 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.modal-confirmacion-botones {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn-confirmar {
+  background-color: #d1f4d9; 
+  color: #111;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-denegar {
+  background-color: #ffcccc;
+  color: #111;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-editar.activo {
+  background-color: #c21414; 
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5); 
+  transform: scale(0.95); 
+  border: 2px solid #d1f4d9; 
+}
+
+.btn-editar.activo:hover {
+  background-color: #b11616;
+  transform: scale(0.95);
+}
+
+/* --- Modal Detalle Tarea --- */
+.modal-detalle-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.modal-detalle-content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-detalle-header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.modal-detalle-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.btn-cerrar-detalle {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-detalle-body {
+  padding: 20px;
+  color: #1a4d3a;
+}
+
+.modal-detalle-titulo {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f2e22;
+}
+
+.modal-detalle-info-box {
+  background-color: #eef6f1;
+  border-radius: 12px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.info-box-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.info-box-textos {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-box-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3b876e;
+}
+
+.info-box-valor {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a4d3a;
+  word-break: break-word;
+}
+
+.modal-detalle-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.btn-editar-detalle {
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  transition: opacity 0.2s;
+}
+
+.btn-editar-detalle:hover {
+  opacity: 0.85;
+}
+
+.btn-editar-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1); /* Pone el lapiz blanco */
+}
+
+@media (max-width: 420px) {
+  .action-buttons-container > div {
+    gap: 6px !important;
+  }
+  
+  /*-- Achicar los botones-- */
+  .btn-crear, .btn-filtrar {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+ 
+  .btn-eliminar {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+
+  .btn-editar {
+    width: 34px;
+    height: 34px;
+  }
+
+
+  .btn-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .btn-icon-lapiz {
+    width: 16px;
+    height: 16px;
+  }
+}

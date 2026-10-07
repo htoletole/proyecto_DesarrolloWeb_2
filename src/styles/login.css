@@ -1,0 +1,148 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+/* estilos del login, solo para sus clases */
+
+/* tapa la app mientras no hay sesion */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow-y: auto;
+  background: #0d2a5c;
+}
+
+/* base: celular, el degradado ocupa toda la pantalla */
+.auth-screen {
+  font-family: "Montserrat", system-ui, sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: linear-gradient(180deg, #2a5fb0 0%, #0d2a5c 100%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 2.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.marca { text-align: center; margin-bottom: 1.5rem; }
+.marca h1 { font-size: 1.4rem; margin: 0 0 .4rem; }
+.marca p { font-size: .7rem; margin: 0; opacity: .9; }
+
+.titulo-recuperar { font-size: 1.05rem; margin: 1rem 0 2rem; font-weight: 600; }
+
+.texto-form { font-size: .75rem; margin: 1.5rem 0 1rem; }
+
+.campo { margin-bottom: 1rem; }
+.campo label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: .35rem; }
+.campo small { display: block; font-size: .65rem; margin-bottom: .35rem; opacity: .9; }
+.campo input {
+  width: 100%;
+  height: 2rem;
+  border: 0;
+  border-radius: .35rem;
+  padding: 0 .6rem;
+  font: inherit;
+  font-size: .85rem;
+}
+.campo input:focus { outline: 2px solid #9cc2ff; }
+
+.check { display: flex; align-items: center; gap: .5rem; font-size: .7rem; margin: .25rem 0 1.5rem; }
+
+.boton {
+  display: block;
+  margin: 0 auto;
+  min-width: 9.5rem;
+  padding: .65rem 1.5rem;
+  border: 0;
+  border-radius: 2rem;
+  background: #1e4a8f;
+  color: #fff;
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+}
+.boton:hover { background: #2559a8; }
+.boton-crear { margin-top: 2.5rem; }
+
+.mensaje { text-align: center; font-size: .8rem; font-weight: 600; margin: 0 0 .5rem; color: #e0262a; }
+.mensaje-error { background: rgba(255, 255, 255, .92); padding: .4rem; border-radius: .35rem; }
+
+.pie { margin-top: auto; text-align: center; font-size: .7rem; padding-top: 1.5rem; }
+.pie p { margin: 0 0 .8rem; }
+
+.enlace {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #fff;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.enlace-pie { margin-top: auto; align-self: center; font-size: .8rem; text-decoration: none; }
+
+/* bienvenida con avatar */
+.auth-card-centrada { align-items: center; }
+.auth-card-centrada .marca { margin-top: 1rem; }
+.avatar-btn {
+  background: none; border: 0; color: #fff; font: inherit; cursor: pointer;
+  margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: .75rem;
+}
+.avatar {
+  width: 10rem; height: 10rem; border-radius: 50%;
+  background: #d9d9d9; display: grid; place-items: center;
+}
+.avatar svg { width: 6rem; height: 6rem; }
+.avatar-btn:hover .avatar { background: #e8e8e8; }
+.avatar-nombre { font-size: .8rem; }
+
+
+/* tablet y pc: tarjeta centrada */
+@media (min-width: 768px) {
+  .auth-screen {
+    align-items: center;
+    padding: 2rem;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255, 255, 255, .12), transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(76, 140, 230, .35), transparent 50%),
+      linear-gradient(135deg, #2a5fb0 0%, #0d2a5c 100%);
+  }
+
+  .auth-card {
+    max-width: 480px;
+    min-height: 640px;
+    padding: 3rem 3rem 2rem;
+    background: rgba(13, 42, 92, .55);
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+    backdrop-filter: blur(6px);
+  }
+
+  .marca h1 { font-size: 1.75rem; }
+  .marca p { font-size: .85rem; }
+  .texto-form { font-size: .85rem; }
+  .campo label { font-size: .9rem; }
+  .campo small { font-size: .75rem; }
+  .campo input { height: 2.5rem; font-size: 1rem; }
+  .check { font-size: .8rem; }
+  .boton { font-size: 1rem; }
+  .pie { font-size: .85rem; }
+  .titulo-recuperar { font-size: 1.3rem; }
+  .avatar { width: 12rem; height: 12rem; }
+  .avatar-nombre, .enlace-pie { font-size: 1rem; }
+}
+
+/* pantallas bajas: sin alturas minimas */
+@media (max-height: 560px) {
+  .auth-card { min-height: 0; }
+}
