@@ -1,0 +1,62 @@
+// Este es tu archivo schema.prisma
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --- ENUMS ---
+
+// Nota: SQLite no soporta Enums nativos de la misma forma que PostgreSQL, 
+// así que usaremos String y validaremos en la lógica de NestJS.
+// Sin embargo, lo dejaré definido para cuando migres a PostgreSQL.
+
+// --- MODELS ---
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String    // Hash de la contraseña
+  name          String?
+  role          String    @default("USER") // Reemplazo de Enum para SQLite
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relaciones
+  ramos         Ramo[]
+  tasks         Tarea[]
+}
+
+model Ramo {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks       Tarea[]
+}
+
+model Tarea {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  dueDate     DateTime?
+  status      String     @default("PENDING") // Reemplazo de Enum para SQLite
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relaciones
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  ramoId      String
+  ramo        Ramo       @relation(fields: [ramoId], references: [id], onDelete: Cascade)
+}
