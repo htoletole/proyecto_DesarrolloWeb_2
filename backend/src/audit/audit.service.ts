@@ -7,9 +7,10 @@ import { ActivityLog } from './schemas/activity-log.schema';
 export class AuditService {
   constructor(
     @InjectModel(ActivityLog.name)
-    private activityLogModel: Model<ActivityLog>,
+    private readonly activityLogModel: Model<ActivityLog>,
   ) {}
 
+  // Registrar una nueva actividad
   async log(
     action: string,
     entity: string,
@@ -25,6 +26,28 @@ export class AuditService {
       metadata,
       timestamp: new Date(),
     });
+
     await newLog.save();
+  }
+
+  // Consultar el historial de un usuario
+  async findByUser(userId: string): Promise<ActivityLog[]> {
+    return this.activityLogModel
+      .find({ userId })
+      .sort({ timestamp: -1 })
+      .limit(50)
+      .exec();
+  }
+
+  // Consultar las actividades de una entidad
+  async findByEntity(
+    entity: string,
+    entityId: string,
+  ): Promise<ActivityLog[]> {
+    return this.activityLogModel
+      .find({ entity, entityId })
+      .sort({ timestamp: -1 })
+      .limit(50)
+      .exec();
   }
 }
