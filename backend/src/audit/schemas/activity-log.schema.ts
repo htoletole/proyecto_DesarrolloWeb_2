@@ -22,4 +22,4 @@ export class ActivityLog extends Document {
   timestamp: Date;
 }
 
-export const ActivityLogSchema = SchemaFactory.createForClass(Activity    log);
+export const ActivityLogSchema = SchemaFactory.createForClass(ActivityLog);
