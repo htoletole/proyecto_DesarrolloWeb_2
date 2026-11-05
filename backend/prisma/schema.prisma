@@ -1,7 +1,7 @@
-// Este es tu archivo schema.prisma
+// This is your schema.prisma file
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,24 +11,31 @@ generator client {
 
 // --- ENUMS ---
 
-// Nota: SQLite no soporta Enums nativos de la misma forma que PostgreSQL, 
-// así que usaremos String y validaremos en la lógica de NestJS.
-// Sin embargo, lo dejaré definido para cuando migres a PostgreSQL.
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
 
 // --- MODELS ---
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  password      String    // Hash de la contraseña
-  name          String?
-  role          String    @default("USER") // Reemplazo de Enum para SQLite
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String?
+  role      Role     @default(user)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // Relaciones
-  ramos         Ramo[]
-  tasks         Tarea[]
+  // Relations
+  ramos     Ramo[]
+  tasks     Tarea[]
 }
 
 model Ramo {
@@ -38,10 +45,10 @@ model Ramo {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relaciones
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tasks       Tarea[]
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks  Tarea[]
 }
 
 model Tarea {
@@ -49,14 +56,14 @@ model Tarea {
   title       String
   description String?
   dueDate     DateTime?
-  status      String     @default("PENDING") // Reemplazo de Enum para SQLite
+  status      TaskStatus @default(PENDING)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  // Relaciones
-  userId      String
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  ramoId      String
-  ramo        Ramo       @relation(fields: [ramoId], references: [id], onDelete: Cascade)
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  ramoId String
+  ramo   Ramo   @relation(fields: [ramoId], references: [id], onDelete: Cascade)
 }
