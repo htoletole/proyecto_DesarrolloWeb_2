@@ -15,13 +15,17 @@ export default function Recover(props: RecoverProps) {
   const [nueva, setNueva] = useState("");
   const [repetida, setRepetida] = useState("");
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const resultado = restablecerPassword(username, nueva, repetida);
-    if (resultado.usuario === null) {
-      setError(resultado.error);
+    setEnviando(true);
+    const mensajeError = await restablecerPassword(username, nueva, repetida);
+    setEnviando(false);
+
+    if (mensajeError !== "") {
+      setError(mensajeError);
       return;
     }
     onRestablecida();
@@ -63,8 +67,8 @@ export default function Recover(props: RecoverProps) {
           autoComplete="new-password"
         />
 
-        <button type="submit" className="boton boton-crear">
-          Restablecer
+        <button type="submit" className="boton boton-crear" disabled={enviando}>
+          {enviando ? "Restableciendo..." : "Restablecer"}
         </button>
       </form>
 

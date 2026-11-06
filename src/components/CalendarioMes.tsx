@@ -1,22 +1,23 @@
 import { armarFecha, DIAS_SEMANA, MESES } from "../services/fechas";
 import { buscarFeriado } from "../services/publicApi";
 import type { Feriado } from "../services/publicApi";
-import { filtrarPorFecha } from "../services/tareasCalendario";
-import type { Tarea } from "../services/tareasCalendario";
+import { evaluacionesDelDia, filtrarPorFecha } from "../services/tareasCalendario";
+import type { Evaluacion, Tarea } from "../services/tipos";
 
 interface CalendarioMesProps {
   anio: number;
-  mes: number; 
+  mes: number;
   hoy: string;
   seleccionado: string;
   tareas: Tarea[];
+  evaluaciones: Evaluacion[];
   feriados: Feriado[];
   onCambioMes: (mes: number) => void;
   onCambioAnio: (anio: number) => void;
   onSeleccionar: (fecha: string) => void;
 }
 
-function claseDelDia(esHoy: boolean, estaElegido: boolean, esFeriado: boolean, tieneTareas: boolean): string {
+function claseDelDia(esHoy: boolean, estaElegido: boolean, esFeriado: boolean, tieneTareas: boolean, tieneEvaluacion: boolean): string {
   let clase = "cal-dia";
 
   if (esHoy) {
@@ -31,12 +32,15 @@ function claseDelDia(esHoy: boolean, estaElegido: boolean, esFeriado: boolean, t
   if (tieneTareas) {
     clase += " cal-dia-con-tarea";
   }
+  if (tieneEvaluacion) {
+    clase += " cal-dia-con-evaluacion";
+  }
 
   return clase;
 }
 
 function CalendarioMes(props: CalendarioMesProps) {
-  const { anio, mes, hoy, seleccionado, tareas, feriados } = props;
+  const { anio, mes, hoy, seleccionado, tareas, evaluaciones, feriados } = props;
   const { onCambioMes, onCambioAnio, onSeleccionar } = props;
 
   // los dias vacios del comienzo del mes se guardan como 0
@@ -92,7 +96,8 @@ function CalendarioMes(props: CalendarioMesProps) {
           const fecha = armarFecha(anio, mes, dia);
           const esFeriado = buscarFeriado(feriados, fecha) !== null;
           const tieneTareas = filtrarPorFecha(tareas, fecha).length > 0;
-          const clase = claseDelDia(fecha === hoy, fecha === seleccionado, esFeriado, tieneTareas);
+          const tieneEvaluacion = evaluacionesDelDia(evaluaciones, fecha).length > 0;
+          const clase = claseDelDia(fecha === hoy, fecha === seleccionado, esFeriado, tieneTareas, tieneEvaluacion);
 
           return (
             <button key={fecha} type="button" className={clase} onClick={() => onSeleccionar(fecha)}>
@@ -104,6 +109,7 @@ function CalendarioMes(props: CalendarioMesProps) {
 
       <div className="cal-leyenda">
         <span className="cal-punto-tarea">Tarea</span>
+        <span className="cal-punto-evaluacion">Evaluación</span>
         <span className="cal-punto-feriado">Feriado</span>
       </div>
     </section>

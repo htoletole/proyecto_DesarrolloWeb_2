@@ -1,56 +1,22 @@
-// misma forma que las tareas de Tareas.tsx
-export interface Tarea {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  asignatura: string;
-  estado: string;
-  prioridad: string;
-  horaEntrega: string; 
-  fecha?: string; 
-}
+// funciones del calendario para ordenar las tareas y evaluaciones que llegan de la API
+import type { Evaluacion, Tarea } from "./tipos";
 
+// tarea "vacia" para decir que no hay ninguna abierta
 export const TAREA_VACIA: Tarea = {
-  id: "",
+  id: 0,
   nombre: "",
   descripcion: "",
-  asignatura: "",
-  estado: "",
-  prioridad: "",
-  horaEntrega: "",
-  fecha: "",
+  estado: "PENDIENTE",
+  prioridad: "BAJA",
+  fecha: null,
+  horaEntrega: null,
+  completadaEn: null,
+  asignaturaId: 0,
+  evaluacionId: null,
+  asignatura: { id: 0, nombre: "", color: "" },
+  evaluacion: null,
+  subtareas: [],
 };
-
-
-const CLAVE_TAREAS = "tareas";
-
-export function cargarTareas(): Tarea[] {
-  const texto = localStorage.getItem(CLAVE_TAREAS);
-
-  if (!texto) {
-    return [];
-  }
-
-  return JSON.parse(texto);
-}
-
-export function guardarTareas(tareas: Tarea[]) {
-  localStorage.setItem(CLAVE_TAREAS, JSON.stringify(tareas));
-}
-
-export function reemplazarTarea(tareas: Tarea[], editada: Tarea): Tarea[] {
-  const lista: Tarea[] = [];
-
-  for (let i = 0; i < tareas.length; i++) {
-    if (tareas[i].id === editada.id) {
-      lista.push(editada);
-    } else {
-      lista.push(tareas[i]);
-    }
-  }
-
-  return lista;
-}
 
 export function filtrarPorFecha(tareas: Tarea[], fecha: string): Tarea[] {
   const lista: Tarea[] = [];
@@ -76,12 +42,12 @@ export function filtrarSinFecha(tareas: Tarea[]): Tarea[] {
   return lista;
 }
 
-export function listarAsignaturas(tareas: Tarea[]): string[] {
-  const lista: string[] = [];
+export function evaluacionesDelDia(evaluaciones: Evaluacion[], fecha: string): Evaluacion[] {
+  const lista: Evaluacion[] = [];
 
-  for (let i = 0; i < tareas.length; i++) {
-    if (!lista.includes(tareas[i].asignatura)) {
-      lista.push(tareas[i].asignatura);
+  for (let i = 0; i < evaluaciones.length; i++) {
+    if (evaluaciones[i].fecha === fecha) {
+      lista.push(evaluaciones[i]);
     }
   }
 
