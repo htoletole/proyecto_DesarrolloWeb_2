@@ -1,2 +1,13 @@
 .neon
 node_modules/
+dist/
+coverage/
+
+# cliente de Prisma, se genera con "npx prisma generate"
+src/generated/
+
+# variables de entorno privadas (solo se sube el .env.example)
+.env
+
+# archivos de compilacion incremental
+*.tsbuildinfo
