@@ -2,10 +2,10 @@ import { useState } from "react";
 import type { SyntheticEvent } from "react";
 import AuthLayout, { Campo, Marca } from "../components/AuthLayout";
 import { MIN_PASSWORD, registrar } from "../services/auth";
-import type { Usuario } from "../services/auth";
+import type { Sesion } from "../services/auth";
 
 interface RegisterProps {
-  onRegistrado: (usuario: Usuario) => void;
+  onRegistrado: (sesion: Sesion) => void;
   onIrLogin: () => void;
 }
 
@@ -15,16 +15,20 @@ export default function Register(props: RegisterProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const resultado = registrar(username, password);
-    if (resultado.usuario === null) {
+    setEnviando(true);
+    const resultado = await registrar(username, password);
+    setEnviando(false);
+
+    if (resultado.sesion === null) {
       setError(resultado.error);
       return;
     }
-    onRegistrado(resultado.usuario);
+    onRegistrado(resultado.sesion);
   }
 
   return (
@@ -57,8 +61,8 @@ export default function Register(props: RegisterProps) {
           autoComplete="new-password"
         />
 
-        <button type="submit" className="boton boton-crear">
-          Crear
+        <button type="submit" className="boton boton-crear" disabled={enviando}>
+          {enviando ? "Creando..." : "Crear"}
         </button>
       </form>
 

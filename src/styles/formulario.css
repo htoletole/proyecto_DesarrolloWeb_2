@@ -55,6 +55,14 @@
   --formulario-color: rgb(70 147 124);
 }
 
+.formulario-modal-periodo {
+  --formulario-color: #ffae52;
+}
+
+.formulario-modal-evaluacion {
+  --formulario-color: #65b5fd;
+}
+
 /* Botón cerrar */
 
 .formulario-cerrar {
@@ -176,6 +184,26 @@
   font-weight: 600;
 
   cursor: pointer;
+}
+
+.formulario-aceptar:disabled {
+  opacity: 0.6;
+
+  cursor: wait;
+}
+
+/* Mensaje cuando la API no pudo guardar */
+
+.formulario-error {
+  margin: 6px 0 0;
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  background-color: #fde2e1;
+  color: #a12622;
+
+  font-size: 14px;
 }
 
 /* Celular */

@@ -2,11 +2,11 @@ import { useState } from "react";
 import type { SyntheticEvent } from "react";
 import AuthLayout, { Campo, Marca } from "../components/AuthLayout";
 import { iniciarSesion } from "../services/auth";
-import type { Usuario } from "../services/auth";
+import type { Sesion } from "../services/auth";
 
 interface LoginProps {
   aviso: string;
-  onLogin: (usuario: Usuario, recordar: boolean) => void;
+  onLogin: (sesion: Sesion, recordar: boolean) => void;
   onIrRegistro: () => void;
   onIrRecuperar: () => void;
 }
@@ -18,16 +18,20 @@ export default function Login(props: LoginProps) {
   const [password, setPassword] = useState("");
   const [recordar, setRecordar] = useState(true);
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const resultado = iniciarSesion(username, password);
-    if (resultado.usuario === null) {
+    setEnviando(true);
+    const resultado = await iniciarSesion(username, password);
+    setEnviando(false);
+
+    if (resultado.sesion === null) {
       setError(resultado.error);
       return;
     }
-    onLogin(resultado.usuario, recordar);
+    onLogin(resultado.sesion, recordar);
   }
 
   // el error y el aviso van en el mismo lugar
@@ -72,8 +76,8 @@ export default function Login(props: LoginProps) {
           Recordarme en este dispositivo
         </label>
 
-        <button type="submit" className="boton">
-          Ingresar
+        <button type="submit" className="boton" disabled={enviando}>
+          {enviando ? "Ingresando..." : "Ingresar"}
         </button>
       </form>
 

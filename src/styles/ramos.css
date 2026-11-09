@@ -458,3 +458,97 @@
     font-size: 14px;
   }
 }
+
+/* Selector de periodo academico */
+.ramos-periodo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ramos-periodo label { font-weight: 600; }
+.ramos-periodo select {
+  min-width: 120px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #d9d9d9;
+}
+.ramos-periodo-boton {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 20px;
+  background-color: var(--ramos-seleccion);
+  color: #202020;
+  font-size: 14px;
+  font-weight: 600;
+}
+.ramos-periodo-borrar { background-color: #ffd7d7; }
+.ramos-page .btn-crear.btn-crear-ramos:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Detalle del ramo: avance y evaluaciones */
+.detalle-ramo-avance {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background-color: #f3f3f3;
+}
+.detalle-ramo-avance h3 {
+  margin: 0 0 6px;
+  color: #111111;
+  font-size: 20px;
+  font-weight: 600;
+}
+.detalle-ramo-avance p { margin: 4px 0; font-size: 14px; }
+.avance-barra {
+  height: 10px;
+  margin: 4px 0 8px;
+  border-radius: 10px;
+  background-color: #d9d9d9;
+  overflow: hidden;
+}
+.avance-barra div { height: 100%; border-radius: 10px; }
+.avance-promedio { font-weight: 600; }
+.detalle-ramo-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.detalle-ramo-titulo h3 { margin-bottom: 10px; }
+.detalle-ramo-agregar {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 20px;
+  background-color: #65b5fd;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+.detalle-ramo-evaluacion {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+.detalle-ramo-evaluacion > button:first-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #dcecfd;
+  color: #202020;
+  font-size: 13px;
+  text-align: left;
+}
+.detalle-ramo-nota { font-weight: 700; }
+.detalle-ramo-quitar {
+  padding: 0 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffd7d7;
+  color: #a12622;
+  font-size: 18px;
+}
