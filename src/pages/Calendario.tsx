@@ -7,11 +7,11 @@ import Formulario from "../components/Formulario";
 import { armarFecha, fechaDeHoy, fechaLarga } from "../services/fechas";
 import { buscarFeriado, obtenerFeriados } from "../services/publicApi";
 import type { Feriado } from "../services/publicApi";
+import { editarTarea, listarTareas } from "../services/tareasApi";
+import { useSesion } from "../services/useSesion";
 import {
-  cargarTareas,
   filtrarPorFecha,
   filtrarSinFecha,
-  guardarTareas,
   listarAsignaturas,
   reemplazarTarea,
   TAREA_VACIA,
@@ -20,18 +20,28 @@ import type { Tarea } from "../services/tareasCalendario";
 import "../styles/calendario.css";
 
 function Calendario() {
+  const sesion = useSesion();
   const hoy = fechaDeHoy();
 
   const [anio, setAnio] = useState(Number(hoy.slice(0, 4)));
   const [mes, setMes] = useState(Number(hoy.slice(5, 7)) - 1);
   const [seleccionado, setSeleccionado] = useState(hoy);
 
-  const [tareas, setTareas] = useState<Tarea[]>(cargarTareas);
+  const [tareas, setTareas] = useState<Tarea[]>([]);
   const [tareaAbierta, setTareaAbierta] = useState<Tarea>(TAREA_VACIA);
   const [editando, setEditando] = useState(false);
 
   const [feriados, setFeriados] = useState<Feriado[]>([]);
   const [estadoFeriados, setEstadoFeriados] = useState("cargando");
+
+  // las tareas se piden a la API cuando hay una sesion iniciada
+  useEffect(() => {
+    if (!sesion) return;
+
+    listarTareas()
+      .then((lista) => setTareas(lista))
+      .catch((error) => console.error("Error al cargar tareas:", error));
+  }, [sesion?.id]);
 
   // pide los feriados cuando cambia el año
   useEffect(() => {
@@ -62,7 +72,7 @@ function Calendario() {
   const feriadoDelDia = buscarFeriado(feriados, seleccionado);
   const asignaturas = listarAsignaturas(tareas);
 
-  function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
+  async function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
     if (tareaAbierta.id === "") {
       return;
     }
@@ -78,9 +88,16 @@ function Calendario() {
       fecha: String(datos.fecha),
     };
 
+    // se guarda en la API antes de actualizar la pantalla
+    try {
+      await editarTarea(editada);
+    } catch (error) {
+      alert((error as Error).message);
+      return;
+    }
+
     const nuevas = reemplazarTarea(tareas, editada);
 
-    guardarTareas(nuevas);
     setTareas(nuevas);
     setTareaAbierta(editada);
     setEditando(false);

@@ -9,6 +9,14 @@ import iconoLapiz from "../assets/icons/lapiz.png";
 import iconoCheck from "../assets/icons/check.png";
 import "../styles/ramos.css";
 import Toast from "../components/Toast";
+import {
+  crearRamo,
+  editarRamo,
+  eliminarRamo,
+  listarRamos,
+} from "../services/ramosApi";
+import { listarTareas } from "../services/tareasApi";
+import { useSesion } from "../services/useSesion";
 
 type VistaRamos = "grid" | "lista";
 type ModoFormulario = "crear" | "editar";
@@ -21,25 +29,7 @@ export type Ramo = {
   logo?: string;
 };
 
-type TareaGuardada = {
-  id: string;
-  nombre: string;
-  asignatura: string;
-  estado?: string;
-};
-
 const TAMANO_MAX_LOGO = 500000;
-
-const cargarTareasGuardadas = (): TareaGuardada[] => {
-  const guardadas = localStorage.getItem("tareas");
-  if (!guardadas) return [];
-
-  try {
-    return JSON.parse(guardadas) as TareaGuardada[];
-  } catch {
-    return [];
-  }
-};
 
 const convertirImagenBase64 = (archivo: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -52,21 +42,14 @@ const convertirImagenBase64 = (archivo: File): Promise<string> =>
 const normalizarTexto = (texto: string) => texto.trim().toLowerCase();
 
 function Ramos() {
+  const sesion = useSesion();
+
   const [vista, setVista] = useState<VistaRamos>(() => {
     const guardada = localStorage.getItem("vistaRamos");
     return guardada === "lista" ? "lista" : "grid";
   });
 
-  const [ramos, setRamos] = useState<Ramo[]>(() => {
-    const guardados = localStorage.getItem("ramos");
-    if (!guardados) return [];
-
-    try {
-      return JSON.parse(guardados) as Ramo[];
-    } catch {
-      return [];
-    }
-  });
+  const [ramos, setRamos] = useState<Ramo[]>([]);
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState<ModoFormulario>("crear");
@@ -81,15 +64,14 @@ function Ramos() {
   const [mensajeAlerta, setMensajeAlerta] = useState("");
   const [tituloAlerta, setTituloAlerta] = useState("");
 
+  // los ramos se piden a la API cuando hay una sesion iniciada
   useEffect(() => {
-    try {
-      localStorage.setItem("ramos", JSON.stringify(ramos));
-    } catch {
-      alert(
-        "No hay suficiente espacio para guardar los ramos. Intenta usar logos más pequeños.",
-      );
-    }
-  }, [ramos]);
+    if (!sesion) return;
+
+    listarRamos()
+      .then((lista) => setRamos(lista))
+      .catch((error) => console.error("Error al cargar ramos:", error));
+  }, [sesion?.id]);
 
   useEffect(() => {
     localStorage.setItem("vistaRamos", vista);
@@ -154,32 +136,32 @@ function Ramos() {
       logo = await convertirImagenBase64(datos.logo);
     }
 
+    try {
     if (modoFormulario === "crear") {
-      setRamos((actuales) => [...actuales, { ...datosRamo, logo }]);
+      const creado = await crearRamo({ ...datosRamo, logo });
+      setRamos((actuales) => [...actuales, creado]);
       setTituloAlerta("Ramo creado");
       setMensajeAlerta(`¡Ramo "${datosRamo.nombre}" creado con éxito!`);
       setMostrarAlerta(true);
     } else if (ramoAEditar) {
+      const editado = await editarRamo(ramoAEditar.id, { ...datosRamo, logo });
       setRamos((actuales) =>
-        actuales.map((ramo) =>
-          ramo.id === ramoAEditar.id ? { ...ramo, ...datosRamo, logo } : ramo,
-        ),
+        actuales.map((ramo) => (ramo.id === ramoAEditar.id ? editado : ramo)),
       );
 
+      // las tareas del ramo quedan con el nombre nuevo porque en la base estan unidas al ramo
       if (ramoAEditar.nombre !== datosRamo.nombre) {
-        const tareasActualizadas = cargarTareasGuardadas().map((tarea) =>
-          tarea.asignatura === ramoAEditar.nombre
-            ? { ...tarea, asignatura: datosRamo.nombre }
-            : tarea,
-        );
-
-        localStorage.setItem("tareas", JSON.stringify(tareasActualizadas));
         setTituloAlerta("Ramo editado");
         setMensajeAlerta(
           `¡El ramo "${ramoAEditar.nombre}" se editó con éxito!`,
         );
         setMostrarAlerta(true);
       }
+    }
+    } catch (error) {
+      // la API no pudo guardar
+      alert((error as Error).message);
+      return;
     }
 
     cerrarFormulario();
@@ -201,8 +183,8 @@ function Ramos() {
     );
   };
 
-  const abrirConfirmacionEliminacion = () => {
-    const tareas = cargarTareasGuardadas();
+  const abrirConfirmacionEliminacion = async () => {
+    const tareas = await listarTareas().catch(() => []);
 
     const conTareas = ramos
       .filter((ramo) => ramosSeleccionados.includes(ramo.id))
@@ -215,16 +197,15 @@ function Ramos() {
     setModalEliminarAbierto(true);
   };
 
-  const eliminarRamosSeleccionados = () => {
-    const nombresEliminados = ramos
-      .filter((ramo) => ramosSeleccionados.includes(ramo.id))
-      .map((ramo) => ramo.nombre);
+  const eliminarRamosSeleccionados = async () => {
+    // al eliminar un ramo, la base de datos tambien elimina sus tareas
+    try {
+      await Promise.all(ramosSeleccionados.map((id) => eliminarRamo(id)));
+    } catch (error) {
+      alert((error as Error).message);
+      return;
+    }
 
-    const tareasRestantes = cargarTareasGuardadas().filter(
-      (tarea) => !nombresEliminados.includes(tarea.asignatura),
-    );
-
-    localStorage.setItem("tareas", JSON.stringify(tareasRestantes));
     setTituloAlerta("Ramo eliminado");
     setMensajeAlerta(`¡Se eliminaron con éxito los ramos eliminados!`);
     setMostrarAlerta(true);

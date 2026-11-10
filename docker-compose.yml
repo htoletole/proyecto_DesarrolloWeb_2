@@ -1,0 +1,64 @@
+# Levanta toda la plataforma Syllab: bases de datos, backend y frontend
+# Uso: copiar .env.example como .env y ejecutar "docker compose up --build"
+
+services:
+  # base de datos relacional (si usas Neon, cambia DATABASE_URL en el .env)
+  postgres:
+    image: postgres:17-alpine
+    container_name: syllab-postgres
+    environment:
+      POSTGRES_USER: syllab
+      POSTGRES_PASSWORD: syllab123
+      POSTGRES_DB: syllab
+    ports:
+      - "5432:5432"
+    volumes:
+      - datos-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U syllab -d syllab"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # base de datos NoSQL para el historial y los eventos de planificacion
+  mongo:
+    image: mongo:8
+    container_name: syllab-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - datos-mongo:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # API REST en NestJS (al partir aplica las migraciones y carga los datos de prueba)
+  backend:
+    build: ./backend
+    container_name: syllab-backend
+    env_file: .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+
+  # frontend en React, compilado y servido con nginx
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: syllab-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  datos-postgres:
+  datos-mongo:

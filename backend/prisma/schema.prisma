@@ -1,0 +1,141 @@
+// Modelo de datos de Syllab (agenda academica personal)
+// La conexion a la base esta en prisma.config.ts
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- ENUMS ---
+
+enum Modalidad {
+  ONLINE
+  PRESENCIAL
+  ASINCRONICO
+}
+
+enum TipoEvaluacion {
+  PRUEBA
+  CONTROL
+  TRABAJO
+  PROYECTO
+  EXAMEN
+  PRESENTACION
+}
+
+enum EstadoTarea {
+  PENDIENTE
+  EN_PROGRESO
+  COMPLETADA
+}
+
+enum Prioridad {
+  BAJA
+  MEDIA
+  ALTA
+  URGENTE
+}
+
+// --- MODELOS ---
+
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  password String   // se guarda cifrada con bcrypt
+  creadoEn DateTime @default(now())
+
+  periodos Periodo[]
+  tareas   Tarea[]
+
+  @@map("usuarios")
+}
+
+model Periodo {
+  id          Int      @id @default(autoincrement())
+  nombre      String   // ejemplo: 2026-2
+  fechaInicio DateTime @db.Date
+  fechaFin    DateTime @db.Date
+  creadoEn    DateTime @default(now())
+
+  usuarioId   Int
+  usuario     Usuario      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  asignaturas Asignatura[]
+
+  @@unique([usuarioId, nombre])
+  @@map("periodos")
+}
+
+model Asignatura {
+  id        Int       @id @default(autoincrement())
+  codigo    String    // el "ID" que escribe el estudiante, ejemplo: CINF101
+  nombre    String
+  modalidad Modalidad
+  color     String    @default("#FFAE52")
+  logo      String?   // imagen en base64, maximo 500 KB
+  creadoEn  DateTime  @default(now())
+
+  // no se puede borrar un periodo que tenga asignaturas
+  periodoId    Int
+  periodo      Periodo      @relation(fields: [periodoId], references: [id], onDelete: Restrict)
+  evaluaciones Evaluacion[]
+  tareas       Tarea[]
+
+  @@unique([periodoId, codigo])
+  @@unique([periodoId, nombre])
+  @@map("asignaturas")
+}
+
+model Evaluacion {
+  id          Int            @id @default(autoincrement())
+  nombre      String
+  tipo        TipoEvaluacion
+  fecha       DateTime       @db.Date
+  ponderacion Int            // porcentaje de la nota final (1 a 100)
+  nota        Float?         // de 1.0 a 7.0, queda vacia hasta que se rinde
+  creadoEn    DateTime       @default(now())
+
+  asignaturaId Int
+  asignatura   Asignatura @relation(fields: [asignaturaId], references: [id], onDelete: Cascade)
+
+  @@map("evaluaciones")
+}
+
+model Tarea {
+  id            Int         @id @default(autoincrement())
+  nombre        String
+  descripcion   String      @default("")
+  estado        EstadoTarea @default(PENDIENTE)
+  prioridad     Prioridad   @default(BAJA)
+  fecha         DateTime?   @db.Date // fecha de entrega
+  horaEntrega   String?     // formato HH:mm
+  completadaEn  DateTime?
+  creadoEn      DateTime    @default(now())
+  actualizadoEn DateTime    @updatedAt
+
+  usuarioId    Int
+  usuario      Usuario     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  // al borrar una asignatura se borran sus tareas (igual que en el Taller 2)
+  asignaturaId Int
+  asignatura   Asignatura  @relation(fields: [asignaturaId], references: [id], onDelete: Cascade)
+  subtareas    Subtarea[]
+
+  @@index([usuarioId, fecha])
+  @@map("tareas")
+}
+
+model Subtarea {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  completada Boolean  @default(false)
+  creadoEn   DateTime @default(now())
+
+  tareaId Int
+  tarea   Tarea @relation(fields: [tareaId], references: [id], onDelete: Cascade)
+
+  @@map("subtareas")
+}

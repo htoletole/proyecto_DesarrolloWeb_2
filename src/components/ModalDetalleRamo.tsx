@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import iconoLapiz from "../assets/icons/lapiz.png";
 import type { Ramo } from "../pages/Ramos";
+import { listarTareas } from "../services/tareasApi";
 import "../styles/ramos.css";
 
 type TareaRamo = {
@@ -17,17 +19,6 @@ type ModalDetalleRamoProps = {
   onEditar: (ramo: Ramo) => void;
 };
 
-const cargarTareas = (): TareaRamo[] => {
-  const guardadas = localStorage.getItem("tareas");
-  if (!guardadas) return [];
-
-  try {
-    return JSON.parse(guardadas) as TareaRamo[];
-  } catch {
-    return [];
-  }
-};
-
 const claseEstado = (estado?: string) => {
   if (estado === "Pendiente") return "pendientes";
   if (estado === "En progreso") return "en-progreso";
@@ -37,9 +28,20 @@ const claseEstado = (estado?: string) => {
 
 const ModalDetalleRamo = ({ abierto, ramo, onCerrar, onEditar }: ModalDetalleRamoProps) => {
   const navigate = useNavigate();
+  const [tareasGuardadas, setTareasGuardadas] = useState<TareaRamo[]>([]);
+
+  // las tareas se piden a la API cada vez que se abre un ramo
+  useEffect(() => {
+    if (!abierto) return;
+
+    listarTareas()
+      .then((lista) => setTareasGuardadas(lista))
+      .catch(() => setTareasGuardadas([]));
+  }, [abierto, ramo?.id]);
+
   if (!abierto || !ramo) return null;
 
-  const tareas = cargarTareas().filter((tarea) => tarea.asignatura === ramo.nombre);
+  const tareas = tareasGuardadas.filter((tarea) => tarea.asignatura === ramo.nombre);
 
   return (
     <div className="modal-detalle-ramo-overlay" onClick={onCerrar}>

@@ -16,12 +16,12 @@ export default function Recover(props: RecoverProps) {
   const [repetida, setRepetida] = useState("");
   const [error, setError] = useState("");
 
-  function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const resultado = restablecerPassword(username, nueva, repetida);
-    if (resultado.usuario === null) {
-      setError(resultado.error);
+    const mensajeError = await restablecerPassword(username, nueva, repetida);
+    if (mensajeError !== "") {
+      setError(mensajeError);
       return;
     }
     onRestablecida();

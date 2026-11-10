@@ -4,6 +4,7 @@ import WeeklyProgressPanel from "../components/WeeklyProgressPanel";
 import KanbanBoard from "../components/KanbanBoard";
 import type { Tarea } from "./Tareas";
 import { useSesion } from "../services/useSesion";
+import { listarTareas } from "../services/tareasApi";
 import "../styles/dashboard.css";
 
 function Dashboard() {
@@ -12,19 +13,14 @@ function Dashboard() {
   
   const [tareas, setTareas] = useState<Tarea[]>([]);
 
+  // las tareas se piden a la API cuando hay una sesion iniciada
   useEffect(() => {
-    const tareasGuardadas = localStorage.getItem("tareas");
-    if (!tareasGuardadas) return;
+    if (!sesion) return;
 
-    try {
-      const parseadas = JSON.parse(tareasGuardadas);
-      if (Array.isArray(parseadas)) {
-        setTareas(parseadas as Tarea[]);
-      }
-    } catch (error) {
-      console.error("Error al cargar tareas:", error);
-    }
-  }, []);
+    listarTareas()
+      .then((lista) => setTareas(lista))
+      .catch((error) => console.error("Error al cargar tareas:", error));
+  }, [sesion?.id]);
 
   const ordenPrioridad: Record<Tarea["prioridad"], number> = {
     Urgente: 1,

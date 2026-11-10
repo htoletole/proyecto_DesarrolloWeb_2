@@ -1,177 +1,147 @@
-import usuariosIniciales from "../data/users.json";
+// login, registro y sesion: ahora los usuarios viven en la base de datos y se consultan por la API
+import { pedir } from "./api";
 
 // tipos
 
 export interface Usuario {
   id: number;
   username: string;
-  password: string;
 }
 
-// lo que se guarda de la sesion, sin la contrasena
+// lo que se guarda de la sesion: el usuario y su token (nunca la contrasena)
 export interface Sesion {
   id: number;
   username: string;
+  token: string;
 }
 
-// si falla, usuario es null y error trae el mensaje
+// si falla, sesion es null y error trae el mensaje
 export interface Resultado {
-  usuario: Usuario | null;
+  sesion: Sesion | null;
   error: string;
+}
+
+// lo que responde la API al entrar o registrarse
+interface RespuestaSesion {
+  token: string;
+  usuario: Usuario;
 }
 
 // constantes
 
 export const MIN_PASSWORD = 8;
 
-const CLAVE_USUARIOS = "syllab_usuarios";
 const CLAVE_RECORDADO = "syllab_recordado";
 const CLAVE_SESION = "syllab_sesion";
 
 // nombre del aviso que se manda cuando alguien entra o sale
 export const EVENTO_SESION = "syllab_sesion_cambio";
 
-// usuarios, se guardan en localStorage
-
-export function obtenerUsuarios(): Usuario[] {
-  const texto = localStorage.getItem(CLAVE_USUARIOS);
-
-  // la primera vez no hay nada guardado, usamos los usuarios iniciales
-  if (texto === null) {
-    guardarUsuarios(usuariosIniciales);
-    return usuariosIniciales;
-  }
-
-  return JSON.parse(texto);
-}
-
-function guardarUsuarios(usuarios: Usuario[]) {
-  localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
-}
-
-// devuelve el usuario o null si no existe
-function buscarUsuario(username: string): Usuario | null {
-  const nombre = username.trim().toLowerCase();
-  const usuarios = obtenerUsuarios();
-
-  for (let i = 0; i < usuarios.length; i++) {
-    if (usuarios[i].username.toLowerCase() === nombre) {
-      return usuarios[i];
-    }
-  }
-
-  return null;
-}
-
 // login, registro y restablecer contrasena
 
-export function iniciarSesion(username: string, password: string): Resultado {
+export async function iniciarSesion(username: string, password: string): Promise<Resultado> {
   if (username.trim() === "" || password === "") {
-    return { usuario: null, error: "Completa usuario y contraseña." };
+    return { sesion: null, error: "Completa usuario y contraseña." };
   }
 
-  const usuario = buscarUsuario(username);
-
-  if (usuario === null || usuario.password !== password) {
-    return { usuario: null, error: "Usuario o contraseña incorrectos." };
+  try {
+    const respuesta = await pedir<RespuestaSesion>("/auth/login", "POST", {
+      username: username.trim(),
+      password: password,
+    });
+    return { sesion: armarSesion(respuesta), error: "" };
+  } catch (error) {
+    return { sesion: null, error: (error as Error).message };
   }
-
-  return { usuario: usuario, error: "" };
 }
 
-export function registrar(username: string, password: string): Resultado {
-  const nombre = username.trim();
-
-  if (nombre === "") {
-    return { usuario: null, error: "Ingresa un nombre de usuario." };
+export async function registrar(username: string, password: string): Promise<Resultado> {
+  // revisamos lo basico antes de llamar a la API (la API vuelve a validar todo)
+  if (username.trim() === "") {
+    return { sesion: null, error: "Ingresa un nombre de usuario." };
   }
   if (password.length < MIN_PASSWORD) {
-    return { usuario: null, error: "La contraseña debe tener al menos " + MIN_PASSWORD + " caracteres." };
-  }
-  if (buscarUsuario(nombre) !== null) {
-    return { usuario: null, error: "Ese nombre de usuario ya existe." };
+    return { sesion: null, error: "La contraseña debe tener al menos " + MIN_PASSWORD + " caracteres." };
   }
 
-  const nuevo: Usuario = { id: Date.now(), username: nombre, password: password };
-
-  const usuarios = obtenerUsuarios();
-  usuarios.push(nuevo);
-  guardarUsuarios(usuarios);
-
-  return { usuario: nuevo, error: "" };
+  try {
+    const respuesta = await pedir<RespuestaSesion>("/auth/registro", "POST", {
+      username: username.trim(),
+      password: password,
+    });
+    return { sesion: armarSesion(respuesta), error: "" };
+  } catch (error) {
+    return { sesion: null, error: (error as Error).message };
+  }
 }
 
-export function restablecerPassword(username: string, nueva: string, repetida: string): Resultado {
+// devuelve "" si salio bien, o el mensaje de error
+export async function restablecerPassword(username: string, nueva: string, repetida: string): Promise<string> {
   if (username.trim() === "") {
-    return { usuario: null, error: "Ingresa tu nombre de usuario." };
+    return "Ingresa tu nombre de usuario.";
   }
   if (nueva.length < MIN_PASSWORD) {
-    return { usuario: null, error: "La contraseña debe tener al menos " + MIN_PASSWORD + " caracteres." };
+    return "La contraseña debe tener al menos " + MIN_PASSWORD + " caracteres.";
   }
   if (nueva !== repetida) {
-    return { usuario: null, error: "Las contraseñas no coinciden." };
+    return "Las contraseñas no coinciden.";
   }
 
-  const usuario = buscarUsuario(username);
-
-  if (usuario === null) {
-    return { usuario: null, error: "No existe un usuario con ese nombre." };
+  try {
+    await pedir("/auth/restablecer", "POST", { username: username.trim(), nueva, repetida });
+    return "";
+  } catch (error) {
+    return (error as Error).message;
   }
-
-  // cambiamos la clave y guardamos la lista
-  usuario.password = nueva;
-
-  const usuarios = obtenerUsuarios();
-  for (let i = 0; i < usuarios.length; i++) {
-    if (usuarios[i].id === usuario.id) {
-      usuarios[i].password = nueva;
-    }
-  }
-  guardarUsuarios(usuarios);
-
-  return { usuario: usuario, error: "" };
 }
 
-// usuario recordado, para la pantalla de bienvenida
-
-export function obtenerRecordado(): Usuario | null {
-  const nombre = localStorage.getItem(CLAVE_RECORDADO);
-
-  if (nombre === null) {
-    return null;
-  }
-
-  return buscarUsuario(nombre);
+function armarSesion(respuesta: RespuestaSesion): Sesion {
+  return { id: respuesta.usuario.id, username: respuesta.usuario.username, token: respuesta.token };
 }
 
-export function recordarUsuario(username: string | null) {
-  if (username === null) {
+// usuario recordado, para la pantalla de bienvenida (guarda su token para entrar sin clave)
+
+export function obtenerRecordado(): Sesion | null {
+  return leer(localStorage.getItem(CLAVE_RECORDADO));
+}
+
+export function recordarUsuario(sesion: Sesion | null) {
+  if (sesion === null) {
     localStorage.removeItem(CLAVE_RECORDADO);
   } else {
-    localStorage.setItem(CLAVE_RECORDADO, username);
+    localStorage.setItem(CLAVE_RECORDADO, JSON.stringify(sesion));
   }
 }
 
 // sesion activa, dura mientras la pestana este abierta
 
 export function obtenerSesion(): Sesion | null {
-  const texto = sessionStorage.getItem(CLAVE_SESION);
-
-  if (texto === null) {
-    return null;
-  }
-
-  return JSON.parse(texto);
+  return leer(sessionStorage.getItem(CLAVE_SESION));
 }
 
-export function guardarSesion(usuario: Usuario | null) {
-  if (usuario === null) {
+export function guardarSesion(sesion: Sesion | null) {
+  if (sesion === null) {
     sessionStorage.removeItem(CLAVE_SESION);
   } else {
-    const sesion: Sesion = { id: usuario.id, username: usuario.username };
     sessionStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
   }
 
   // avisa a las pantallas que la sesion cambio
   window.dispatchEvent(new Event(EVENTO_SESION));
+}
+
+// si el texto guardado esta danado o es de la version anterior, se ignora
+function leer(texto: string | null): Sesion | null {
+  if (!texto) {
+    return null;
+  }
+  try {
+    const datos = JSON.parse(texto);
+    if (!datos.token) {
+      return null;
+    }
+    return datos;
+  } catch {
+    return null;
+  }
 }

@@ -21,23 +21,6 @@ export const TAREA_VACIA: Tarea = {
   fecha: "",
 };
 
-
-const CLAVE_TAREAS = "tareas";
-
-export function cargarTareas(): Tarea[] {
-  const texto = localStorage.getItem(CLAVE_TAREAS);
-
-  if (!texto) {
-    return [];
-  }
-
-  return JSON.parse(texto);
-}
-
-export function guardarTareas(tareas: Tarea[]) {
-  localStorage.setItem(CLAVE_TAREAS, JSON.stringify(tareas));
-}
-
 export function reemplazarTarea(tareas: Tarea[], editada: Tarea): Tarea[] {
   const lista: Tarea[] = [];
 

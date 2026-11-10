@@ -14,6 +14,14 @@ import iconoFiltro from "../assets/icons/filtro.png";
 import iconoLapiz from "../assets/icons/lapiz.png";
 import "../styles/tareas.css";
 import Toast from "../components/Toast";
+import { listarRamos } from "../services/ramosApi";
+import {
+  crearTarea,
+  editarTarea,
+  eliminarTarea,
+  listarTareas,
+} from "../services/tareasApi";
+import { useSesion } from "../services/useSesion";
 
 export type Tarea = {
   id: string;
@@ -27,6 +35,7 @@ export type Tarea = {
 };
 
 function Tareas() {
+  const sesion = useSesion();
   const [tipoFiltro, setTipoFiltro] = useState("normal");
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [formularioAbierto, setFormularioAbierto] = useState(false);
@@ -50,28 +59,18 @@ function Tareas() {
   const [mensajeAlerta, setMensajeAlerta] = useState("");
   const [tituloAlerta, setTituloAlerta] = useState("");
 
+  // los ramos y las tareas se piden a la API cuando hay una sesion iniciada
   useEffect(() => {
-    const ramosGuardados = localStorage.getItem("ramos");
-    if (ramosGuardados) {
-      try {
-        const ramosParseados = JSON.parse(ramosGuardados);
-        setOpcionesRamos(
-          ramosParseados.map((ramo: { nombre: string }) => ramo.nombre),
-        );
-      } catch (error) {
-        console.error("Error al cargar ramos:", error);
-      }
-    }
+    if (!sesion) return;
 
-    const tareasGuardadas = localStorage.getItem("tareas");
-    if (tareasGuardadas) {
-      try {
-        setTareas(JSON.parse(tareasGuardadas));
-      } catch (error) {
-        console.error("Error al cargar tareas:", error);
-      }
-    }
-  }, []);
+    listarRamos()
+      .then((ramos) => setOpcionesRamos(ramos.map((ramo) => ramo.nombre)))
+      .catch((error) => console.error("Error al cargar ramos:", error));
+
+    listarTareas()
+      .then((lista) => setTareas(lista))
+      .catch((error) => console.error("Error al cargar tareas:", error));
+  }, [sesion?.id]);
 
   const aplicarFiltro = (filtro: string) => {
     setTipoFiltro(filtro);
@@ -92,11 +91,12 @@ function Tareas() {
     setTareaEnDetalle(null); //cierra el popup de detalles al abrir el formulario
   };
 
-  const guardarTarea = (datos: Record<string, FormDataEntryValue>) => {
+  const guardarTarea = async (datos: Record<string, FormDataEntryValue>) => {
+    try {
     if (modoFormulario === "crear") {
-      //creacion
-      const nuevaTarea: Tarea = {
-        id: Date.now().toString(),
+      //creacion (el id lo pone la base de datos)
+      const datosTarea: Tarea = {
+        id: "",
         nombre: String(datos.nombre ?? ""),
         descripcion: String(datos.descripcion ?? ""),
         asignatura: String(datos.asignatura ?? ""),
@@ -105,36 +105,40 @@ function Tareas() {
         horaEntrega: String(datos.horaEntrega ?? ""),
         fecha: String(datos.fecha ?? ""),
       };
-      const nuevasTareas = [...tareas, nuevaTarea];
-      setTareas(nuevasTareas);
-      localStorage.setItem("tareas", JSON.stringify(nuevasTareas));
+      const nuevaTarea = await crearTarea(datosTarea);
+      setTareas([...tareas, nuevaTarea]);
       setTituloAlerta("Tarea creada");
       setMensajeAlerta(`¡Tarea "${nuevaTarea.nombre}" creada con éxito!`);
       setMostrarAlerta(true);
     } else if (modoFormulario === "editar" && tareaAEditar) {
       //edicion
+      const editada = await editarTarea({
+        ...tareaAEditar,
+        nombre: String(datos.nombre ?? ""),
+        descripcion: String(datos.descripcion ?? ""),
+        asignatura: String(datos.asignatura ?? ""),
+        estado: String(datos.estado ?? "Pendiente"),
+        prioridad: String(datos.prioridad ?? "Baja"),
+        horaEntrega: String(datos.horaEntrega ?? ""),
+        fecha: String(datos.fecha ?? ""),
+      });
       const tareasActualizadas = tareas.map((t) => {
         if (t.id === tareaAEditar.id) {
-          return {
-            ...t,
-            nombre: String(datos.nombre ?? ""),
-            descripcion: String(datos.descripcion ?? ""),
-            asignatura: String(datos.asignatura ?? ""),
-            estado: String(datos.estado ?? "Pendiente"),
-            prioridad: String(datos.prioridad ?? "Baja"),
-            horaEntrega: String(datos.horaEntrega ?? ""),
-            fecha: String(datos.fecha ?? ""),
-          };
+          return editada;
         }
         return t;
       });
       setTareas(tareasActualizadas);
-      localStorage.setItem("tareas", JSON.stringify(tareasActualizadas));
       setTituloAlerta("Tarea actualizada");
       setMensajeAlerta(
         `¡La tarea "${tareaAEditar.nombre}" se modificó exitosamente!`,
       );
       setMostrarAlerta(true);
+    }
+    } catch (error) {
+      // la API no pudo guardar (por ejemplo, se cayo la conexion)
+      alert((error as Error).message);
+      return;
     }
     setFormularioAbierto(false);
     setTareaAEditar(null);
@@ -154,12 +158,17 @@ function Tareas() {
     }
   };
 
-  const eliminarTareasSeleccionadas = () => {
+  const eliminarTareasSeleccionadas = async () => {
+    try {
+      await Promise.all(tareasSeleccionadas.map((id) => eliminarTarea(id)));
+    } catch (error) {
+      alert((error as Error).message);
+      return;
+    }
     const nuevasTareas = tareas.filter(
       (tarea) => !tareasSeleccionadas.includes(tarea.id),
     );
     setTareas(nuevasTareas);
-    localStorage.setItem("tareas", JSON.stringify(nuevasTareas));
     setTituloAlerta("Tarea eliminada");
     setMensajeAlerta(`¡Se eliminaron correctamente las tareas seleccionadas!`);
     setMostrarAlerta(true);

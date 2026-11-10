@@ -1,8 +1,8 @@
 import AuthLayout, { Marca } from "../components/AuthLayout";
-import type { Usuario } from "../services/auth";
+import type { Sesion } from "../services/auth";
 
 interface WelcomeProps {
-  usuario: Usuario;
+  usuario: Sesion;
   onEntrar: () => void;
   onOtroUsuario: () => void;
 }

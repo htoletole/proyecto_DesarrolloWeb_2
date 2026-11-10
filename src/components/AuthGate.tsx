@@ -5,7 +5,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Recover from "../pages/Recover";
 import { guardarSesion, obtenerRecordado, obtenerSesion, recordarUsuario } from "../services/auth";
-import type { Sesion, Usuario } from "../services/auth";
+import type { Sesion } from "../services/auth";
 import { registrarCerrarSesion } from "../services/authEvents";
 import "../styles/login.css";
 
@@ -23,10 +23,10 @@ export default function AuthGate() {
   const [sesion, setSesion] = useState<Sesion | null>(obtenerSesion);
   const [aviso, setAviso] = useState("");
 
-  function entrar(usuario: Usuario, recordar = true) {
-    guardarSesion(usuario);
-    recordarUsuario(recordar ? usuario.username : null);
-    setSesion({ id: usuario.id, username: usuario.username });
+  function entrar(nueva: Sesion, recordar = true) {
+    guardarSesion(nueva);
+    recordarUsuario(recordar ? nueva : null);
+    setSesion(nueva);
     setAviso("");
     setPantalla("home");
   }
@@ -49,7 +49,7 @@ export default function AuthGate() {
   }
 
   if (pantalla === "home" && sesion) {
-    return
+    return null;
   }
 
   const recordado = obtenerRecordado();
@@ -58,7 +58,7 @@ export default function AuthGate() {
   if (pantalla === "bienvenida" && recordado) {
     contenido = <Welcome usuario={recordado} onEntrar={() => entrar(recordado)} onOtroUsuario={() => irA("login")} />;
   } else if (pantalla === "registro") {
-    contenido = <Register onRegistrado={(u) => entrar(u, false)} onIrLogin={() => irA("login")} />;
+    contenido = <Register onRegistrado={(nueva) => entrar(nueva, false)} onIrLogin={() => irA("login")} />;
   } else if (pantalla === "recuperar") {
     contenido = <Recover onRestablecida={() => irA("login")} onIrLogin={() => irA("login")} />;
   } else {
