@@ -1,6 +1,5 @@
-import { ESTADOS, PRIORIDADES } from "../services/etiquetas";
 import { fechaCorta } from "../services/fechas";
-import type { Tarea } from "../services/tipos";
+import type { Tarea } from "../services/tareasCalendario";
 
 interface DetalleTareaProps {
   tarea: Tarea;
@@ -11,7 +10,7 @@ interface DetalleTareaProps {
 function DetalleTarea(props: DetalleTareaProps) {
   const { tarea, onCerrar, onEditar } = props;
 
-
+  
   let fecha = "Sin fecha";
   if (tarea.fecha) {
     fecha = fechaCorta(tarea.fecha);
@@ -29,13 +28,7 @@ function DetalleTarea(props: DetalleTareaProps) {
         <h3>{tarea.nombre}</h3>
 
         <p className="cal-campo">
-          <strong>Ramo:</strong> {tarea.asignatura.nombre}
-        </p>
-        <p className="cal-campo">
-          <strong>Estado:</strong> {ESTADOS[tarea.estado]}
-        </p>
-        <p className="cal-campo">
-          <strong>Prioridad:</strong> {PRIORIDADES[tarea.prioridad]}
+          <strong>Estado:</strong> {tarea.estado}
         </p>
         <p className="cal-campo">
           <strong>Fecha:</strong> {fecha}
@@ -44,7 +37,7 @@ function DetalleTarea(props: DetalleTareaProps) {
           <strong>Hora:</strong> {hora}
         </p>
         <p className="cal-campo">
-          <strong>Descripción:</strong> {tarea.descripcion || "Sin descripción"}
+          <strong>Descripción:</strong> {tarea.descripcion}
         </p>
 
         <div className="cal-botones">

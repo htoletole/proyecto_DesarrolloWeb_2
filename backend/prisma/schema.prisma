@@ -101,7 +101,6 @@ model Evaluacion {
 
   asignaturaId Int
   asignatura   Asignatura @relation(fields: [asignaturaId], references: [id], onDelete: Cascade)
-  tareas       Tarea[]
 
   @@map("evaluaciones")
 }
@@ -123,9 +122,6 @@ model Tarea {
   // al borrar una asignatura se borran sus tareas (igual que en el Taller 2)
   asignaturaId Int
   asignatura   Asignatura  @relation(fields: [asignaturaId], references: [id], onDelete: Cascade)
-  // una tarea puede ser la preparacion de una evaluacion
-  evaluacionId Int?
-  evaluacion   Evaluacion? @relation(fields: [evaluacionId], references: [id], onDelete: SetNull)
   subtareas    Subtarea[]
 
   @@index([usuarioId, fecha])

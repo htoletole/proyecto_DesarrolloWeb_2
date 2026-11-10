@@ -1,5 +1,5 @@
 import EstadoTareas from "../components/EstadoTareas";
-import type { Tarea } from "../services/tipos";
+import type { Tarea } from "../pages/Tareas";
 
 interface BoardProps {
   pendientes: Tarea[];

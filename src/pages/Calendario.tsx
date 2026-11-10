@@ -4,17 +4,19 @@ import CalendarioMes from "../components/CalendarioMes";
 import TareasDelDia from "../components/TareasDelDia";
 import DetalleTarea from "../components/DetalleTarea";
 import Formulario from "../components/Formulario";
-import EstadoCarga from "../components/EstadoCarga";
-import { fechaCortaTexto } from "../services/etiquetas";
-import { listarEvaluaciones } from "../services/evaluacionesApi";
 import { armarFecha, fechaDeHoy, fechaLarga } from "../services/fechas";
 import { buscarFeriado, obtenerFeriados } from "../services/publicApi";
 import type { Feriado } from "../services/publicApi";
-import { listarRamos } from "../services/ramosApi";
-import { datosDesdeFormulario, editarTarea, listarTareas } from "../services/tareasApi";
-import { evaluacionesDelDia, filtrarPorFecha, filtrarSinFecha, TAREA_VACIA } from "../services/tareasCalendario";
-import type { Evaluacion, Ramo, Tarea } from "../services/tipos";
+import { editarTarea, listarTareas } from "../services/tareasApi";
 import { useSesion } from "../services/useSesion";
+import {
+  filtrarPorFecha,
+  filtrarSinFecha,
+  listarAsignaturas,
+  reemplazarTarea,
+  TAREA_VACIA,
+} from "../services/tareasCalendario";
+import type { Tarea } from "../services/tareasCalendario";
 import "../styles/calendario.css";
 
 function Calendario() {
@@ -25,46 +27,20 @@ function Calendario() {
   const [mes, setMes] = useState(Number(hoy.slice(5, 7)) - 1);
   const [seleccionado, setSeleccionado] = useState(hoy);
 
-  // tareas, evaluaciones y ramos vienen de nuestra API
   const [tareas, setTareas] = useState<Tarea[]>([]);
-  const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([]);
-  const [ramos, setRamos] = useState<Ramo[]>([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
-
   const [tareaAbierta, setTareaAbierta] = useState<Tarea>(TAREA_VACIA);
   const [editando, setEditando] = useState(false);
-  const [errorFormulario, setErrorFormulario] = useState("");
-  const [enviando, setEnviando] = useState(false);
 
-  // los feriados vienen de la API publica Nager.Date
   const [feriados, setFeriados] = useState<Feriado[]>([]);
   const [estadoFeriados, setEstadoFeriados] = useState("cargando");
 
-  async function cargar() {
-    setCargando(true);
-    setError("");
-    try {
-      const [listaTareas, listaEvaluaciones, listaRamos] = await Promise.all([
-        listarTareas(),
-        listarEvaluaciones(),
-        listarRamos(),
-      ]);
-      setTareas(listaTareas);
-      setEvaluaciones(listaEvaluaciones);
-      setRamos(listaRamos);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setCargando(false);
-    }
-  }
-
-  // se carga al entrar y cada vez que cambia el usuario
+  // las tareas se piden a la API cuando hay una sesion iniciada
   useEffect(() => {
-    if (sesion) {
-      cargar();
-    }
+    if (!sesion) return;
+
+    listarTareas()
+      .then((lista) => setTareas(lista))
+      .catch((error) => console.error("Error al cargar tareas:", error));
   }, [sesion?.id]);
 
   // pide los feriados cuando cambia el año
@@ -92,34 +68,45 @@ function Calendario() {
   }
 
   const tareasDelDia = filtrarPorFecha(tareas, seleccionado);
-  const evaluacionesDelSeleccionado = evaluacionesDelDia(evaluaciones, seleccionado);
   const tareasSinFecha = filtrarSinFecha(tareas);
   const feriadoDelDia = buscarFeriado(feriados, seleccionado);
+  const asignaturas = listarAsignaturas(tareas);
 
-  // guarda la edicion en la API y mueve el calendario a la nueva fecha
   async function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
-    if (tareaAbierta.id === 0) {
+    if (tareaAbierta.id === "") {
       return;
     }
 
-    setEnviando(true);
-    setErrorFormulario("");
-    try {
-      const editada = await editarTarea(tareaAbierta.id, datosDesdeFormulario(datos));
-      setTareas(tareas.map((tarea) => (tarea.id === editada.id ? editada : tarea)));
-      setTareaAbierta(editada);
-      setEditando(false);
+    const editada: Tarea = {
+      id: tareaAbierta.id,
+      nombre: String(datos.nombre),
+      descripcion: String(datos.descripcion),
+      asignatura: String(datos.asignatura),
+      estado: String(datos.estado),
+      prioridad: String(datos.prioridad),
+      horaEntrega: String(datos.horaEntrega),
+      fecha: String(datos.fecha),
+    };
 
-      // si cambio de dia, el calendario se mueve a esa fecha
-      if (editada.fecha) {
-        setAnio(Number(editada.fecha.slice(0, 4)));
-        setMes(Number(editada.fecha.slice(5, 7)) - 1);
-        setSeleccionado(editada.fecha);
-      }
-    } catch (e) {
-      setErrorFormulario((e as Error).message);
-    } finally {
-      setEnviando(false);
+    // se guarda en la API antes de actualizar la pantalla
+    try {
+      await editarTarea(editada);
+    } catch (error) {
+      alert((error as Error).message);
+      return;
+    }
+
+    const nuevas = reemplazarTarea(tareas, editada);
+
+    setTareas(nuevas);
+    setTareaAbierta(editada);
+    setEditando(false);
+
+    // si cambio de dia, el calendario se mueve a esa fecha
+    if (editada.fecha) {
+      setAnio(Number(editada.fecha.slice(0, 4)));
+      setMes(Number(editada.fecha.slice(5, 7)) - 1);
+      setSeleccionado(editada.fecha);
     }
   }
 
@@ -143,7 +130,6 @@ function Calendario() {
           hoy={hoy}
           seleccionado={seleccionado}
           tareas={tareas}
-          evaluaciones={evaluaciones}
           feriados={feriados}
           onCambioMes={cambiarMes}
           onCambioAnio={cambiarAnio}
@@ -152,67 +138,49 @@ function Calendario() {
 
         <p className="cal-mensaje">{mensaje}</p>
 
-        <EstadoCarga cargando={cargando} error={error} onReintentar={cargar} />
+        <TareasDelDia
+          titulo={fechaLarga(seleccionado)}
+          tareas={tareasDelDia}
+          feriado={feriadoDelDia}
+          mensajeVacio="Sin tareas"
+          onElegir={setTareaAbierta}
+        />
 
-        {!cargando && error === "" && (
-          <>
-            <TareasDelDia
-              titulo={fechaLarga(seleccionado)}
-              tareas={tareasDelDia}
-              evaluaciones={evaluacionesDelSeleccionado}
-              feriado={feriadoDelDia}
-              mensajeVacio="Sin tareas"
-              onElegir={setTareaAbierta}
-            />
-
-            {tareasSinFecha.length > 0 && (
-              <TareasDelDia
-                titulo="Tareas sin fecha"
-                tareas={tareasSinFecha}
-                feriado={null}
-                mensajeVacio=""
-                onElegir={setTareaAbierta}
-              />
-            )}
-          </>
+        {tareasSinFecha.length > 0 && (
+          <TareasDelDia
+            titulo="Tareas sin fecha"
+            tareas={tareasSinFecha}
+            feriado={null}
+            mensajeVacio=""
+            onElegir={setTareaAbierta}
+          />
         )}
       </main>
 
-      {tareaAbierta.id !== 0 && !editando && (
+      {tareaAbierta.id !== "" && !editando && (
         <DetalleTarea
           tarea={tareaAbierta}
           onCerrar={() => setTareaAbierta(TAREA_VACIA)}
-          onEditar={() => {
-            setErrorFormulario("");
-            setEditando(true);
-          }}
+          onEditar={() => setEditando(true)}
         />
       )}
 
-      {tareaAbierta.id !== 0 && (
+      {tareaAbierta.id !== "" && (
         <Formulario
           abierto={editando}
           tipo="tarea"
           modo="editar"
           onCerrar={() => setEditando(false)}
           onAceptar={guardarEdicion}
-          opcionesAsignatura={ramos.map((ramo) => ({ valor: String(ramo.id), texto: ramo.nombre }))}
-          opcionesEvaluacion={evaluaciones.map((evaluacion) => ({
-            valor: String(evaluacion.id),
-            texto: evaluacion.nombre + " (" + fechaCortaTexto(evaluacion.fecha) + ")",
-            grupo: String(evaluacion.asignaturaId),
-          }))}
-          error={errorFormulario}
-          enviando={enviando}
+          opcionesAsignatura={asignaturas}
           valoresIniciales={{
             nombre: tareaAbierta.nombre,
             descripcion: tareaAbierta.descripcion,
-            asignaturaId: String(tareaAbierta.asignaturaId),
-            evaluacionId: tareaAbierta.evaluacionId ? String(tareaAbierta.evaluacionId) : "",
+            asignatura: tareaAbierta.asignatura,
             estado: tareaAbierta.estado,
             prioridad: tareaAbierta.prioridad,
-            horaEntrega: tareaAbierta.horaEntrega ?? "",
-            fecha: tareaAbierta.fecha ?? "",
+            horaEntrega: tareaAbierta.horaEntrega,
+            fecha: tareaAbierta.fecha ? tareaAbierta.fecha : "",
           }}
         />
       )}

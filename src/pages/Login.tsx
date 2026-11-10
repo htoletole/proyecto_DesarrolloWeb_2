@@ -18,15 +18,11 @@ export default function Login(props: LoginProps) {
   const [password, setPassword] = useState("");
   const [recordar, setRecordar] = useState(true);
   const [error, setError] = useState("");
-  const [enviando, setEnviando] = useState(false);
 
   async function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    setEnviando(true);
     const resultado = await iniciarSesion(username, password);
-    setEnviando(false);
-
     if (resultado.sesion === null) {
       setError(resultado.error);
       return;
@@ -76,8 +72,8 @@ export default function Login(props: LoginProps) {
           Recordarme en este dispositivo
         </label>
 
-        <button type="submit" className="boton" disabled={enviando}>
-          {enviando ? "Ingresando..." : "Ingresar"}
+        <button type="submit" className="boton">
+          Ingresar
         </button>
       </form>
 

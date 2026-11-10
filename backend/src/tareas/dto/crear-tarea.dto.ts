@@ -51,10 +51,4 @@ export class CrearTareaDto {
   @IsOptional()
   @Matches(/^([01][0-9]|2[0-3]):[0-5][0-9]$/, { message: 'La hora debe tener formato HH:mm' })
   horaEntrega?: string | null;
-
-  @ApiPropertyOptional({ example: 2, description: 'Evaluacion del mismo ramo que prepara esta tarea' })
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt({ message: 'La evaluación no es válida' })
-  evaluacionId?: number | null;
 }

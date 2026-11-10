@@ -14,9 +14,7 @@ function tareaDePrueba(subtareas: { id: number; nombre: string; completada: bool
     completadaEn: null,
     usuarioId: 1,
     asignaturaId: 1,
-    evaluacionId: null,
     asignatura: { id: 1, codigo: 'CINF201', nombre: 'Desarrollo Web', color: '#46937C' },
-    evaluacion: null,
     subtareas,
   };
 }

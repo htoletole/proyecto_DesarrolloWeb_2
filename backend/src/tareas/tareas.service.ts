@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -18,7 +17,6 @@ import { FiltroTareasDto } from './dto/filtro-tareas.dto';
 // datos que se devuelven junto con cada tarea
 const INCLUIR = {
   asignatura: { select: { id: true, codigo: true, nombre: true, color: true } },
-  evaluacion: { select: { id: true, nombre: true } },
   subtareas: { orderBy: { id: 'asc' as const } },
 };
 
@@ -68,11 +66,6 @@ export class TareasService {
     const asignatura = await this.asignaturasService.buscarDelUsuario(usuarioId, datos.asignaturaId);
     const nombre = datos.nombre.trim();
 
-    let evaluacionId: number | null = null;
-    if (datos.evaluacionId) {
-      evaluacionId = await this.validarEvaluacion(datos.evaluacionId, asignatura.id);
-    }
-
     const estado = datos.estado ?? EstadoTarea.PENDIENTE;
     const fecha = datos.fecha ?? null;
 
@@ -87,7 +80,6 @@ export class TareasService {
         completadaEn: estado === EstadoTarea.COMPLETADA ? new Date() : null,
         usuarioId,
         asignaturaId: asignatura.id,
-        evaluacionId,
       },
       include: INCLUIR,
     });
@@ -110,14 +102,6 @@ export class TareasService {
       const asignatura = await this.asignaturasService.buscarDelUsuario(usuarioId, datos.asignaturaId);
       asignaturaId = asignatura.id;
       nombreRamo = asignatura.nombre;
-    }
-
-    // evaluacion: debe ser del mismo ramo; si cambia el ramo y no se manda, se quita
-    let evaluacionId = anterior.evaluacionId;
-    if (datos.evaluacionId !== undefined) {
-      evaluacionId = datos.evaluacionId ? await this.validarEvaluacion(datos.evaluacionId, asignaturaId) : null;
-    } else if (asignaturaId !== anterior.asignaturaId) {
-      evaluacionId = null;
     }
 
     // regla: no se puede completar una tarea con subtareas pendientes
@@ -162,7 +146,6 @@ export class TareasService {
         horaEntrega,
         completadaEn,
         asignaturaId,
-        evaluacionId,
       },
       include: INCLUIR,
     });
@@ -173,7 +156,7 @@ export class TareasService {
     );
 
     const cambios = compararCambios(anterior, tarea, [
-      'nombre', 'descripcion', 'estado', 'prioridad', 'fecha', 'horaEntrega', 'asignaturaId', 'evaluacionId',
+      'nombre', 'descripcion', 'estado', 'prioridad', 'fecha', 'horaEntrega', 'asignaturaId',
     ]);
     const accion = seCompleta ? 'COMPLETAR' : 'EDITAR';
     const texto = seCompleta ? 'Tarea ' + nombre + ' completada' : 'Tarea ' + nombre + ' editada';
@@ -197,16 +180,5 @@ export class TareasService {
       throw new NotFoundException('La tarea no existe');
     }
     return tarea;
-  }
-
-  // la evaluacion asociada debe existir y ser del mismo ramo que la tarea
-  private async validarEvaluacion(evaluacionId: number, asignaturaId: number) {
-    const evaluacion = await this.prisma.evaluacion.findFirst({
-      where: { id: evaluacionId, asignaturaId },
-    });
-    if (!evaluacion) {
-      throw new BadRequestException('La evaluación elegida no pertenece a ese ramo');
-    }
-    return evaluacion.id;
   }
 }

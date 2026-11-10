@@ -70,13 +70,13 @@ async function crearEjemplos(usuarioId: number, periodoId: number, inicio: strin
     data: { codigo: 'CINF250', nombre: 'Base de Datos', modalidad: 'ONLINE', color: '#FFAE52', periodoId },
   });
 
-  const hito = await prisma.evaluacion.create({
+  await prisma.evaluacion.create({
     data: { nombre: 'Hito 3', tipo: 'PROYECTO', fecha: dia(5), ponderacion: 30, asignaturaId: web.id },
   });
   await prisma.evaluacion.create({
     data: { nombre: 'Taller 2', tipo: 'TRABAJO', fecha: dia(-30), ponderacion: 20, nota: 6.2, asignaturaId: web.id },
   });
-  const solemne = await prisma.evaluacion.create({
+  await prisma.evaluacion.create({
     data: { nombre: 'Solemne 2', tipo: 'PRUEBA', fecha: dia(10), ponderacion: 35, asignaturaId: calculo.id },
   });
   await prisma.evaluacion.create({
@@ -96,7 +96,6 @@ async function crearEjemplos(usuarioId: number, periodoId: number, inicio: strin
       horaEntrega: '23:59',
       usuarioId,
       asignaturaId: web.id,
-      evaluacionId: hito.id,
       subtareas: {
         create: [
           { nombre: 'Configurar Prisma con Neon', completada: true },
@@ -128,7 +127,6 @@ async function crearEjemplos(usuarioId: number, periodoId: number, inicio: strin
       fecha: dia(8),
       usuarioId,
       asignaturaId: calculo.id,
-      evaluacionId: solemne.id,
     },
   });
   await prisma.tarea.create({

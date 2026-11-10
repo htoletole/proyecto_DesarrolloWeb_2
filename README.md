@@ -98,14 +98,13 @@ erDiagram
   PERIODOS ||--o{ ASIGNATURAS : agrupa
   ASIGNATURAS ||--o{ EVALUACIONES : tiene
   ASIGNATURAS ||--o{ TAREAS : tiene
-  EVALUACIONES |o--o{ TAREAS : "se prepara con"
   TAREAS ||--o{ SUBTAREAS : tiene
 
   USUARIOS { int id PK; string username UK; string password }
   PERIODOS { int id PK; string nombre; date fechaInicio; date fechaFin; int usuarioId FK }
   ASIGNATURAS { int id PK; string codigo; string nombre; enum modalidad; string color; int periodoId FK }
   EVALUACIONES { int id PK; string nombre; enum tipo; date fecha; int ponderacion; float nota; int asignaturaId FK }
-  TAREAS { int id PK; string nombre; enum estado; enum prioridad; date fecha; string horaEntrega; int asignaturaId FK; int evaluacionId FK }
+  TAREAS { int id PK; string nombre; enum estado; enum prioridad; date fecha; string horaEntrega; int asignaturaId FK }
   SUBTAREAS { int id PK; string nombre; boolean completada; int tareaId FK }
 ```
 

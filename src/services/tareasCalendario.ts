@@ -1,22 +1,39 @@
-// funciones del calendario para ordenar las tareas y evaluaciones que llegan de la API
-import type { Evaluacion, Tarea } from "./tipos";
+// misma forma que las tareas de Tareas.tsx
+export interface Tarea {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  asignatura: string;
+  estado: string;
+  prioridad: string;
+  horaEntrega: string; 
+  fecha?: string; 
+}
 
-// tarea "vacia" para decir que no hay ninguna abierta
 export const TAREA_VACIA: Tarea = {
-  id: 0,
+  id: "",
   nombre: "",
   descripcion: "",
-  estado: "PENDIENTE",
-  prioridad: "BAJA",
-  fecha: null,
-  horaEntrega: null,
-  completadaEn: null,
-  asignaturaId: 0,
-  evaluacionId: null,
-  asignatura: { id: 0, nombre: "", color: "" },
-  evaluacion: null,
-  subtareas: [],
+  asignatura: "",
+  estado: "",
+  prioridad: "",
+  horaEntrega: "",
+  fecha: "",
 };
+
+export function reemplazarTarea(tareas: Tarea[], editada: Tarea): Tarea[] {
+  const lista: Tarea[] = [];
+
+  for (let i = 0; i < tareas.length; i++) {
+    if (tareas[i].id === editada.id) {
+      lista.push(editada);
+    } else {
+      lista.push(tareas[i]);
+    }
+  }
+
+  return lista;
+}
 
 export function filtrarPorFecha(tareas: Tarea[], fecha: string): Tarea[] {
   const lista: Tarea[] = [];
@@ -42,12 +59,12 @@ export function filtrarSinFecha(tareas: Tarea[]): Tarea[] {
   return lista;
 }
 
-export function evaluacionesDelDia(evaluaciones: Evaluacion[], fecha: string): Evaluacion[] {
-  const lista: Evaluacion[] = [];
+export function listarAsignaturas(tareas: Tarea[]): string[] {
+  const lista: string[] = [];
 
-  for (let i = 0; i < evaluaciones.length; i++) {
-    if (evaluaciones[i].fecha === fecha) {
-      lista.push(evaluaciones[i]);
+  for (let i = 0; i < tareas.length; i++) {
+    if (!lista.includes(tareas[i].asignatura)) {
+      lista.push(tareas[i].asignatura);
     }
   }
 
