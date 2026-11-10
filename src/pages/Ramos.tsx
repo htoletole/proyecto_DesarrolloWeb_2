@@ -3,35 +3,33 @@ import HeaderFixed from "../components/HeaderFixed";
 import Formulario from "../components/Formulario";
 import ModalDetalleRamo from "../components/ModalDetalleRamo";
 import ModalConfirmacionRamos from "../components/ModalConfirmacionRamos";
-import EstadoCarga from "../components/EstadoCarga";
-import Toast from "../components/Toast";
 import iconoInfo from "../assets/icons/info.png";
 import iconoMas from "../assets/icons/mas.png";
 import iconoLapiz from "../assets/icons/lapiz.png";
 import iconoCheck from "../assets/icons/check.png";
-import { MODALIDADES } from "../services/etiquetas";
+import "../styles/ramos.css";
+import Toast from "../components/Toast";
 import {
-  crearPeriodo,
   crearRamo,
   editarRamo,
-  eliminarPeriodo,
   eliminarRamo,
-  listarPeriodos,
   listarRamos,
 } from "../services/ramosApi";
-import type { DatosRamo } from "../services/ramosApi";
-import type { Modalidad, Periodo, Ramo } from "../services/tipos";
+import { listarTareas } from "../services/tareasApi";
 import { useSesion } from "../services/useSesion";
-import "../styles/ramos.css";
 
 type VistaRamos = "grid" | "lista";
 type ModoFormulario = "crear" | "editar";
 
-const TAMANO_MAX_LOGO = 500000;
+export type Ramo = {
+  id: string;
+  nombre: string;
+  modalidad: string;
+  colorRamo: string;
+  logo?: string;
+};
 
-// preferencias de pantalla (no son datos del sistema, por eso pueden ir en localStorage)
-const CLAVE_VISTA = "vistaRamos";
-const CLAVE_PERIODO = "periodoRamos";
+const TAMANO_MAX_LOGO = 500000;
 
 const convertirImagenBase64 = (archivo: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -41,113 +39,47 @@ const convertirImagenBase64 = (archivo: File): Promise<string> =>
     lector.readAsDataURL(archivo);
   });
 
-// elige el periodo guardado, o el que esta en curso, o el mas reciente
-function elegirPeriodo(periodos: Periodo[]): number {
-  const guardado = Number(localStorage.getItem(CLAVE_PERIODO));
-  if (periodos.some((periodo) => periodo.id === guardado)) {
-    return guardado;
-  }
-
-  const hoy = new Date().toISOString().slice(0, 10);
-  const enCurso = periodos.find((periodo) => periodo.fechaInicio <= hoy && hoy <= periodo.fechaFin);
-  if (enCurso) {
-    return enCurso.id;
-  }
-
-  return periodos.length > 0 ? periodos[0].id : 0;
-}
+const normalizarTexto = (texto: string) => texto.trim().toLowerCase();
 
 function Ramos() {
   const sesion = useSesion();
 
   const [vista, setVista] = useState<VistaRamos>(() => {
-    const guardada = localStorage.getItem(CLAVE_VISTA);
+    const guardada = localStorage.getItem("vistaRamos");
     return guardada === "lista" ? "lista" : "grid";
   });
 
-  // datos que vienen de la API
-  const [periodos, setPeriodos] = useState<Periodo[]>([]);
-  const [periodoId, setPeriodoId] = useState(0);
   const [ramos, setRamos] = useState<Ramo[]>([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
-  const [formularioPeriodoAbierto, setFormularioPeriodoAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState<ModoFormulario>("crear");
   const [ramoAEditar, setRamoAEditar] = useState<Ramo | null>(null);
   const [ramoEnDetalle, setRamoEnDetalle] = useState<Ramo | null>(null);
   const [modoSeleccion, setModoSeleccion] = useState(false);
-  const [ramosSeleccionados, setRamosSeleccionados] = useState<number[]>([]);
+  const [ramosSeleccionados, setRamosSeleccionados] = useState<string[]>([]);
   const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
   const [ramosConTareas, setRamosConTareas] = useState<string[]>([]);
-  const [errorFormulario, setErrorFormulario] = useState("");
-  const [enviando, setEnviando] = useState(false);
 
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [mensajeAlerta, setMensajeAlerta] = useState("");
   const [tituloAlerta, setTituloAlerta] = useState("");
-  const [alertaError, setAlertaError] = useState(false);
 
-  function avisar(titulo: string, mensaje: string, esError = false) {
-    setTituloAlerta(titulo);
-    setMensajeAlerta(mensaje);
-    setAlertaError(esError);
-    setMostrarAlerta(true);
-  }
-
+  // los ramos se piden a la API cuando hay una sesion iniciada
   useEffect(() => {
-    localStorage.setItem(CLAVE_VISTA, vista);
-  }, [vista]);
+    if (!sesion) return;
 
-  // primero los periodos, despues los ramos del periodo elegido
-  async function cargarPeriodos() {
-    setCargando(true);
-    setError("");
-    try {
-      const lista = await listarPeriodos();
-      setPeriodos(lista);
-      const elegido = elegirPeriodo(lista);
-      setPeriodoId(elegido);
-      if (elegido === 0) {
-        setRamos([]);
-        setCargando(false);
-      }
-    } catch (e) {
-      setError((e as Error).message);
-      setCargando(false);
-    }
-  }
-
-  async function cargarRamos(id: number) {
-    setCargando(true);
-    setError("");
-    try {
-      setRamos(await listarRamos(id));
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setCargando(false);
-    }
-  }
-
-  useEffect(() => {
-    if (sesion) {
-      cargarPeriodos();
-    }
+    listarRamos()
+      .then((lista) => setRamos(lista))
+      .catch((error) => console.error("Error al cargar ramos:", error));
   }, [sesion?.id]);
 
   useEffect(() => {
-    if (periodoId !== 0) {
-      localStorage.setItem(CLAVE_PERIODO, String(periodoId));
-      cargarRamos(periodoId);
-    }
-  }, [periodoId]);
+    localStorage.setItem("vistaRamos", vista);
+  }, [vista]);
 
   const abrirFormularioCrear = () => {
     setModoFormulario("crear");
     setRamoAEditar(null);
-    setErrorFormulario("");
     setFormularioAbierto(true);
   };
 
@@ -155,7 +87,6 @@ function Ramos() {
     setModoFormulario("editar");
     setRamoAEditar(ramo);
     setRamoEnDetalle(null);
-    setErrorFormulario("");
     setFormularioAbierto(true);
   };
 
@@ -165,78 +96,75 @@ function Ramos() {
   };
 
   const guardarRamo = async (datos: Record<string, FormDataEntryValue>) => {
-    const datosRamo: DatosRamo = {
-      codigo: String(datos.codigo ?? "").trim(),
+    const datosRamo = {
+      id: String(datos.id ?? "").trim(),
       nombre: String(datos.nombre ?? "").trim(),
-      modalidad: String(datos.modalidad ?? "") as Modalidad,
-      color: String(datos.colorRamo ?? "#FFAE52"),
-      // el ramo queda en el periodo elegido en la pantalla
-      periodoId: periodoId,
+      modalidad: String(datos.modalidad ?? ""),
+      colorRamo: String(datos.colorRamo ?? "#FFAE52"),
     };
 
-    // el logo solo se manda si se eligio uno nuevo
-    if (datos.logo instanceof File && datos.logo.size > 0) {
-      if (datos.logo.size > TAMANO_MAX_LOGO) {
-        setErrorFormulario("El logo debe pesar menos de 500 KB.");
-        return;
-      }
-      datosRamo.logo = await convertirImagenBase64(datos.logo);
-    }
+    const idDuplicado = ramos.some(
+      (ramo) =>
+        ramo.id !== ramoAEditar?.id &&
+        normalizarTexto(ramo.id) === normalizarTexto(datosRamo.id),
+    );
 
-    setEnviando(true);
-    setErrorFormulario("");
-    try {
-      if (modoFormulario === "crear") {
-        await crearRamo(datosRamo);
-        avisar("Ramo creado", `¡Ramo "${datosRamo.nombre}" creado con éxito!`);
-      } else if (ramoAEditar) {
-        await editarRamo(ramoAEditar.id, datosRamo);
-        avisar("Ramo editado", `¡El ramo "${datosRamo.nombre}" se editó con éxito!`);
-      }
-      cerrarFormulario();
-      cargarRamos(periodoId);
-    } catch (e) {
-      // por ejemplo: ya existe un ramo con esa ID en el periodo
-      setErrorFormulario((e as Error).message);
-    } finally {
-      setEnviando(false);
-    }
-  };
-
-  const guardarPeriodo = async (datos: Record<string, FormDataEntryValue>) => {
-    setEnviando(true);
-    setErrorFormulario("");
-    try {
-      const nuevo = await crearPeriodo(
-        String(datos.nombre ?? "").trim(),
-        String(datos.fechaInicio ?? ""),
-        String(datos.fechaFin ?? ""),
-      );
-      setPeriodos([nuevo, ...periodos]);
-      setPeriodoId(nuevo.id);
-      setFormularioPeriodoAbierto(false);
-      avisar("Período creado", `¡Período "${nuevo.nombre}" creado con éxito!`);
-    } catch (e) {
-      setErrorFormulario((e as Error).message);
-    } finally {
-      setEnviando(false);
-    }
-  };
-
-  const borrarPeriodo = async () => {
-    const periodo = periodos.find((p) => p.id === periodoId);
-    if (!periodo || !window.confirm(`¿Eliminar el período "${periodo.nombre}"?`)) {
+    if (idDuplicado) {
+      alert("Ya existe un ramo con esa ID.");
       return;
     }
-    try {
-      await eliminarPeriodo(periodo.id);
-      localStorage.removeItem(CLAVE_PERIODO);
-      avisar("Período eliminado", `Se eliminó el período "${periodo.nombre}".`);
-      cargarPeriodos();
-    } catch (e) {
-      // regla: no se puede borrar un periodo con ramos
-      avisar("No se pudo eliminar", (e as Error).message, true);
+
+    const nombreDuplicado = ramos.some(
+      (ramo) =>
+        ramo.id !== ramoAEditar?.id &&
+        normalizarTexto(ramo.nombre) === normalizarTexto(datosRamo.nombre),
+    );
+
+    if (nombreDuplicado) {
+      alert("Ya existe un ramo con ese nombre.");
+      return;
     }
+
+    let logo = ramoAEditar?.logo;
+
+    if (datos.logo instanceof File && datos.logo.size > 0) {
+      if (datos.logo.size > TAMANO_MAX_LOGO) {
+        alert("El logo debe pesar menos de 500 KB.");
+        return;
+      }
+
+      logo = await convertirImagenBase64(datos.logo);
+    }
+
+    try {
+    if (modoFormulario === "crear") {
+      const creado = await crearRamo({ ...datosRamo, logo });
+      setRamos((actuales) => [...actuales, creado]);
+      setTituloAlerta("Ramo creado");
+      setMensajeAlerta(`¡Ramo "${datosRamo.nombre}" creado con éxito!`);
+      setMostrarAlerta(true);
+    } else if (ramoAEditar) {
+      const editado = await editarRamo(ramoAEditar.id, { ...datosRamo, logo });
+      setRamos((actuales) =>
+        actuales.map((ramo) => (ramo.id === ramoAEditar.id ? editado : ramo)),
+      );
+
+      // las tareas del ramo quedan con el nombre nuevo porque en la base estan unidas al ramo
+      if (ramoAEditar.nombre !== datosRamo.nombre) {
+        setTituloAlerta("Ramo editado");
+        setMensajeAlerta(
+          `¡El ramo "${ramoAEditar.nombre}" se editó con éxito!`,
+        );
+        setMostrarAlerta(true);
+      }
+    }
+    } catch (error) {
+      // la API no pudo guardar
+      alert((error as Error).message);
+      return;
+    }
+
+    cerrarFormulario();
   };
 
   const toggleModoSeleccion = () => {
@@ -247,7 +175,7 @@ function Ramos() {
     setModalEliminarAbierto(false);
   };
 
-  const toggleSeleccionRamo = (id: number) => {
+  const toggleSeleccionRamo = (id: string) => {
     setRamosSeleccionados((actuales) =>
       actuales.includes(id)
         ? actuales.filter((ramoId) => ramoId !== id)
@@ -255,11 +183,14 @@ function Ramos() {
     );
   };
 
-  const abrirConfirmacionEliminacion = () => {
-    // la API cuenta cuantas tareas tiene cada ramo
+  const abrirConfirmacionEliminacion = async () => {
+    const tareas = await listarTareas().catch(() => []);
+
     const conTareas = ramos
       .filter((ramo) => ramosSeleccionados.includes(ramo.id))
-      .filter((ramo) => (ramo._count?.tareas ?? 0) > 0)
+      .filter((ramo) =>
+        tareas.some((tarea) => tarea.asignatura === ramo.nombre),
+      )
       .map((ramo) => ramo.nombre);
 
     setRamosConTareas(conTareas);
@@ -267,20 +198,27 @@ function Ramos() {
   };
 
   const eliminarRamosSeleccionados = async () => {
-    setModalEliminarAbierto(false);
+    // al eliminar un ramo, la base de datos tambien elimina sus tareas
     try {
-      // al borrar un ramo, la base de datos tambien borra sus tareas y evaluaciones
       await Promise.all(ramosSeleccionados.map((id) => eliminarRamo(id)));
-      avisar("Ramo eliminado", "¡Se eliminaron con éxito los ramos seleccionados!");
-    } catch (e) {
-      avisar("No se pudo eliminar", (e as Error).message, true);
+    } catch (error) {
+      alert((error as Error).message);
+      return;
     }
 
+    setTituloAlerta("Ramo eliminado");
+    setMensajeAlerta(`¡Se eliminaron con éxito los ramos eliminados!`);
+    setMostrarAlerta(true);
+
+    setRamos((actuales) =>
+      actuales.filter((ramo) => !ramosSeleccionados.includes(ramo.id)),
+    );
+
+    setModalEliminarAbierto(false);
     setModoSeleccion(false);
     setRamosSeleccionados([]);
     setRamosConTareas([]);
     setRamoEnDetalle(null);
-    cargarRamos(periodoId);
   };
 
   const manejarClickRamo = (ramo: Ramo) => {
@@ -288,14 +226,14 @@ function Ramos() {
     else setRamoEnDetalle(ramo);
   };
 
-  const valoresIniciales: Record<string, string> = ramoAEditar
+  const valoresIniciales = ramoAEditar
     ? {
         nombre: ramoAEditar.nombre,
-        codigo: ramoAEditar.codigo,
+        id: ramoAEditar.id,
         modalidad: ramoAEditar.modalidad,
-        colorRamo: ramoAEditar.color,
+        colorRamo: ramoAEditar.colorRamo,
       }
-    : {};
+    : undefined;
 
   return (
     <div className="min-vh-100 w-100 page-container ramos-page">
@@ -307,46 +245,12 @@ function Ramos() {
           <p>Presiona un ramo para ver más información sobre este.</p>
         </div>
 
-        {/* periodos academicos */}
-        <div className="ramos-periodo">
-          <label htmlFor="selector-periodo">Período:</label>
-          <select
-            id="selector-periodo"
-            value={periodoId}
-            onChange={(evento) => setPeriodoId(Number(evento.target.value))}
-            disabled={periodos.length === 0}
-          >
-            {periodos.length === 0 && <option value={0}>Sin períodos</option>}
-            {periodos.map((periodo) => (
-              <option key={periodo.id} value={periodo.id}>
-                {periodo.nombre}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            className="ramos-periodo-boton"
-            onClick={() => {
-              setErrorFormulario("");
-              setFormularioPeriodoAbierto(true);
-            }}
-          >
-            + Nuevo período
-          </button>
-          {periodoId !== 0 && (
-            <button type="button" className="ramos-periodo-boton ramos-periodo-borrar" onClick={borrarPeriodo}>
-              Eliminar período
-            </button>
-          )}
-        </div>
-
         <div className="action-buttons-container">
           <div className="ramos-acciones-principales">
             <button
               type="button"
               className="btn-crear btn-crear-ramos"
               onClick={abrirFormularioCrear}
-              disabled={periodoId === 0}
             >
               Crear Ramo
               <img src={iconoMas} alt="Crear ramo" className="btn-icon" />
@@ -408,74 +312,64 @@ function Ramos() {
           </div>
         </div>
 
-        <EstadoCarga
-          cargando={cargando}
-          error={error}
-          vacio={ramos.length === 0}
-          mensajeVacio={periodoId === 0 ? "Crea un período para empezar a agregar ramos." : "Este período no tiene ramos. ¡Crea el primero!"}
-          onReintentar={cargarPeriodos}
-        />
+        <section className={vista === "grid" ? "ramos-grid" : "ramos-list"}>
+          {ramos.map((ramo, index) => {
+            const seleccionado = ramosSeleccionados.includes(ramo.id);
 
-        {!cargando && error === "" && (
-          <section className={vista === "grid" ? "ramos-grid" : "ramos-list"}>
-            {ramos.map((ramo) => {
-              const seleccionado = ramosSeleccionados.includes(ramo.id);
+            return (
+              <div
+                key={`${ramo.id}-${index}`}
+                className={`ramo-card ${
+                  modoSeleccion ? "modo-seleccion" : ""
+                } ${seleccionado ? "seleccionado" : ""}`}
+                style={{ backgroundColor: ramo.colorRamo }}
+                onClick={() => manejarClickRamo(ramo)}
+              >
+                {seleccionado && (
+                  <img
+                    src={iconoCheck}
+                    alt="Ramo seleccionado"
+                    className="ramo-check-seleccion"
+                  />
+                )}
 
-              return (
-                <div
-                  key={ramo.id}
-                  className={`ramo-card ${
-                    modoSeleccion ? "modo-seleccion" : ""
-                  } ${seleccionado ? "seleccionado" : ""}`}
-                  style={{ backgroundColor: ramo.color }}
-                  onClick={() => manejarClickRamo(ramo)}
-                >
-                  {seleccionado && (
-                    <img
-                      src={iconoCheck}
-                      alt="Ramo seleccionado"
-                      className="ramo-check-seleccion"
-                    />
-                  )}
-
-                  <div className="ramo-card-superior">
-                    <div className="ramo-card-logo-contenedor">
-                      {ramo.logo ? (
-                        <img
-                          src={ramo.logo}
-                          alt={`Logo de ${ramo.nombre}`}
-                          className="ramo-card-logo"
-                        />
-                      ) : (
-                        <span className="ramo-card-logo-vacio">
-                          {ramo.nombre.charAt(0).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="ramo-card-info">
-                      <h3>{ramo.nombre}</h3>
-                      <p className="ramo-card-id">{ramo.codigo}</p>
-                    </div>
-
-                    <span className="ramo-card-flecha">›</span>
+                <div className="ramo-card-superior">
+                  <div className="ramo-card-logo-contenedor">
+                    {ramo.logo ? (
+                      <img
+                        src={ramo.logo}
+                        alt={`Logo de ${ramo.nombre}`}
+                        className="ramo-card-logo"
+                      />
+                    ) : (
+                      <span className="ramo-card-logo-vacio">
+                        {ramo.nombre.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="ramo-card-divisor" />
+                  <div className="ramo-card-info">
+                    <h3>{ramo.nombre}</h3>
+                    <p className="ramo-card-id">{ramo.id}</p>
+                  </div>
 
-                  <div className="ramo-card-detalle">
-                    <span className="ramo-card-detalle-icono">◉</span>
+                  <span className="ramo-card-flecha">›</span>
+                </div>
 
-                    <div>
-                      <span className="ramo-card-detalle-titulo">Modalidad</span>
-                      <p>{MODALIDADES[ramo.modalidad]}</p>
-                    </div>
+                <div className="ramo-card-divisor" />
+
+                <div className="ramo-card-detalle">
+                  <span className="ramo-card-detalle-icono">◉</span>
+
+                  <div>
+                    <span className="ramo-card-detalle-titulo">Modalidad</span>
+                    <p>{ramo.modalidad}</p>
                   </div>
                 </div>
-              );
-            })}
-          </section>
-        )}
+              </div>
+            );
+          })}
+        </section>
       </main>
 
       <Formulario
@@ -485,18 +379,6 @@ function Ramos() {
         valoresIniciales={valoresIniciales}
         onCerrar={cerrarFormulario}
         onAceptar={guardarRamo}
-        error={errorFormulario}
-        enviando={enviando}
-      />
-
-      <Formulario
-        abierto={formularioPeriodoAbierto}
-        tipo="periodo"
-        modo="crear"
-        onCerrar={() => setFormularioPeriodoAbierto(false)}
-        onAceptar={guardarPeriodo}
-        error={errorFormulario}
-        enviando={enviando}
       />
 
       <ModalDetalleRamo
@@ -504,14 +386,13 @@ function Ramos() {
         ramo={ramoEnDetalle}
         onCerrar={() => setRamoEnDetalle(null)}
         onEditar={abrirFormularioEditar}
-        onCambio={() => cargarRamos(periodoId)}
       />
 
       <ModalConfirmacionRamos
         abierto={modalEliminarAbierto}
         mensaje="¿Desea confirmar la eliminación de los ramos seleccionados?"
         elementosAdvertencia={ramosConTareas}
-        textoAdvertencia="Al confirmar, también se eliminarán las tareas y evaluaciones de estos ramos. ¿Desea continuar?"
+        textoAdvertencia="Al confirmar, también se eliminarán las tareas asignadas a estos ramos. ¿Desea continuar?"
         onConfirmar={eliminarRamosSeleccionados}
         onDenegar={() => setModalEliminarAbierto(false)}
       />
@@ -520,7 +401,6 @@ function Ramos() {
         mostrar={mostrarAlerta}
         mensaje={mensajeAlerta}
         titulo={tituloAlerta}
-        error={alertaError}
         onClose={() => setMostrarAlerta(false)}
       />
     </div>

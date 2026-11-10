@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { PRIORIDADES } from "../services/etiquetas";
-import type { Tarea } from "../services/tipos";
+import type { Tarea } from "../pages/Tareas";
 
 interface EstadoProps {
   estadoClase: string;
@@ -36,7 +35,7 @@ function EstadoTareas(props: EstadoProps) {
               className={`tarjeta-tarea ${estadoClase}`}
             >
               <h5 className="textos mb-0">{tarea.nombre}</h5>
-              <span className="badge-prioridad">{PRIORIDADES[tarea.prioridad]}</span>
+              <span className="badge-prioridad">{tarea.prioridad}</span>
               <p className="textos mb-0">{tarea.descripcion}</p>
               <p className="mas-info">Click para más info</p>
             </div>

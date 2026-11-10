@@ -17,7 +17,7 @@ function pantallaInicial(): Pantalla {
   return obtenerRecordado() ? "bienvenida" : "login";
 }
 
-// muestra el login encima de la app, y con sesion deja ver la app
+// muestra el login encima de la app, y con sesion solo deja el boton de cerrar
 export default function AuthGate() {
   const [pantalla, setPantalla] = useState<Pantalla>(pantallaInicial);
   const [sesion, setSesion] = useState<Sesion | null>(obtenerSesion);
@@ -48,11 +48,6 @@ export default function AuthGate() {
     setPantalla(destino);
   }
 
-  function despuesDeRestablecer() {
-    setAviso("Contraseña restablecida, ya puedes ingresar");
-    setPantalla("login");
-  }
-
   if (pantalla === "home" && sesion) {
     return null;
   }
@@ -65,7 +60,7 @@ export default function AuthGate() {
   } else if (pantalla === "registro") {
     contenido = <Register onRegistrado={(nueva) => entrar(nueva, false)} onIrLogin={() => irA("login")} />;
   } else if (pantalla === "recuperar") {
-    contenido = <Recover onRestablecida={despuesDeRestablecer} onIrLogin={() => irA("login")} />;
+    contenido = <Recover onRestablecida={() => irA("login")} onIrLogin={() => irA("login")} />;
   } else {
     contenido = (
       <Login

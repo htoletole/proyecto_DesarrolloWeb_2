@@ -15,15 +15,11 @@ export default function Register(props: RegisterProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [enviando, setEnviando] = useState(false);
 
   async function manejarSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    setEnviando(true);
     const resultado = await registrar(username, password);
-    setEnviando(false);
-
     if (resultado.sesion === null) {
       setError(resultado.error);
       return;
@@ -61,8 +57,8 @@ export default function Register(props: RegisterProps) {
           autoComplete="new-password"
         />
 
-        <button type="submit" className="boton boton-crear" disabled={enviando}>
-          {enviando ? "Creando..." : "Crear"}
+        <button type="submit" className="boton boton-crear">
+          Crear
         </button>
       </form>
 

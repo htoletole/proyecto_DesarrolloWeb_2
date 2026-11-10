@@ -5,13 +5,13 @@ import iconoNormal from "../assets/icons/normal.png";
 import iconoAlta from "../assets/icons/alta.png";
 import iconoUrgente from "../assets/icons/urgente.png";
 import iconoCheck from "../assets/icons/check.png";
-import type { RamoResumen, Tarea } from "../services/tipos";
+import type { Tarea } from "../pages/Tareas";
 
 interface TarjetaProps {
   tarea: Tarea;
   modoEdicion: boolean;
   seleccionada: boolean;
-  onToggle: (id: number) => void;
+  onToggle: (id: string) => void;
   onVerDetalle?: (tarea: Tarea) => void;
 }
 
@@ -22,9 +22,6 @@ function TarjetaTarea({
   onToggle,
   onVerDetalle,
 }: TarjetaProps) {
-  // cuantas subtareas estan listas, para mostrar el avance en la tarjeta
-  const listas = tarea.subtareas.filter((subtarea) => subtarea.completada).length;
-
   return (
     <div
       className={`tarjeta-tarea ${seleccionada ? "seleccionada" : ""} ${modoEdicion ? "modo-edicion" : ""}`}
@@ -37,12 +34,7 @@ function TarjetaTarea({
       }}
     >
       <h4 className="tarjeta-tarea-titulo">{tarea.nombre}</h4>
-      <span className="tarjeta-tarea-subtitulo">{tarea.asignatura.nombre}</span>
-      {tarea.subtareas.length > 0 && (
-        <span className="tarjeta-tarea-subtareas">
-          {listas}/{tarea.subtareas.length} subtareas
-        </span>
-      )}
+      <span className="tarjeta-tarea-subtitulo">{tarea.asignatura}</span>
       {seleccionada && (
         <img
           src={iconoCheck}
@@ -56,25 +48,17 @@ function TarjetaTarea({
 
 interface SeccionFiltro {
   id: string;
-  titulo: string;
   icono?: string;
 }
 
 interface KanbanProps {
   tareas?: Tarea[];
-  ramos?: RamoResumen[];
+  ramos?: string[];
   modoEdicion?: boolean;
-  tareasSeleccionadas?: number[];
-  onToggleSeleccion?: (id: number) => void;
+  tareasSeleccionadas?: string[];
+  onToggleSeleccion?: (id: string) => void;
   onVerDetalle?: (tarea: Tarea) => void;
   filtro?: string;
-}
-
-// valor de la tarea que se compara con cada columna segun el filtro elegido
-function valorSegunFiltro(tarea: Tarea, filtro: string): string {
-  if (filtro === "normal") return tarea.estado;
-  if (filtro === "prioridad") return tarea.prioridad;
-  return String(tarea.asignaturaId);
 }
 
 function KanbanBoardTareas({
@@ -86,24 +70,27 @@ function KanbanBoardTareas({
   onVerDetalle,
   filtro = "",
 }: KanbanProps) {
-  let secciones: SeccionFiltro[];
+  let secciones: SeccionFiltro[], propiedadFiltro: keyof Tarea;
 
   if (filtro === "normal") {
+    propiedadFiltro = "estado";
     secciones = [
-      { id: "PENDIENTE", titulo: "Pendiente", icono: iconoReloj },
-      { id: "EN_PROGRESO", titulo: "En progreso", icono: iconoGrafico },
-      { id: "COMPLETADA", titulo: "Completada", icono: iconoCheck },
+      { id: "Pendiente", icono: iconoReloj },
+      { id: "En progreso", icono: iconoGrafico },
+      { id: "Completada", icono: iconoCheck },
     ];
   } else if (filtro === "prioridad") {
+    propiedadFiltro = "prioridad";
     secciones = [
-      { id: "BAJA", titulo: "Baja", icono: iconoBaja },
-      { id: "MEDIA", titulo: "Media", icono: iconoNormal },
-      { id: "ALTA", titulo: "Alta", icono: iconoAlta },
-      { id: "URGENTE", titulo: "Urgente", icono: iconoUrgente },
+      { id: "Baja", icono: iconoBaja },
+      { id: "Media", icono: iconoNormal },
+      { id: "Alta", icono: iconoAlta },
+      { id: "Urgente", icono: iconoUrgente },
     ];
   } else {
-    secciones = ramos.map((ramo) => {
-      return { id: String(ramo.id), titulo: ramo.nombre };
+    propiedadFiltro = "asignatura";
+    secciones = ramos.map((r) => {
+      return { id: r };
     });
   }
 
@@ -111,13 +98,13 @@ function KanbanBoardTareas({
     <div className="kanban-board">
       {secciones.map((seccion) => {
         const tareasColumna = tareas.filter(
-          (tarea) => valorSegunFiltro(tarea, filtro) === seccion.id
+          (t) => t[propiedadFiltro] === seccion.id,
         );
 
         return (
           <div key={seccion.id} className="kanban-row">
             <div className="kanban-header">
-              <h3>{seccion.titulo}</h3>
+              <h3>{seccion.id}</h3>
               {seccion.icono && (
                 <img
                   src={seccion.icono}
