@@ -12,9 +12,7 @@ export const TAREA_VACIA: Tarea = {
   horaEntrega: null,
   completadaEn: null,
   asignaturaId: 0,
-  evaluacionId: null,
   asignatura: { id: 0, nombre: "", color: "" },
-  evaluacion: null,
   subtareas: [],
 };
 

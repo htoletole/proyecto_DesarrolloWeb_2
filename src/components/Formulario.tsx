@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { FormEvent } from "react";
 import { ESTADOS, MODALIDADES, PRIORIDADES, TIPOS_EVALUACION, opcionesDe } from "../services/etiquetas";
 import type { Opcion } from "../services/tipos";
@@ -15,8 +14,6 @@ type FormularioProps = {
   onAceptar?: (datos: Record<string, FormDataEntryValue>) => void;
   valoresIniciales?: Record<string, string>;
   opcionesAsignatura?: Opcion[];
-  opcionesEvaluacion?: Opcion[];
-  opcionesPeriodo?: Opcion[];
   // mensaje de la API cuando algo no se pudo guardar
   error?: string;
   enviando?: boolean;
@@ -51,8 +48,6 @@ const Formulario = ({
   onAceptar,
   valoresIniciales = {},
   opcionesAsignatura = [],
-  opcionesEvaluacion = [],
-  opcionesPeriodo = [],
   error = "",
   enviando = false,
 }: FormularioProps) => {
@@ -90,10 +85,8 @@ const Formulario = ({
         </h2>
 
         <form className="formulario-contenido" onSubmit={manejarSubmit}>
-          {tipo === "ramo" && <CamposRamo valores={valoresIniciales} periodos={opcionesPeriodo} />}
-          {tipo === "tarea" && (
-            <CamposTarea valores={valoresIniciales} ramos={opcionesAsignatura} evaluaciones={opcionesEvaluacion} />
-          )}
+          {tipo === "ramo" && <CamposRamo valores={valoresIniciales} />}
+          {tipo === "tarea" && <CamposTarea valores={valoresIniciales} ramos={opcionesAsignatura} />}
           {tipo === "periodo" && <CamposPeriodo valores={valoresIniciales} />}
           {tipo === "evaluacion" && <CamposEvaluacion valores={valoresIniciales} />}
 
@@ -116,7 +109,7 @@ interface CamposProps {
   valores: Record<string, string>;
 }
 
-function CamposRamo({ valores, periodos }: CamposProps & { periodos: Opcion[] }) {
+function CamposRamo({ valores }: CamposProps) {
   return (
     <>
       <label>
@@ -126,12 +119,6 @@ function CamposRamo({ valores, periodos }: CamposProps & { periodos: Opcion[] })
       <label>
         ID:
         <input type="text" name="codigo" defaultValue={valores.codigo ?? ""} maxLength={20} required />
-      </label>
-      <label>
-        Período:
-        <select name="periodoId" defaultValue={valores.periodoId ?? ""} required>
-          <Opciones lista={periodos} />
-        </select>
       </label>
       <label>
         Modalidad:
@@ -156,11 +143,7 @@ function CamposRamo({ valores, periodos }: CamposProps & { periodos: Opcion[] })
   );
 }
 
-// la lista de evaluaciones cambia segun el ramo elegido
-function CamposTarea({ valores, ramos, evaluaciones }: CamposProps & { ramos: Opcion[]; evaluaciones: Opcion[] }) {
-  const [ramoElegido, setRamoElegido] = useState(valores.asignaturaId ?? "");
-  const evaluacionesDelRamo = evaluaciones.filter((evaluacion) => evaluacion.grupo === ramoElegido);
-
+function CamposTarea({ valores, ramos }: CamposProps & { ramos: Opcion[] }) {
   return (
     <>
       <label>
@@ -173,28 +156,10 @@ function CamposTarea({ valores, ramos, evaluaciones }: CamposProps & { ramos: Op
       </label>
       <label>
         Asignatura:
-        <select
-          name="asignaturaId"
-          defaultValue={valores.asignaturaId ?? ""}
-          onChange={(evento) => setRamoElegido(evento.target.value)}
-          required
-        >
+        <select name="asignaturaId" defaultValue={valores.asignaturaId ?? ""} required>
           <Opciones lista={ramos} />
         </select>
       </label>
-      {evaluacionesDelRamo.length > 0 && (
-        <label>
-          Evaluación que prepara (opcional):
-          <select name="evaluacionId" defaultValue={valores.evaluacionId ?? ""}>
-            <option value="">Ninguna</option>
-            {evaluacionesDelRamo.map((evaluacion) => (
-              <option key={evaluacion.valor} value={evaluacion.valor}>
-                {evaluacion.texto}
-              </option>
-            ))}
-          </select>
-        </label>
-      )}
       <label>
         Estado:
         <select name="estado" defaultValue={valores.estado ?? ""} required>

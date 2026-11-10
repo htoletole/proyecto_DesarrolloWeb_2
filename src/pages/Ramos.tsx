@@ -170,7 +170,8 @@ function Ramos() {
       nombre: String(datos.nombre ?? "").trim(),
       modalidad: String(datos.modalidad ?? "") as Modalidad,
       color: String(datos.colorRamo ?? "#FFAE52"),
-      periodoId: Number(datos.periodoId),
+      // el ramo queda en el periodo elegido en la pantalla
+      periodoId: periodoId,
     };
 
     // el logo solo se manda si se eligio uno nuevo
@@ -193,13 +194,7 @@ function Ramos() {
         avisar("Ramo editado", `¡El ramo "${datosRamo.nombre}" se editó con éxito!`);
       }
       cerrarFormulario();
-
-      // si se movio a otro periodo, se muestra ese periodo
-      if (datosRamo.periodoId !== periodoId) {
-        setPeriodoId(datosRamo.periodoId);
-      } else {
-        cargarRamos(periodoId);
-      }
+      cargarRamos(periodoId);
     } catch (e) {
       // por ejemplo: ya existe un ramo con esa ID en el periodo
       setErrorFormulario((e as Error).message);
@@ -299,11 +294,8 @@ function Ramos() {
         codigo: ramoAEditar.codigo,
         modalidad: ramoAEditar.modalidad,
         colorRamo: ramoAEditar.color,
-        periodoId: String(ramoAEditar.periodoId),
       }
-    : { periodoId: String(periodoId) };
-
-  const opcionesPeriodo = periodos.map((periodo) => ({ valor: String(periodo.id), texto: periodo.nombre }));
+    : {};
 
   return (
     <div className="min-vh-100 w-100 page-container ramos-page">
@@ -491,7 +483,6 @@ function Ramos() {
         tipo="ramo"
         modo={modoFormulario}
         valoresIniciales={valoresIniciales}
-        opcionesPeriodo={opcionesPeriodo}
         onCerrar={cerrarFormulario}
         onAceptar={guardarRamo}
         error={errorFormulario}

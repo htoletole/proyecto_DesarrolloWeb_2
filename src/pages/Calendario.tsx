@@ -5,7 +5,6 @@ import TareasDelDia from "../components/TareasDelDia";
 import DetalleTarea from "../components/DetalleTarea";
 import Formulario from "../components/Formulario";
 import EstadoCarga from "../components/EstadoCarga";
-import { fechaCortaTexto } from "../services/etiquetas";
 import { listarEvaluaciones } from "../services/evaluacionesApi";
 import { armarFecha, fechaDeHoy, fechaLarga } from "../services/fechas";
 import { buscarFeriado, obtenerFeriados } from "../services/publicApi";
@@ -197,18 +196,12 @@ function Calendario() {
           onCerrar={() => setEditando(false)}
           onAceptar={guardarEdicion}
           opcionesAsignatura={ramos.map((ramo) => ({ valor: String(ramo.id), texto: ramo.nombre }))}
-          opcionesEvaluacion={evaluaciones.map((evaluacion) => ({
-            valor: String(evaluacion.id),
-            texto: evaluacion.nombre + " (" + fechaCortaTexto(evaluacion.fecha) + ")",
-            grupo: String(evaluacion.asignaturaId),
-          }))}
           error={errorFormulario}
           enviando={enviando}
           valoresIniciales={{
             nombre: tareaAbierta.nombre,
             descripcion: tareaAbierta.descripcion,
             asignaturaId: String(tareaAbierta.asignaturaId),
-            evaluacionId: tareaAbierta.evaluacionId ? String(tareaAbierta.evaluacionId) : "",
             estado: tareaAbierta.estado,
             prioridad: tareaAbierta.prioridad,
             horaEntrega: tareaAbierta.horaEntrega ?? "",

@@ -88,7 +88,6 @@ const ModalDetalleTarea = ({ abierto, tarea, onCerrar, onEditar, onActualizada, 
           <h3 className="modal-detalle-titulo">{tarea.nombre}</h3>
           <p className="modal-detalle-ramo">
             {tarea.asignatura.nombre} · Prioridad {PRIORIDADES[tarea.prioridad]}
-            {tarea.evaluacion && <> · Prepara: {tarea.evaluacion.nombre}</>}
           </p>
 
           <div className="modal-detalle-info-box">

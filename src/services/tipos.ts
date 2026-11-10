@@ -49,9 +49,7 @@ export interface Tarea {
   horaEntrega: string | null;
   completadaEn: string | null;
   asignaturaId: number;
-  evaluacionId: number | null;
   asignatura: RamoResumen;
-  evaluacion: { id: number; nombre: string } | null;
   subtareas: Subtarea[];
 }
 
@@ -141,5 +139,4 @@ export interface ResumenDashboard {
 export interface Opcion {
   valor: string;
   texto: string;
-  grupo?: string;
 }

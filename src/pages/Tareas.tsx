@@ -8,11 +8,9 @@ import ModalConfirmacionTareas from '../components/ModalConfirmacionTareas';
 import ModalDetalleTarea from '../components/ModalDetalleTarea';
 import EstadoCarga from '../components/EstadoCarga';
 import Toast from '../components/Toast';
-import { fechaCortaTexto } from '../services/etiquetas';
-import { listarEvaluaciones } from '../services/evaluacionesApi';
 import { listarRamos } from '../services/ramosApi';
 import { crearTarea, datosDesdeFormulario, editarTarea, eliminarTarea, listarTareas } from '../services/tareasApi';
-import type { Evaluacion, Opcion, Ramo, Tarea } from '../services/tipos';
+import type { Opcion, Ramo, Tarea } from '../services/tipos';
 import { useSesion } from '../services/useSesion';
 
 import iconoInfo from '../assets/icons/info.png';
@@ -32,7 +30,6 @@ function Tareas() {
   // datos que vienen de la API
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [ramos, setRamos] = useState<Ramo[]>([]);
-  const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
 
@@ -55,19 +52,14 @@ function Tareas() {
     setAviso({ mostrar: true, titulo, mensaje, error: esError });
   }
 
-  // pide tareas, ramos y evaluaciones a la API
+  // pide tareas y ramos a la API
   async function cargar() {
     setCargando(true);
     setError('');
     try {
-      const [listaTareas, listaRamos, listaEvaluaciones] = await Promise.all([
-        listarTareas(),
-        listarRamos(),
-        listarEvaluaciones(),
-      ]);
+      const [listaTareas, listaRamos] = await Promise.all([listarTareas(), listarRamos()]);
       setTareas(listaTareas);
       setRamos(listaRamos);
-      setEvaluaciones(listaEvaluaciones);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -178,11 +170,6 @@ function Tareas() {
 
   // opciones de los select del formulario
   const opcionesRamos: Opcion[] = ramos.map((ramo) => ({ valor: String(ramo.id), texto: ramo.nombre }));
-  const opcionesEvaluaciones: Opcion[] = evaluaciones.map((evaluacion) => ({
-    valor: String(evaluacion.id),
-    texto: evaluacion.nombre + ' (' + fechaCortaTexto(evaluacion.fecha) + ')',
-    grupo: String(evaluacion.asignaturaId),
-  }));
 
   // Abrir el Modal Detalles con el ID desde el link
   const [searchParams, setSearchParams] = useSearchParams();
@@ -281,7 +268,6 @@ function Tareas() {
           nombre: tareaAEditar.nombre,
           descripcion: tareaAEditar.descripcion,
           asignaturaId: String(tareaAEditar.asignaturaId),
-          evaluacionId: tareaAEditar.evaluacionId ? String(tareaAEditar.evaluacionId) : '',
           estado: tareaAEditar.estado,
           prioridad: tareaAEditar.prioridad,
           fecha: tareaAEditar.fecha ?? '',
@@ -290,7 +276,6 @@ function Tareas() {
         onCerrar={() => setFormularioAbierto(false)}
         onAceptar={guardarTarea}
         opcionesAsignatura={opcionesRamos}
-        opcionesEvaluacion={opcionesEvaluaciones}
         error={errorFormulario}
         enviando={enviando}
       />
