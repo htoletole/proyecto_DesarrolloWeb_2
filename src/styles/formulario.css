@@ -205,7 +205,7 @@
     height: 55px;
   }
 }
-/* vista previa del color del ramo con su texto complementario */
+/* vista previa del color del ramo con su texto en escala de grises */
 .formulario-vista-color {
   display: flex;
   flex-direction: column;

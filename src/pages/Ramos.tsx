@@ -10,7 +10,7 @@ import iconoCheck from "../assets/icons/check.png";
 import "../styles/ramos.css";
 import Toast from "../components/Toast";
 import { EsqueletoRamos } from "../components/Esqueletos";
-import { colorComplementario } from "../services/colores";
+import { colorDeTexto } from "../services/colores";
 import {
   crearRamo,
   editarRamo,
@@ -330,12 +330,12 @@ function Ramos() {
                   key={`${ramo.id}-${index}`}
                   className={`ramo-card ${
                     modoSeleccion ? "modo-seleccion" : ""
-                  } ${seleccionado ? "seleccionado" : "texto-complementario"}`}
-                  // el texto de la tarjeta usa el complementario del color del ramo (ver ramos.css)
+                  } ${seleccionado ? "seleccionado" : "texto-contraste"}`}
+                  // el texto de la tarjeta va en gris oscuro o blanco segun el color del ramo (ver ramos.css)
                   style={
                     {
                       backgroundColor: ramo.colorRamo,
-                      "--ramo-texto": colorComplementario(ramo.colorRamo),
+                      "--ramo-texto": colorDeTexto(ramo.colorRamo),
                     } as React.CSSProperties
                   }
                   onClick={() => manejarClickRamo(ramo)}

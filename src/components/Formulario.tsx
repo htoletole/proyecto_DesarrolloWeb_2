@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { colorComplementario, contraste } from "../services/colores";
+import { colorDeTexto, contraste } from "../services/colores";
 import "../styles/formulario.css";
 
 type TipoFormulario = "ramo" | "tarea" | "evaluacion" | "periodo";
@@ -129,15 +129,15 @@ const Formulario = ({
                 />
               </label>
 
-              {/* vista previa: el texto usa el color complementario para que siempre se lea */}
+              {/* vista previa: el texto va en gris oscuro o blanco, el que mas contraste */}
               <div
                 className="formulario-vista-color"
-                style={{ backgroundColor: colorVista, color: colorComplementario(colorVista) }}
+                style={{ backgroundColor: colorVista, color: colorDeTexto(colorVista) }}
               >
                 <strong>Así se verá tu ramo</strong>
                 <span>
-                  Texto en color complementario · contraste{" "}
-                  {contraste(colorVista, colorComplementario(colorVista)).toFixed(1)}:1
+                  Texto en escala de grises · contraste{" "}
+                  {contraste(colorVista, colorDeTexto(colorVista)).toFixed(1)}:1
                 </span>
               </div>
             </>

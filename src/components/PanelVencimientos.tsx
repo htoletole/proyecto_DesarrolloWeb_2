@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 import type { ElementoResumen, Resumen } from "../services/dashboardApi";
 import { fechaCorta } from "../services/fechas";
-import { colorComplementario } from "../services/colores";
+import { colorDeTexto } from "../services/colores";
 
 interface PanelProps {
   resumen: Resumen | null;
@@ -91,7 +91,7 @@ function PanelVencimientos(props: PanelProps) {
               <ProgressBar porcentaje={ramo.porcentajeTareas} color={ramo.color} />
               <p
                 className="tareas tareas-ramo"
-                style={{ backgroundColor: ramo.color, color: colorComplementario(ramo.color) }}
+                style={{ backgroundColor: ramo.color, color: colorDeTexto(ramo.color) }}
               >
                 {ramo.nombre}
                 {ramo.promedioParcial !== null && " · " + ramo.promedioParcial.toFixed(1)}

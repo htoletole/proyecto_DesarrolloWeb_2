@@ -6,7 +6,7 @@ import iconoAlta from "../assets/icons/alta.png";
 import iconoUrgente from "../assets/icons/urgente.png";
 import iconoCheck from "../assets/icons/check.png";
 import type { Tarea } from "../pages/Tareas";
-import { colorComplementario } from "../services/colores";
+import { colorDeTexto } from "../services/colores";
 
 interface TarjetaProps {
   tarea: Tarea;
@@ -25,13 +25,13 @@ function TarjetaTarea({
   onVerDetalle,
   colorRamo,
 }: TarjetaProps) {
-  // la tarjeta toma el color de su ramo y el texto va en el color complementario
+  // la tarjeta toma el color de su ramo y el texto va en gris oscuro o blanco (el que mas contraste)
   // (si esta seleccionada se deja el verde de seleccion)
   let fondo = undefined;
   let texto = undefined;
   if (colorRamo && !seleccionada) {
     fondo = colorRamo;
-    texto = colorComplementario(colorRamo);
+    texto = colorDeTexto(colorRamo);
   }
 
   return (
@@ -125,7 +125,7 @@ function KanbanBoardTareas({
               className="kanban-header"
               style={colorSeccion ? { backgroundColor: colorSeccion } : undefined}
             >
-              <h3 style={colorSeccion ? { color: colorComplementario(colorSeccion) } : undefined}>
+              <h3 style={colorSeccion ? { color: colorDeTexto(colorSeccion) } : undefined}>
                 {seccion.id}
               </h3>
               {seccion.icono && (
