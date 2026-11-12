@@ -212,3 +212,120 @@
   background-color: red;
   text-align: start;
 }
+
+/* --- Pendientes y vencimientos --- */
+.panel-vencimientos {
+  background-color: white;
+  margin-top: 15px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  padding: 10px 15px;
+  color: #495e85;
+}
+
+.panel-vencimientos h3 {
+  color: #1b3f73;
+  font-weight: 800;
+  margin: 5px 5px 10px;
+}
+
+.resumen-bloque {
+  background-color: #f2f4fa;
+  border-radius: 15px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+}
+
+.resumen-bloque h4 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.resumen-bloque h4 span {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.resumen-bloque.vencidas h4 {
+  color: #ff3739;
+}
+
+.resumen-bloque.proximas h4 {
+  color: #f9b73d;
+}
+
+.resumen-bloque.evaluaciones h4 {
+  color: #8b62df;
+}
+
+.resumen-bloque.cumplimiento h4 {
+  color: #10823c;
+}
+
+.resumen-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.resumen-item:hover {
+  background-color: #e3e8f4;
+}
+
+.resumen-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.resumen-textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.resumen-textos strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resumen-textos span {
+  font-size: 13px;
+}
+
+.resumen-vacio {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.resumen-avance {
+  margin-top: 8px;
+}
+
+.resumen-avance-texto {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.resumen-avance-barra {
+  width: 100%;
+  height: 10px;
+  border-radius: 10px;
+  background-color: #d9dfec;
+  overflow: hidden;
+}
+
+.resumen-avance-barra div {
+  height: 100%;
+  border-radius: 10px;
+}

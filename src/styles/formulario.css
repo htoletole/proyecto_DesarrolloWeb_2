@@ -55,6 +55,14 @@
   --formulario-color: rgb(70 147 124);
 }
 
+.formulario-modal-evaluacion {
+  --formulario-color: #8b62df;
+}
+
+.formulario-modal-periodo {
+  --formulario-color: #59b7ff;
+}
+
 /* Botón cerrar */
 
 .formulario-cerrar {

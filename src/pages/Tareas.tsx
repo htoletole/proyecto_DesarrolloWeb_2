@@ -177,6 +177,18 @@ function Tareas() {
     setTareasSeleccionadas([]);
   };
 
+  // al cambiar una subtarea la API puede cambiar el estado de la tarea, asi que se vuelven a pedir
+  const recargarTareas = () => {
+    listarTareas()
+      .then((lista) => {
+        setTareas(lista);
+        setTareaEnDetalle((actual) =>
+          actual ? (lista.find((t) => t.id === actual.id) ?? actual) : null,
+        );
+      })
+      .catch((error) => console.error("Error al cargar tareas:", error));
+  };
+
   //Funciones Modal Detalles
   const abrirDetalle = (tarea: Tarea) => setTareaEnDetalle(tarea);
   const cerrarDetalle = () => setTareaEnDetalle(null);
@@ -301,6 +313,7 @@ function Tareas() {
         tarea={tareaEnDetalle}
         onCerrar={cerrarDetalle}
         onEditar={abrirFormularioEditar}
+        onSubtareasCambiadas={recargarTareas}
       />
 
       <Toast

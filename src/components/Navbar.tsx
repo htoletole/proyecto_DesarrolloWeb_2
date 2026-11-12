@@ -9,6 +9,8 @@ import homeIconGray from "../assets/icons/casa.png";
 import taskIconGray from "../assets/icons/portapapeles.png";
 import subjectIconGray from "../assets/icons/birrete.png";
 import calendarIconGray from "../assets/icons/calendario.png";
+// este icono es negro: se pinta gris o blanco con CSS (clase icono-filtrado)
+import evaluacionesIcon from "../assets/icons/grafico.png";
 
 import "../styles/navbar.css";
 
@@ -19,6 +21,7 @@ function Navbar() {
     "/": "",
     "/tareas": "nav-tareas",
     "/ramos": "nav-ramos",
+    "/evaluaciones": "nav-evaluaciones",
   };
 
   const navItems = [
@@ -49,6 +52,13 @@ function Navbar() {
       icon: calendarIconGray,
       activeIcon: calendarIconWhite,
       specialSize: "",
+    },
+    {
+      path: "/evaluaciones",
+      label: "Evaluaciones",
+      icon: evaluacionesIcon,
+      activeIcon: evaluacionesIcon,
+      specialSize: "icono-filtrado",
     },
   ];
 

@@ -4,6 +4,7 @@ import iconoReloj from '../assets/icons/reloj.png';
 import iconoDescripcion from '../assets/icons/descripcion.png';
 import iconoLapiz from '../assets/icons/lapiz.png';
 import type { Tarea } from '../pages/Tareas';
+import SubtareasTarea from './SubtareasTarea';
 import '../styles/tareas.css';
 
 interface ModalDetalleProps {
@@ -12,9 +13,10 @@ interface ModalDetalleProps {
   onCerrar: () => void;
   onEditar?: (tarea: Tarea) => void;
   colorTema?: string; // cambia el color
+  onSubtareasCambiadas?: () => void; // la tarea pudo cambiar de estado
 }
 
-const ModalDetalleTarea = ({ abierto, tarea, onCerrar, onEditar, colorTema = '#46937c' }: ModalDetalleProps) => {
+const ModalDetalleTarea = ({ abierto, tarea, onCerrar, onEditar, colorTema = '#46937c', onSubtareasCambiadas }: ModalDetalleProps) => {
   if (!abierto || !tarea) return null;
 
   // Formatea la fecha de YYYY-MM-DD a DD/MM/YYYY
@@ -68,6 +70,11 @@ const ModalDetalleTarea = ({ abierto, tarea, onCerrar, onEditar, colorTema = '#4
               <span className="info-box-label">Descripción:</span>
               <span className="info-box-valor">{tarea.descripcion || 'Sin descripción...'}</span>
             </div>
+          </div>
+
+          {/* subtareas de la tarea (se guardan en la API) */}
+          <div className="modal-detalle-info-box">
+            <SubtareasTarea tareaId={tarea.id} colorTema={colorTema} onCambio={onSubtareasCambiadas} />
           </div>
 
           <div className="modal-detalle-footer">

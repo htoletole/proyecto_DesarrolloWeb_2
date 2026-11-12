@@ -1,5 +1,6 @@
 import iconoUsuario from "../assets/images/usuario.png";
 import "../styles/headergeneral.css";
+import { Link } from "react-router-dom";
 import { ejecutarCerrarSesion } from "../services/authEvents";
 
 interface HeaderProps {
@@ -31,6 +32,16 @@ function HeaderGeneral({ titulo }: HeaderProps) {
           />
         </button>
         <ul className="dropdown-menu dropdown-menu-end p-0">
+          <li>
+            <Link className="dropdown-item boton-cerrar-sesion" to="/periodos">
+              Períodos académicos
+            </Link>
+          </li>
+          <li>
+            <Link className="dropdown-item boton-cerrar-sesion" to="/historial">
+              Historial de actividad
+            </Link>
+          </li>
           <li>
             <a
               className="dropdown-item boton-cerrar-sesion"

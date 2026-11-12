@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import iconoLapiz from "../assets/icons/lapiz.png";
 import type { Ramo } from "../pages/Ramos";
 import { listarTareas } from "../services/tareasApi";
+import { obtenerAvance } from "../services/ramosApi";
+import type { AvanceDeRamo } from "../services/ramosApi";
 import "../styles/ramos.css";
 
 type TareaRamo = {
@@ -29,6 +31,7 @@ const claseEstado = (estado?: string) => {
 const ModalDetalleRamo = ({ abierto, ramo, onCerrar, onEditar }: ModalDetalleRamoProps) => {
   const navigate = useNavigate();
   const [tareasGuardadas, setTareasGuardadas] = useState<TareaRamo[]>([]);
+  const [avance, setAvance] = useState<AvanceDeRamo | null>(null);
 
   // las tareas se piden a la API cada vez que se abre un ramo
   useEffect(() => {
@@ -37,6 +40,13 @@ const ModalDetalleRamo = ({ abierto, ramo, onCerrar, onEditar }: ModalDetalleRam
     listarTareas()
       .then((lista) => setTareasGuardadas(lista))
       .catch(() => setTareasGuardadas([]));
+
+    // el avance lo calcula la API con las tareas y las notas del ramo
+    if (ramo) {
+      obtenerAvance(ramo.id)
+        .then((datos) => setAvance(datos))
+        .catch(() => setAvance(null));
+    }
   }, [abierto, ramo?.id]);
 
   if (!abierto || !ramo) return null;
@@ -79,6 +89,35 @@ const ModalDetalleRamo = ({ abierto, ramo, onCerrar, onEditar }: ModalDetalleRam
             <span>Modalidad:</span>
             <div className="modal-detalle-ramo-modalidad-valor">{ramo.modalidad}</div>
           </div>
+
+          {avance && (
+            <div className="modal-detalle-ramo-avance">
+              <h3>Avance</h3>
+              <p>
+                Tareas completadas: <strong>{avance.tareasCompletadas} de {avance.totalTareas}</strong>
+              </p>
+              <div className="avance-barra">
+                <div
+                  className="avance-barra-relleno"
+                  style={{ width: avance.porcentajeTareas + "%", backgroundColor: ramo.colorRamo }}
+                />
+              </div>
+              <p>
+                Evaluaciones rendidas: <strong>{avance.ponderacionRendida}% de {avance.ponderacionTotal}%</strong>
+              </p>
+              <p>
+                Promedio parcial:{" "}
+                <strong>{avance.promedioParcial !== null ? avance.promedioParcial.toFixed(1) : "sin notas"}</strong>
+              </p>
+              <button
+                type="button"
+                className="modal-detalle-ramo-ver-evaluaciones"
+                onClick={() => navigate("/evaluaciones")}
+              >
+                Ver evaluaciones ›
+              </button>
+            </div>
+          )}
 
           <div className="modal-detalle-ramo-tareas">
             <h3>Tareas</h3>

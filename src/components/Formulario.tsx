@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import "../styles/formulario.css";
 
-type TipoFormulario = "ramo" | "tarea";
+type TipoFormulario = "ramo" | "tarea" | "evaluacion" | "periodo";
 type ModoFormulario = "crear" | "editar";
 
 type FormularioProps = {
@@ -27,7 +27,13 @@ const Formulario = ({
     return null;
   }
 
-  const nombreElemento = tipo === "ramo" ? "Ramo" : "Tarea";
+  const NOMBRES: Record<TipoFormulario, string> = {
+    ramo: "Ramo",
+    tarea: "Tarea",
+    evaluacion: "Evaluación",
+    periodo: "Período",
+  };
+  const nombreElemento = NOMBRES[tipo];
 
   const accion = modo === "crear" ? "Crea tu" : "Edita tu";
 
@@ -111,7 +117,7 @@ const Formulario = ({
                 />
               </label>
             </>
-          ) : (
+          ) : tipo === "tarea" ? (
             <>
               <label>
                 Nombre:
@@ -189,6 +195,114 @@ const Formulario = ({
                   type="time"
                   name="horaEntrega"
                   defaultValue={valoresIniciales.horaEntrega ?? ""}
+                />
+              </label>
+            </>
+          ) : tipo === "evaluacion" ? (
+            <>
+              <label>
+                Nombre:
+                <input
+                  type="text"
+                  name="nombre"
+                  defaultValue={valoresIniciales.nombre ?? ""}
+                  placeholder="Ej: Solemne 1"
+                  required
+                />
+              </label>
+              <label>
+                Ramo:
+                {/* al editar no se cambia el ramo, la API no lo permite */}
+                <select
+                  name="asignatura"
+                  defaultValue={valoresIniciales.asignatura ?? ""}
+                  disabled={modo === "editar"}
+                  required
+                >
+                  <option value="">Seleccionar</option>
+                  {opcionesAsignatura.map((asignatura) => (
+                    <option key={asignatura} value={asignatura}>
+                      {asignatura}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Tipo:
+                <select
+                  name="tipo"
+                  defaultValue={valoresIniciales.tipo ?? ""}
+                  required
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="PRUEBA">Prueba</option>
+                  <option value="CONTROL">Control</option>
+                  <option value="TRABAJO">Trabajo</option>
+                  <option value="PROYECTO">Proyecto</option>
+                  <option value="EXAMEN">Examen</option>
+                  <option value="PRESENTACION">Presentación</option>
+                </select>
+              </label>
+              <label>
+                Fecha:
+                <input
+                  type="date"
+                  name="fecha"
+                  defaultValue={valoresIniciales.fecha ?? ""}
+                  required
+                />
+              </label>
+              <label>
+                Ponderación (%):
+                <input
+                  type="number"
+                  name="ponderacion"
+                  min="1"
+                  max="100"
+                  defaultValue={valoresIniciales.ponderacion ?? ""}
+                  required
+                />
+              </label>
+              <label>
+                Nota (Opcional, de 1.0 a 7.0):
+                <input
+                  type="number"
+                  name="nota"
+                  min="1"
+                  max="7"
+                  step="0.1"
+                  defaultValue={valoresIniciales.nota ?? ""}
+                />
+              </label>
+            </>
+          ) : (
+            <>
+              <label>
+                Nombre:
+                <input
+                  type="text"
+                  name="nombre"
+                  defaultValue={valoresIniciales.nombre ?? ""}
+                  placeholder="Ej: 2026-2"
+                  required
+                />
+              </label>
+              <label>
+                Fecha de inicio:
+                <input
+                  type="date"
+                  name="fechaInicio"
+                  defaultValue={valoresIniciales.fechaInicio ?? ""}
+                  required
+                />
+              </label>
+              <label>
+                Fecha de término:
+                <input
+                  type="date"
+                  name="fechaFin"
+                  defaultValue={valoresIniciales.fechaFin ?? ""}
+                  required
                 />
               </label>
             </>

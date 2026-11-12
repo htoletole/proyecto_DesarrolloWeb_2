@@ -458,3 +458,37 @@
     font-size: 14px;
   }
 }
+
+/* avance del ramo dentro del detalle */
+.modal-detalle-ramo-avance { margin-top: 18px; }
+.modal-detalle-ramo-avance h3 {
+  margin: 0 0 10px;
+  color: #111111;
+  font-size: 24px;
+  font-weight: 600;
+}
+.modal-detalle-ramo-avance p {
+  margin: 6px 0;
+  color: #202020;
+  font-size: 15px;
+}
+.avance-barra {
+  width: 100%;
+  height: 14px;
+  border-radius: 10px;
+  background-color: #d9d9d9;
+  overflow: hidden;
+}
+.avance-barra-relleno {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}
+.modal-detalle-ramo-ver-evaluaciones {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #8b62df;
+  font-weight: 700;
+  cursor: pointer;
+}
