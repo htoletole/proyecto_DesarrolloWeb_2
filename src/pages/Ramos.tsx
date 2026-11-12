@@ -9,6 +9,8 @@ import iconoLapiz from "../assets/icons/lapiz.png";
 import iconoCheck from "../assets/icons/check.png";
 import "../styles/ramos.css";
 import Toast from "../components/Toast";
+import { EsqueletoRamos } from "../components/Esqueletos";
+import { colorDeTexto } from "../services/colores";
 import {
   crearRamo,
   editarRamo,
@@ -50,6 +52,7 @@ function Ramos() {
   });
 
   const [ramos, setRamos] = useState<Ramo[]>([]);
+  const [cargando, setCargando] = useState(true);
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState<ModoFormulario>("crear");
@@ -68,9 +71,12 @@ function Ramos() {
   useEffect(() => {
     if (!sesion) return;
 
+    // el esqueleto se ve hasta que llegan los ramos
+    setCargando(true);
     listarRamos()
       .then((lista) => setRamos(lista))
-      .catch((error) => console.error("Error al cargar ramos:", error));
+      .catch((error) => console.error("Error al cargar ramos:", error))
+      .finally(() => setCargando(false));
   }, [sesion?.id]);
 
   useEffect(() => {
@@ -312,64 +318,74 @@ function Ramos() {
           </div>
         </div>
 
-        <section className={vista === "grid" ? "ramos-grid" : "ramos-list"}>
-          {ramos.map((ramo, index) => {
-            const seleccionado = ramosSeleccionados.includes(ramo.id);
+        {cargando ? (
+          <EsqueletoRamos vista={vista} />
+        ) : (
+          <section className={vista === "grid" ? "ramos-grid" : "ramos-list"}>
+            {ramos.map((ramo, index) => {
+              const seleccionado = ramosSeleccionados.includes(ramo.id);
 
-            return (
-              <div
-                key={`${ramo.id}-${index}`}
-                className={`ramo-card ${
-                  modoSeleccion ? "modo-seleccion" : ""
-                } ${seleccionado ? "seleccionado" : ""}`}
-                style={{ backgroundColor: ramo.colorRamo }}
-                onClick={() => manejarClickRamo(ramo)}
-              >
-                {seleccionado && (
-                  <img
-                    src={iconoCheck}
-                    alt="Ramo seleccionado"
-                    className="ramo-check-seleccion"
-                  />
-                )}
+              return (
+                <div
+                  key={`${ramo.id}-${index}`}
+                  className={`ramo-card ${
+                    modoSeleccion ? "modo-seleccion" : ""
+                  } ${seleccionado ? "seleccionado" : "texto-contraste"}`}
+                  // el texto de la tarjeta va en gris oscuro o blanco segun el color del ramo (ver ramos.css)
+                  style={
+                    {
+                      backgroundColor: ramo.colorRamo,
+                      "--ramo-texto": colorDeTexto(ramo.colorRamo),
+                    } as React.CSSProperties
+                  }
+                  onClick={() => manejarClickRamo(ramo)}
+                >
+                  {seleccionado && (
+                    <img
+                      src={iconoCheck}
+                      alt="Ramo seleccionado"
+                      className="ramo-check-seleccion"
+                    />
+                  )}
 
-                <div className="ramo-card-superior">
-                  <div className="ramo-card-logo-contenedor">
-                    {ramo.logo ? (
-                      <img
-                        src={ramo.logo}
-                        alt={`Logo de ${ramo.nombre}`}
-                        className="ramo-card-logo"
-                      />
-                    ) : (
-                      <span className="ramo-card-logo-vacio">
-                        {ramo.nombre.charAt(0).toUpperCase()}
-                      </span>
-                    )}
+                  <div className="ramo-card-superior">
+                    <div className="ramo-card-logo-contenedor">
+                      {ramo.logo ? (
+                        <img
+                          src={ramo.logo}
+                          alt={`Logo de ${ramo.nombre}`}
+                          className="ramo-card-logo"
+                        />
+                      ) : (
+                        <span className="ramo-card-logo-vacio">
+                          {ramo.nombre.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="ramo-card-info">
+                      <h3>{ramo.nombre}</h3>
+                      <p className="ramo-card-id">{ramo.id}</p>
+                    </div>
+
+                    <span className="ramo-card-flecha">›</span>
                   </div>
 
-                  <div className="ramo-card-info">
-                    <h3>{ramo.nombre}</h3>
-                    <p className="ramo-card-id">{ramo.id}</p>
-                  </div>
+                  <div className="ramo-card-divisor" />
 
-                  <span className="ramo-card-flecha">›</span>
+                  <div className="ramo-card-detalle">
+                    <span className="ramo-card-detalle-icono">◉</span>
+
+                    <div>
+                      <span className="ramo-card-detalle-titulo">Modalidad</span>
+                      <p>{ramo.modalidad}</p>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="ramo-card-divisor" />
-
-                <div className="ramo-card-detalle">
-                  <span className="ramo-card-detalle-icono">◉</span>
-
-                  <div>
-                    <span className="ramo-card-detalle-titulo">Modalidad</span>
-                    <p>{ramo.modalidad}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </section>
+              );
+            })}
+          </section>
+        )}
       </main>
 
       <Formulario

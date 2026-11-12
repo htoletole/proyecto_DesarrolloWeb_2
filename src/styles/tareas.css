@@ -535,3 +535,91 @@
     height: 16px;
   }
 }
+/* --- Subtareas dentro del detalle --- */
+.subtareas {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.subtareas-lista {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.subtareas-lista li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a4d3a;
+}
+
+.subtareas-lista li label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  word-break: break-word;
+}
+
+.subtareas-lista li.hecha label {
+  text-decoration: line-through;
+  color: #6b7280;
+}
+
+.subtarea-eliminar {
+  border: none;
+  background: transparent;
+  color: #c91f22;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.subtareas-form {
+  display: flex;
+  gap: 6px;
+}
+
+.subtareas-form input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background-color: #ffffff;
+  outline: none;
+  font-size: 14px;
+}
+
+.subtareas-form button {
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.subtareas-vacio {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.subtareas-error {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #c91f22;
+  font-weight: 600;
+}

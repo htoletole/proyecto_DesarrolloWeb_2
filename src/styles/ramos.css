@@ -458,3 +458,53 @@
     font-size: 14px;
   }
 }
+
+/* avance del ramo dentro del detalle */
+.modal-detalle-ramo-avance { margin-top: 18px; }
+.modal-detalle-ramo-avance h3 {
+  margin: 0 0 10px;
+  color: #111111;
+  font-size: 24px;
+  font-weight: 600;
+}
+.modal-detalle-ramo-avance p {
+  margin: 6px 0;
+  color: #202020;
+  font-size: 15px;
+}
+.avance-barra {
+  width: 100%;
+  height: 14px;
+  border-radius: 10px;
+  background-color: #d9d9d9;
+  overflow: hidden;
+}
+.avance-barra-relleno {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}
+.modal-detalle-ramo-ver-evaluaciones {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #8b62df;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* texto en escala de grises: cada tarjeta recibe --ramo-texto (casi negro o blanco) segun su color */
+.ramos-page .ramo-card.texto-contraste,
+.ramos-page .ramo-card.texto-contraste .ramo-card-info h3,
+.ramos-page .ramo-card.texto-contraste .ramo-card-info .ramo-card-id,
+.ramos-page .ramo-card.texto-contraste .ramo-card-flecha,
+.ramos-page .ramo-card.texto-contraste .ramo-card-logo-vacio,
+.ramos-page .ramo-card.texto-contraste .ramo-card-detalle-icono,
+.ramos-page .ramo-card.texto-contraste .ramo-card-detalle-titulo,
+.ramos-page .ramo-card.texto-contraste .ramo-card-detalle p {
+  color: var(--ramo-texto);
+}
+.ramos-page .ramo-card.texto-contraste .ramo-card-divisor {
+  background-color: var(--ramo-texto);
+  opacity: 0.3;
+}

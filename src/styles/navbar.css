@@ -74,3 +74,28 @@
   margin-bottom: -7px;
   margin-top: -3px;
 }
+
+.navdiv.nav-evaluaciones {
+  background-color: #8b62df;
+}
+
+/* iconos negros: grises cuando no estan activos y blancos cuando si */
+.icono-filtrado {
+  filter: invert(85%);
+}
+
+.custom-nav-link.active .icono-filtrado {
+  filter: invert(100%);
+}
+
+/* con 5 opciones los textos se achican en el celular */
+@media (max-width: 480px) {
+  .custom-nav-link span {
+    font-size: 12px;
+  }
+
+  .custom-nav-link {
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+  }
+}

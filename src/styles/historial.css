@@ -1,0 +1,131 @@
+/* panel de historial: tarjetas simples en el azul del progreso del inicio */
+.historial-page {
+  --historial-azul: #0a5abb;
+  --historial-claro: #eef2f8;
+}
+
+.historial-page .header-general,
+.historial-page .info-banner.info-banner-historial {
+  background-color: var(--historial-azul);
+}
+
+.historial-selector {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 15px;
+  border-radius: 20px;
+  background-color: var(--historial-azul);
+}
+
+.historial-selector button {
+  border: none;
+  border-radius: 16px;
+  padding: 6px 16px;
+  background: transparent;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.historial-selector button.active {
+  background-color: #59b7ff;
+}
+
+.historial-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.historial-item {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.historial-item-superior {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.historial-accion,
+.historial-entidad {
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.historial-accion {
+  color: #ffffff;
+  background-color: #495e85;
+}
+
+.historial-accion.accion-crear {
+  background-color: #10823c;
+}
+
+.historial-accion.accion-editar {
+  background-color: #f9b73d;
+}
+
+.historial-accion.accion-eliminar {
+  background-color: #ff3739;
+}
+
+.historial-entidad {
+  background-color: var(--historial-claro);
+  color: #1b3f73;
+}
+
+.historial-fecha {
+  margin-left: auto;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.historial-descripcion {
+  margin: 0;
+  color: #1f2937;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.historial-cambios {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #495e85;
+}
+
+.historial-postergadas {
+  background: linear-gradient(to right, #0a5abb, #8b62df);
+  color: #ffffff;
+  border-radius: 15px;
+  padding: 12px 18px;
+  margin-bottom: 15px;
+}
+
+.historial-postergadas h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.historial-postergadas p {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.historial-vacio {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 10px 6px;
+}

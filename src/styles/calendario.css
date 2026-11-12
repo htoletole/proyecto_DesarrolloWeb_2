@@ -239,3 +239,45 @@
   background-color: #1b3f73;
   color: #ffffff;
 }
+
+/* --- Evaluaciones en el calendario (punto morado) --- */
+.cal-dia-con-evaluacion::before {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background-color: #8b62df;
+}
+
+/* si el dia tiene tarea y evaluacion, los dos puntos van lado a lado */
+.cal-dia-con-tarea.cal-dia-con-evaluacion::after {
+  margin-left: -8px;
+}
+
+.cal-dia-con-tarea.cal-dia-con-evaluacion::before {
+  margin-left: 2px;
+}
+
+.cal-punto-evaluacion::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background-color: #8b62df;
+}
+
+.cal-evaluacion {
+  background-color: #f1ecfc;
+  border-left: 4px solid #8b62df;
+}
+
+.cal-evaluacion small {
+  color: #5b3fb0;
+  font-weight: 600;
+}

@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import HeaderDashboard from "../components/HeaderFlotante";
 import WeeklyProgressPanel from "../components/WeeklyProgressPanel";
 import KanbanBoard from "../components/KanbanBoard";
+import PanelVencimientos from "../components/PanelVencimientos";
+import { obtenerResumen } from "../services/dashboardApi";
+import { EsqueletoInicio } from "../components/Esqueletos";
+import type { Resumen } from "../services/dashboardApi";
 import type { Tarea } from "./Tareas";
 import { useSesion } from "../services/useSesion";
 import { listarTareas } from "../services/tareasApi";
@@ -12,14 +16,26 @@ function Dashboard() {
   const username = "qué gusto verte"
   
   const [tareas, setTareas] = useState<Tarea[]>([]);
+  const [resumen, setResumen] = useState<Resumen | null>(null);
+  const [cargando, setCargando] = useState(true);
 
   // las tareas se piden a la API cuando hay una sesion iniciada
   useEffect(() => {
     if (!sesion) return;
 
-    listarTareas()
+    // el esqueleto se ve hasta que llegan las tareas y el resumen
+    setCargando(true);
+
+    const pedirTareas = listarTareas()
       .then((lista) => setTareas(lista))
       .catch((error) => console.error("Error al cargar tareas:", error));
+
+    // vencimientos, proximas evaluaciones y avance por ramo
+    const pedirResumen = obtenerResumen()
+      .then((datos) => setResumen(datos))
+      .catch((error) => console.error("Error al cargar el resumen:", error));
+
+    Promise.allSettled([pedirTareas, pedirResumen]).then(() => setCargando(false));
   }, [sesion?.id]);
 
   const ordenPrioridad: Record<Tarea["prioridad"], number> = {
@@ -46,16 +62,23 @@ function Dashboard() {
   return (
     <div className="min-vh-100 w-100 p-2 fondo-dashboard">
       <HeaderDashboard username={sesion ? sesion.username : username} titulo="¡Hola, " />
-      <WeeklyProgressPanel
-        pendientes={tareasPendientes.length}
-        enProgreso={tareasProgreso.length}
-        completadas={tareasCompletadas.length}
-      />
-      <KanbanBoard
-        pendientes={tareasPendientes}
-        enProgreso={tareasProgreso}
-        completadas={tareasCompletadas}
-      />
+      {cargando ? (
+        <EsqueletoInicio />
+      ) : (
+        <>
+          <WeeklyProgressPanel
+            pendientes={tareasPendientes.length}
+            enProgreso={tareasProgreso.length}
+            completadas={tareasCompletadas.length}
+          />
+          <PanelVencimientos resumen={resumen} />
+          <KanbanBoard
+            pendientes={tareasPendientes}
+            enProgreso={tareasProgreso}
+            completadas={tareasCompletadas}
+          />
+        </>
+      )}
     </div>
   );
 }
