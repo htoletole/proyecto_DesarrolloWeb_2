@@ -213,119 +213,62 @@
   text-align: start;
 }
 
-/* --- Pendientes y vencimientos --- */
-.panel-vencimientos {
-  background-color: white;
+/* --- Cumplimiento por ramo (mismo diseño que el progreso global) --- */
+.panel-cumplimiento {
   margin-top: 15px;
-  border-radius: 15px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  padding: 10px 15px;
-  color: #495e85;
 }
 
-.panel-vencimientos h3 {
-  color: #1b3f73;
-  font-weight: 800;
-  margin: 5px 5px 10px;
+.panel-cumplimiento .tareas-ramo {
+  white-space: normal;
+  text-align: center;
+  line-height: normal;
+  max-width: 90%;
 }
 
-.resumen-bloque {
-  background-color: #f2f4fa;
-  border-radius: 15px;
-  padding: 10px 15px;
-  margin-bottom: 10px;
+/* --- Vencidas, vencen esta semana y proximas evaluaciones --- */
+.panel-vencimientos {
+  margin-bottom: 0;
 }
 
-.resumen-bloque h4 {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 6px;
+/* vencidas: casi negro, pero se sigue leyendo */
+.vencidas {
+  background-color: #3a3a40;
 }
 
-.resumen-bloque h4 span {
-  font-weight: 600;
-  font-size: 15px;
+.vencidas h4 {
+  color: #f2f2f4;
 }
 
-.resumen-bloque.vencidas h4 {
-  color: #ff3739;
+.colores-claros .vencidas {
+  background-color: #dcdce0;
 }
 
-.resumen-bloque.proximas h4 {
-  color: #f9b73d;
+/* vencen esta semana: gris mas suave */
+.vencen-semana {
+  background-color: #d3d6db;
 }
 
-.resumen-bloque.evaluaciones h4 {
-  color: #8b62df;
+.vencen-semana h4 {
+  color: #5c636e;
 }
 
-.resumen-bloque.cumplimiento h4 {
-  color: #10823c;
+.colores-claros .vencen-semana {
+  background-color: #eef0f2;
 }
 
-.resumen-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 4px;
-  border-radius: 10px;
-  cursor: pointer;
+/* proximas evaluaciones: el morado de evaluaciones */
+.proximas-evaluaciones {
+  background-color: #cdbaf5;
 }
 
-.resumen-item:hover {
-  background-color: #e3e8f4;
+.proximas-evaluaciones h4 {
+  color: #6d43c9;
 }
 
-.resumen-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.colores-claros .proximas-evaluaciones {
+  background-color: #f1ecfc;
 }
 
-.resumen-textos {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  line-height: 1.2;
-}
-
-.resumen-textos strong {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.resumen-textos span {
-  font-size: 13px;
-}
-
-.resumen-vacio {
-  margin: 0 0 6px;
-  font-size: 14px;
-}
-
-.resumen-avance {
-  margin-top: 8px;
-}
-
-.resumen-avance-texto {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.resumen-avance-barra {
-  width: 100%;
-  height: 10px;
-  border-radius: 10px;
-  background-color: #d9dfec;
-  overflow: hidden;
-}
-
-.resumen-avance-barra div {
-  height: 100%;
-  border-radius: 10px;
+.vencidas.link-estados {
+  color: #f2f2f4;
 }
