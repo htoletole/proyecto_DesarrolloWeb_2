@@ -1,0 +1,163 @@
+/* esqueletos de carga ("bones"): bloques grises con un brillo que se mueve */
+
+.esqueleto {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: esqueletoBrillo 1.2s ease-in-out infinite;
+}
+
+/* version para fondos oscuros (paneles con degradado del inicio) */
+.esqueleto-oscuro {
+  background: linear-gradient(90deg, rgb(255 255 255 / 18%) 25%, rgb(255 255 255 / 35%) 50%, rgb(255 255 255 / 18%) 75%);
+  background-size: 200% 100%;
+  animation: esqueletoBrillo 1.2s ease-in-out infinite;
+}
+
+@keyframes esqueletoBrillo {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* piezas que se repiten */
+.esqueleto-header {
+  width: 160px;
+  height: 38px;
+  border-radius: 20px;
+}
+
+.esqueleto-tarjeta {
+  min-width: 200px;
+  min-height: 90px;
+  border-radius: 14px;
+  padding: 16px 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+}
+
+.esqueleto-linea {
+  height: 14px;
+  border-radius: 7px;
+}
+
+.esqueleto-linea.corta {
+  width: 55%;
+}
+
+.esqueleto-linea.media {
+  width: 75%;
+}
+
+.esqueleto-circulo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* inicio: medidores en forma de arco como los de progreso global */
+.esqueleto-panel-progreso {
+  min-height: 260px;
+}
+
+.esqueleto-pildora {
+  width: 180px;
+  height: 36px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.esqueleto-medidor {
+  width: 150px;
+  height: 75px;
+  border-radius: 75px 75px 0 0;
+  margin-top: 20px;
+}
+
+/* ramos: misma medida que las tarjetas de ramos */
+.esqueleto-ramo {
+  min-height: 185px;
+  padding: 15px;
+  border-radius: 14px;
+  border: 1px solid rgb(0 0 0 / 7%);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 10%);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.esqueleto-ramo-superior {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.esqueleto-ramo-superior > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* calendario: la tarjeta del mes con sus dias */
+.esqueleto-dia {
+  height: 38px;
+  border-radius: 50%;
+  width: 38px;
+  margin: 0 auto;
+}
+
+.esqueleto-selector {
+  width: 90px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+/* listas (evaluaciones, periodos, historial, subtareas) */
+.esqueleto-fila {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.esqueleto-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.esqueleto-bloque {
+  width: 100%;
+  height: 40px;
+  border-radius: 20px;
+}
+
+/* aviso si la carga pasa del tiempo esperado */
+.aviso-carga-lenta {
+  margin: 12px 0 0;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto,
+  .esqueleto-oscuro {
+    animation: none;
+  }
+}

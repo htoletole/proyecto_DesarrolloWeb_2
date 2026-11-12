@@ -7,7 +7,7 @@ import KanbanBoardTareas from "../components/KanbanBoardTareasDefinitivo";
 import Formulario from "../components/Formulario";
 import ModalConfirmacionTareas from "../components/ModalConfirmacionTareas";
 import ModalDetalleTarea from "../components/ModalDetalleTarea";
-import EsqueletoTareas from "../components/EsqueletoTareas";
+import { EsqueletoTareas } from "../components/Esqueletos";
 
 import iconoInfo from "../assets/icons/info.png";
 import iconoMas from "../assets/icons/mas.png";
@@ -84,7 +84,7 @@ function Tareas() {
       .then((lista) => setTareas(lista))
       .catch((error) => console.error("Error al cargar tareas:", error));
 
-    Promise.all([pedirRamos, pedirTareas]).finally(() => setCargando(false));
+    Promise.allSettled([pedirRamos, pedirTareas]).then(() => setCargando(false));
   }, [sesion?.id]);
 
   const aplicarFiltro = (filtro: string) => {

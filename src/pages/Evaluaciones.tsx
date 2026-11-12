@@ -3,6 +3,7 @@ import HeaderFixed from "../components/HeaderFixed";
 import Formulario from "../components/Formulario";
 import ModalConfirmacionTareas from "../components/ModalConfirmacionTareas";
 import Toast from "../components/Toast";
+import { EsqueletoLista } from "../components/Esqueletos";
 import iconoInfo from "../assets/icons/info.png";
 import iconoMas from "../assets/icons/mas.png";
 import {
@@ -44,6 +45,7 @@ function Evaluaciones() {
   const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([]);
   const [ramos, setRamos] = useState<RamoSimple[]>([]);
   const [filtroRamo, setFiltroRamo] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState<ModoFormulario>("crear");
@@ -58,13 +60,18 @@ function Evaluaciones() {
   useEffect(() => {
     if (!sesion) return;
 
-    listarRamosSimples()
+    // el esqueleto se ve hasta que llegan los ramos y las evaluaciones
+    setCargando(true);
+
+    const pedirRamos = listarRamosSimples()
       .then((lista) => setRamos(lista))
       .catch((error) => console.error("Error al cargar ramos:", error));
 
-    listarEvaluaciones()
+    const pedirEvaluaciones = listarEvaluaciones()
       .then((lista) => setEvaluaciones(lista))
       .catch((error) => console.error("Error al cargar evaluaciones:", error));
+
+    Promise.allSettled([pedirRamos, pedirEvaluaciones]).then(() => setCargando(false));
   }, [sesion?.id]);
 
   const avisar = (titulo: string, mensaje: string) => {
@@ -190,11 +197,13 @@ function Evaluaciones() {
           </select>
         </div>
 
-        {ramos.length === 0 && (
+        {cargando && <EsqueletoLista grupos={2} filas={2} />}
+
+        {!cargando && ramos.length === 0 && (
           <p className="evaluaciones-vacio">Todavía no tienes ramos. Crea uno en el panel de Ramos.</p>
         )}
 
-        {ramosAMostrar.map((ramo) => {
+        {!cargando && ramosAMostrar.map((ramo) => {
           const delRamo = evaluaciones
             .filter((evaluacion) => evaluacion.ramoId === ramo.id)
             .sort((a, b) => a.fecha.localeCompare(b.fecha));

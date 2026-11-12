@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import HeaderFixed from "../components/HeaderFixed";
 import iconoInfo from "../assets/icons/info.png";
+import { EsqueletoLista } from "../components/Esqueletos";
 import {
   listarActividad,
   listarPlanificacion,
@@ -131,7 +132,7 @@ function Historial() {
           </button>
         </div>
 
-        {cargando && <p className="historial-vacio">Cargando...</p>}
+        {cargando && <EsqueletoLista filas={5} conEncabezado={false} />}
         {error !== "" && <p className="historial-vacio">{error}</p>}
 
         {!cargando && error === "" && vista === "actividad" && (

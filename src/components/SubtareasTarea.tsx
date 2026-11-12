@@ -8,6 +8,7 @@ import {
 } from "../services/subtareasApi";
 import type { Subtarea } from "../services/subtareasApi";
 import "../styles/tareas.css";
+import { EsqueletoLineas } from "./Esqueletos";
 
 interface SubtareasProps {
   tareaId: string;
@@ -23,11 +24,14 @@ function SubtareasTarea(props: SubtareasProps) {
   const [subtareas, setSubtareas] = useState<Subtarea[]>([]);
   const [nueva, setNueva] = useState("");
   const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
+    setCargando(true);
     listarSubtareas(tareaId)
       .then((lista) => setSubtareas(lista))
-      .catch(() => setSubtareas([]));
+      .catch(() => setSubtareas([]))
+      .finally(() => setCargando(false));
   }, [tareaId]);
 
   async function agregar(e: SyntheticEvent<HTMLFormElement>) {
@@ -75,7 +79,9 @@ function SubtareasTarea(props: SubtareasProps) {
         Subtareas ({completadas}/{subtareas.length}):
       </span>
 
-      {subtareas.length === 0 && <p className="subtareas-vacio">Sin subtareas.</p>}
+      {cargando && <EsqueletoLineas cantidad={2} />}
+
+      {!cargando && subtareas.length === 0 && <p className="subtareas-vacio">Sin subtareas.</p>}
 
       <ul className="subtareas-lista">
         {subtareas.map((subtarea) => (

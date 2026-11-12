@@ -5,6 +5,7 @@ import type { Ramo } from "../pages/Ramos";
 import { listarTareas } from "../services/tareasApi";
 import { obtenerAvance } from "../services/ramosApi";
 import type { AvanceDeRamo } from "../services/ramosApi";
+import { EsqueletoLineas } from "./Esqueletos";
 import "../styles/ramos.css";
 
 type TareaRamo = {
@@ -32,21 +33,28 @@ const ModalDetalleRamo = ({ abierto, ramo, onCerrar, onEditar }: ModalDetalleRam
   const navigate = useNavigate();
   const [tareasGuardadas, setTareasGuardadas] = useState<TareaRamo[]>([]);
   const [avance, setAvance] = useState<AvanceDeRamo | null>(null);
+  const [cargando, setCargando] = useState(true);
 
   // las tareas se piden a la API cada vez que se abre un ramo
   useEffect(() => {
     if (!abierto) return;
 
-    listarTareas()
+    // mientras llegan las tareas y el avance se ven lineas de carga
+    setCargando(true);
+
+    const pedirTareas = listarTareas()
       .then((lista) => setTareasGuardadas(lista))
       .catch(() => setTareasGuardadas([]));
 
     // el avance lo calcula la API con las tareas y las notas del ramo
+    let pedirAvance = Promise.resolve();
     if (ramo) {
-      obtenerAvance(ramo.id)
+      pedirAvance = obtenerAvance(ramo.id)
         .then((datos) => setAvance(datos))
         .catch(() => setAvance(null));
     }
+
+    Promise.allSettled([pedirTareas, pedirAvance]).then(() => setCargando(false));
   }, [abierto, ramo?.id]);
 
   if (!abierto || !ramo) return null;
@@ -90,7 +98,14 @@ const ModalDetalleRamo = ({ abierto, ramo, onCerrar, onEditar }: ModalDetalleRam
             <div className="modal-detalle-ramo-modalidad-valor">{ramo.modalidad}</div>
           </div>
 
-          {avance && (
+          {cargando && (
+            <div className="modal-detalle-ramo-avance">
+              <h3>Avance</h3>
+              <EsqueletoLineas cantidad={3} />
+            </div>
+          )}
+
+          {!cargando && avance && (
             <div className="modal-detalle-ramo-avance">
               <h3>Avance</h3>
               <p>
@@ -121,7 +136,9 @@ const ModalDetalleRamo = ({ abierto, ramo, onCerrar, onEditar }: ModalDetalleRam
 
           <div className="modal-detalle-ramo-tareas">
             <h3>Tareas</h3>
-            {tareas.length > 0 ? (
+            {cargando ? (
+              <EsqueletoLineas cantidad={2} />
+            ) : tareas.length > 0 ? (
               <div className="modal-detalle-ramo-lista-tareas">
                 {tareas.map((tarea) => (
                   <button

@@ -3,6 +3,7 @@ import HeaderFixed from "../components/HeaderFixed";
 import Formulario from "../components/Formulario";
 import ModalConfirmacionTareas from "../components/ModalConfirmacionTareas";
 import Toast from "../components/Toast";
+import { EsqueletoLista } from "../components/Esqueletos";
 import iconoInfo from "../assets/icons/info.png";
 import iconoMas from "../assets/icons/mas.png";
 import {
@@ -24,6 +25,7 @@ function Periodos() {
   const hoy = fechaDeHoy();
 
   const [periodos, setPeriodos] = useState<Periodo[]>([]);
+  const [cargando, setCargando] = useState(true);
 
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState<ModoFormulario>("crear");
@@ -38,9 +40,11 @@ function Periodos() {
   useEffect(() => {
     if (!sesion) return;
 
+    setCargando(true);
     listarPeriodos()
       .then((lista) => setPeriodos(lista))
-      .catch((error) => console.error("Error al cargar períodos:", error));
+      .catch((error) => console.error("Error al cargar períodos:", error))
+      .finally(() => setCargando(false));
   }, [sesion?.id]);
 
   const avisar = (titulo: string, mensaje: string) => {
@@ -144,7 +148,9 @@ function Periodos() {
           </button>
         </div>
 
-        {ordenados.length === 0 && (
+        {cargando && <EsqueletoLista filas={2} conEncabezado={false} />}
+
+        {!cargando && ordenados.length === 0 && (
           <p className="periodos-vacio">Todavía no tienes períodos. Se crea uno solo al crear tu primer ramo.</p>
         )}
 
