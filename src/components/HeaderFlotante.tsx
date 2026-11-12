@@ -37,7 +37,7 @@ function HeaderDashboard(props: HeaderProps) {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <img src={profilePicture} alt="Profile picture" />
+              <img src={profilePicture} alt="Profile picture" className="avatar-usuario" />
             </button>
             <ul className="dropdown-menu dropdown-menu-end p-0">
               <li>

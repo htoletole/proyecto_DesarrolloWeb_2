@@ -7,6 +7,7 @@ import KanbanBoardTareas from "../components/KanbanBoardTareasDefinitivo";
 import Formulario from "../components/Formulario";
 import ModalConfirmacionTareas from "../components/ModalConfirmacionTareas";
 import ModalDetalleTarea from "../components/ModalDetalleTarea";
+import EsqueletoTareas from "../components/EsqueletoTareas";
 
 import iconoInfo from "../assets/icons/info.png";
 import iconoMas from "../assets/icons/mas.png";
@@ -40,6 +41,8 @@ function Tareas() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [opcionesRamos, setOpcionesRamos] = useState<string[]>([]);
+  const [coloresRamos, setColoresRamos] = useState<Record<string, string>>({});
+  const [cargando, setCargando] = useState(true);
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [busqueda, setBusqueda] = useState("");
 
@@ -63,13 +66,25 @@ function Tareas() {
   useEffect(() => {
     if (!sesion) return;
 
-    listarRamos()
-      .then((ramos) => setOpcionesRamos(ramos.map((ramo) => ramo.nombre)))
+    // mientras llegan los datos se muestra el esqueleto de carga
+    setCargando(true);
+
+    const pedirRamos = listarRamos()
+      .then((ramos) => {
+        setOpcionesRamos(ramos.map((ramo) => ramo.nombre));
+        const colores: Record<string, string> = {};
+        for (const ramo of ramos) {
+          colores[ramo.nombre] = ramo.colorRamo;
+        }
+        setColoresRamos(colores);
+      })
       .catch((error) => console.error("Error al cargar ramos:", error));
 
-    listarTareas()
+    const pedirTareas = listarTareas()
       .then((lista) => setTareas(lista))
       .catch((error) => console.error("Error al cargar tareas:", error));
+
+    Promise.all([pedirRamos, pedirTareas]).finally(() => setCargando(false));
   }, [sesion?.id]);
 
   const aplicarFiltro = (filtro: string) => {
@@ -276,15 +291,20 @@ function Tareas() {
           </div>
         </div>
 
-        <KanbanBoardTareas
-          tareas={tareasFiltradas}
-          ramos={opcionesRamos}
-          modoEdicion={modoEdicion}
-          tareasSeleccionadas={tareasSeleccionadas}
-          onToggleSeleccion={toggleSeleccionTarea}
-          onVerDetalle={abrirDetalle}
-          filtro={tipoFiltro}
-        />
+        {cargando ? (
+          <EsqueletoTareas />
+        ) : (
+          <KanbanBoardTareas
+            tareas={tareasFiltradas}
+            ramos={opcionesRamos}
+            modoEdicion={modoEdicion}
+            tareasSeleccionadas={tareasSeleccionadas}
+            onToggleSeleccion={toggleSeleccionTarea}
+            onVerDetalle={abrirDetalle}
+            filtro={tipoFiltro}
+            coloresRamos={coloresRamos}
+          />
+        )}
       </main>
 
       <Navbar />

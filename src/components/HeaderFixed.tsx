@@ -27,7 +27,7 @@ function HeaderGeneral({ titulo }: HeaderProps) {
           <img
             src={iconoUsuario}
             alt="Perfil de usuario"
-            className="w-100 h-100"
+            className="w-100 h-100 avatar-usuario"
             style={{ objectFit: "cover" }}
           />
         </button>

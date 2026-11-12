@@ -6,6 +6,7 @@ import iconoAlta from "../assets/icons/alta.png";
 import iconoUrgente from "../assets/icons/urgente.png";
 import iconoCheck from "../assets/icons/check.png";
 import type { Tarea } from "../pages/Tareas";
+import { colorComplementario } from "../services/colores";
 
 interface TarjetaProps {
   tarea: Tarea;
@@ -13,6 +14,7 @@ interface TarjetaProps {
   seleccionada: boolean;
   onToggle: (id: string) => void;
   onVerDetalle?: (tarea: Tarea) => void;
+  colorRamo?: string;
 }
 
 function TarjetaTarea({
@@ -21,10 +23,21 @@ function TarjetaTarea({
   seleccionada,
   onToggle,
   onVerDetalle,
+  colorRamo,
 }: TarjetaProps) {
+  // la tarjeta toma el color de su ramo y el texto va en el color complementario
+  // (si esta seleccionada se deja el verde de seleccion)
+  let fondo = undefined;
+  let texto = undefined;
+  if (colorRamo && !seleccionada) {
+    fondo = colorRamo;
+    texto = colorComplementario(colorRamo);
+  }
+
   return (
     <div
       className={`tarjeta-tarea ${seleccionada ? "seleccionada" : ""} ${modoEdicion ? "modo-edicion" : ""}`}
+      style={{ backgroundColor: fondo }}
       onClick={() => {
         if (modoEdicion) {
           onToggle(tarea.id);
@@ -33,8 +46,8 @@ function TarjetaTarea({
         }
       }}
     >
-      <h4 className="tarjeta-tarea-titulo">{tarea.nombre}</h4>
-      <span className="tarjeta-tarea-subtitulo">{tarea.asignatura}</span>
+      <h4 className="tarjeta-tarea-titulo" style={{ color: texto }}>{tarea.nombre}</h4>
+      <span className="tarjeta-tarea-subtitulo" style={{ color: texto }}>{tarea.asignatura}</span>
       {seleccionada && (
         <img
           src={iconoCheck}
@@ -59,6 +72,7 @@ interface KanbanProps {
   onToggleSeleccion?: (id: string) => void;
   onVerDetalle?: (tarea: Tarea) => void;
   filtro?: string;
+  coloresRamos?: Record<string, string>;
 }
 
 function KanbanBoardTareas({
@@ -69,6 +83,7 @@ function KanbanBoardTareas({
   onToggleSeleccion = () => {},
   onVerDetalle,
   filtro = "",
+  coloresRamos = {},
 }: KanbanProps) {
   let secciones: SeccionFiltro[], propiedadFiltro: keyof Tarea;
 
@@ -101,10 +116,18 @@ function KanbanBoardTareas({
           (t) => t[propiedadFiltro] === seccion.id,
         );
 
+        // al filtrar por ramo, el encabezado tambien toma el color del ramo
+        const colorSeccion = propiedadFiltro === "asignatura" ? coloresRamos[seccion.id] : undefined;
+
         return (
           <div key={seccion.id} className="kanban-row">
-            <div className="kanban-header">
-              <h3>{seccion.id}</h3>
+            <div
+              className="kanban-header"
+              style={colorSeccion ? { backgroundColor: colorSeccion } : undefined}
+            >
+              <h3 style={colorSeccion ? { color: colorComplementario(colorSeccion) } : undefined}>
+                {seccion.id}
+              </h3>
               {seccion.icono && (
                 <img
                   src={seccion.icono}
@@ -123,6 +146,7 @@ function KanbanBoardTareas({
                     seleccionada={tareasSeleccionadas.includes(tarea.id)}
                     onToggle={onToggleSeleccion}
                     onVerDetalle={onVerDetalle}
+                    colorRamo={coloresRamos[tarea.asignatura]}
                   />
                 ))
               ) : (
