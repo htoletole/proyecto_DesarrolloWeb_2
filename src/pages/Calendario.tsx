@@ -4,10 +4,13 @@ import CalendarioMes from "../components/CalendarioMes";
 import TareasDelDia from "../components/TareasDelDia";
 import DetalleTarea from "../components/DetalleTarea";
 import Formulario from "../components/Formulario";
+import EvaluacionesDelDia from "../components/EvaluacionesDelDia";
 import { armarFecha, fechaDeHoy, fechaLarga } from "../services/fechas";
 import { buscarFeriado, obtenerFeriados } from "../services/publicApi";
 import type { Feriado } from "../services/publicApi";
 import { editarTarea, listarTareas } from "../services/tareasApi";
+import { listarEvaluaciones } from "../services/evaluacionesApi";
+import type { Evaluacion } from "../services/evaluacionesApi";
 import { useSesion } from "../services/useSesion";
 import {
   filtrarPorFecha,
@@ -28,6 +31,7 @@ function Calendario() {
   const [seleccionado, setSeleccionado] = useState(hoy);
 
   const [tareas, setTareas] = useState<Tarea[]>([]);
+  const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([]);
   const [tareaAbierta, setTareaAbierta] = useState<Tarea>(TAREA_VACIA);
   const [editando, setEditando] = useState(false);
 
@@ -41,6 +45,10 @@ function Calendario() {
     listarTareas()
       .then((lista) => setTareas(lista))
       .catch((error) => console.error("Error al cargar tareas:", error));
+
+    listarEvaluaciones()
+      .then((lista) => setEvaluaciones(lista))
+      .catch((error) => console.error("Error al cargar evaluaciones:", error));
   }, [sesion?.id]);
 
   // pide los feriados cuando cambia el año
@@ -71,6 +79,7 @@ function Calendario() {
   const tareasSinFecha = filtrarSinFecha(tareas);
   const feriadoDelDia = buscarFeriado(feriados, seleccionado);
   const asignaturas = listarAsignaturas(tareas);
+  const evaluacionesDelDia = evaluaciones.filter((evaluacion) => evaluacion.fecha === seleccionado);
 
   async function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
     if (tareaAbierta.id === "") {
@@ -131,6 +140,7 @@ function Calendario() {
           seleccionado={seleccionado}
           tareas={tareas}
           feriados={feriados}
+          evaluaciones={evaluaciones}
           onCambioMes={cambiarMes}
           onCambioAnio={cambiarAnio}
           onSeleccionar={setSeleccionado}
@@ -145,6 +155,8 @@ function Calendario() {
           mensajeVacio="Sin tareas"
           onElegir={setTareaAbierta}
         />
+
+        <EvaluacionesDelDia evaluaciones={evaluacionesDelDia} />
 
         {tareasSinFecha.length > 0 && (
           <TareasDelDia

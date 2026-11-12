@@ -10,8 +10,7 @@ interface EvaluacionApi {
   ponderacion: number;
   nota: number | null;
   asignaturaId: number;
-  // al crear o editar, la API no manda el ramo (solo asignaturaId)
-  asignatura?: { id: number; nombre: string; color: string };
+  asignatura: { id: number; nombre: string; color: string };
 }
 
 export type Evaluacion = {
@@ -43,8 +42,7 @@ export const TIPOS_EVALUACION: Record<string, string> = {
   PRESENTACION: "Presentación",
 };
 
-function aEvaluacion(evaluacion: EvaluacionApi, ramo?: RamoSimple): Evaluacion {
-  const datosRamo = evaluacion.asignatura ?? ramo;
+function aEvaluacion(evaluacion: EvaluacionApi): Evaluacion {
   return {
     id: evaluacion.id,
     nombre: evaluacion.nombre,
@@ -53,14 +51,14 @@ function aEvaluacion(evaluacion: EvaluacionApi, ramo?: RamoSimple): Evaluacion {
     ponderacion: evaluacion.ponderacion,
     nota: evaluacion.nota,
     ramoId: evaluacion.asignaturaId,
-    ramo: datosRamo ? datosRamo.nombre : "",
-    colorRamo: datosRamo ? datosRamo.color : "#FFAE52",
+    ramo: evaluacion.asignatura.nombre,
+    colorRamo: evaluacion.asignatura.color,
   };
 }
 
 export async function listarEvaluaciones(): Promise<Evaluacion[]> {
   const lista = await pedir<EvaluacionApi[]>("/evaluaciones");
-  return lista.map((evaluacion) => aEvaluacion(evaluacion));
+  return lista.map(aEvaluacion);
 }
 
 export async function listarRamosSimples(): Promise<RamoSimple[]> {
@@ -77,15 +75,15 @@ export type DatosEvaluacion = {
   nota: number | null;
 };
 
-export async function crearEvaluacion(ramo: RamoSimple, datos: DatosEvaluacion): Promise<Evaluacion> {
-  const creada = await pedir<EvaluacionApi>("/evaluaciones", "POST", { ...datos, asignaturaId: ramo.id });
-  return aEvaluacion(creada, ramo);
+export async function crearEvaluacion(ramoId: number, datos: DatosEvaluacion): Promise<Evaluacion> {
+  const creada = await pedir<EvaluacionApi>("/evaluaciones", "POST", { ...datos, asignaturaId: ramoId });
+  return aEvaluacion(creada);
 }
 
 // al editar no se puede cambiar el ramo (la API no lo permite)
-export async function editarEvaluacion(anterior: Evaluacion, datos: DatosEvaluacion): Promise<Evaluacion> {
-  const editada = await pedir<EvaluacionApi>("/evaluaciones/" + anterior.id, "PATCH", datos);
-  return aEvaluacion(editada, { id: anterior.ramoId, nombre: anterior.ramo, color: anterior.colorRamo });
+export async function editarEvaluacion(id: number, datos: DatosEvaluacion): Promise<Evaluacion> {
+  const editada = await pedir<EvaluacionApi>("/evaluaciones/" + id, "PATCH", datos);
+  return aEvaluacion(editada);
 }
 
 export function eliminarEvaluacion(id: number): Promise<void> {

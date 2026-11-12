@@ -72,6 +72,7 @@ function Navbar() {
             <li key={item.label} className="nav-item">
               <NavLink
                 to={item.path}
+                end={item.path === "/"}
                 className={({ isActive }) =>
                   `nav-link custom-nav-link ${isActive ? "active" : ""}`
                 }

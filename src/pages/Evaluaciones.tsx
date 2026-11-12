@@ -111,11 +111,11 @@ function Evaluaciones() {
           alert("Elige un ramo.");
           return;
         }
-        const creada = await crearEvaluacion(ramo, datosEvaluacion);
+        const creada = await crearEvaluacion(ramo.id, datosEvaluacion);
         setEvaluaciones((actuales) => [...actuales, creada]);
         avisar("Evaluación creada", `¡Evaluación "${creada.nombre}" creada con éxito!`);
       } else if (evaluacionAEditar) {
-        const editada = await editarEvaluacion(evaluacionAEditar, datosEvaluacion);
+        const editada = await editarEvaluacion(evaluacionAEditar.id, datosEvaluacion);
         setEvaluaciones((actuales) =>
           actuales.map((e) => (e.id === editada.id ? editada : e)),
         );
