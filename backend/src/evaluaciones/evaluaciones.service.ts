@@ -9,6 +9,9 @@ import { ActualizarEvaluacionDto } from './dto/actualizar-evaluacion.dto';
 import { CrearEvaluacionDto } from './dto/crear-evaluacion.dto';
 import { FiltroEvaluacionesDto } from './dto/filtro-evaluaciones.dto';
 
+// datos del ramo que se mandan junto con cada evaluacion
+const RAMO = { select: { id: true, nombre: true, color: true } };
+
 interface PeriodoFechas {
   nombre: string;
   fechaInicio: Date;
@@ -40,7 +43,7 @@ export class EvaluacionesService {
         fecha,
       },
       orderBy: { fecha: 'asc' },
-      include: { asignatura: { select: { id: true, nombre: true, color: true } } },
+      include: { asignatura: RAMO },
     });
   }
 
@@ -60,6 +63,7 @@ export class EvaluacionesService {
         nota: datos.nota ?? null,
         asignaturaId: asignatura.id,
       },
+      include: { asignatura: RAMO },
     });
 
     await this.planificacion.registrarCambioDeFecha(usuarioId, 'evaluacion', evaluacion.id, nombre, null, datos.fecha, {
@@ -100,6 +104,7 @@ export class EvaluacionesService {
         ponderacion,
         nota,
       },
+      include: { asignatura: RAMO },
     });
 
     await this.planificacion.registrarCambioDeFecha(

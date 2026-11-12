@@ -98,6 +98,25 @@ export async function buscarIdDeRamo(nombre: string): Promise<number> {
   throw new Error("El ramo " + nombre + " ya no existe.");
 }
 
+// avance de un ramo: tareas completadas y notas (lo calcula la API)
+export type AvanceDeRamo = {
+  totalTareas: number;
+  tareasCompletadas: number;
+  porcentajeTareas: number;
+  ponderacionTotal: number;
+  ponderacionRendida: number;
+  promedioParcial: number | null;
+};
+
+export async function obtenerAvance(id: string): Promise<AvanceDeRamo> {
+  // si todavia no se cargo la lista, se piden los ramos para saber su id en la base
+  if (idsEnLaBase[id] === undefined) {
+    await listarRamos();
+  }
+  const ramo = await pedir<{ avance: AvanceDeRamo }>("/asignaturas/" + idsEnLaBase[id]);
+  return ramo.avance;
+}
+
 // la API pide que cada ramo pertenezca a un periodo: se usa el que esta en curso
 async function periodoActual(): Promise<number> {
   const periodos = await pedir<PeriodoApi[]>("/periodos");

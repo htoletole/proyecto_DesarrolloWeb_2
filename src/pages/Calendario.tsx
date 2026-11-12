@@ -4,10 +4,14 @@ import CalendarioMes from "../components/CalendarioMes";
 import TareasDelDia from "../components/TareasDelDia";
 import DetalleTarea from "../components/DetalleTarea";
 import Formulario from "../components/Formulario";
+import EvaluacionesDelDia from "../components/EvaluacionesDelDia";
+import { EsqueletoCalendario } from "../components/Esqueletos";
 import { armarFecha, fechaDeHoy, fechaLarga } from "../services/fechas";
 import { buscarFeriado, obtenerFeriados } from "../services/publicApi";
 import type { Feriado } from "../services/publicApi";
 import { editarTarea, listarTareas } from "../services/tareasApi";
+import { listarEvaluaciones } from "../services/evaluacionesApi";
+import type { Evaluacion } from "../services/evaluacionesApi";
 import { useSesion } from "../services/useSesion";
 import {
   filtrarPorFecha,
@@ -28,19 +32,31 @@ function Calendario() {
   const [seleccionado, setSeleccionado] = useState(hoy);
 
   const [tareas, setTareas] = useState<Tarea[]>([]);
+  const [evaluaciones, setEvaluaciones] = useState<Evaluacion[]>([]);
   const [tareaAbierta, setTareaAbierta] = useState<Tarea>(TAREA_VACIA);
   const [editando, setEditando] = useState(false);
 
   const [feriados, setFeriados] = useState<Feriado[]>([]);
   const [estadoFeriados, setEstadoFeriados] = useState("cargando");
+  const [cargando, setCargando] = useState(true);
+  // los feriados solo esperan la primera vez; al cambiar de año queda el mensaje "Cargando feriados..."
+  const [feriadosListos, setFeriadosListos] = useState(false);
 
   // las tareas se piden a la API cuando hay una sesion iniciada
   useEffect(() => {
     if (!sesion) return;
 
-    listarTareas()
+    setCargando(true);
+
+    const pedirTareas = listarTareas()
       .then((lista) => setTareas(lista))
       .catch((error) => console.error("Error al cargar tareas:", error));
+
+    const pedirEvaluaciones = listarEvaluaciones()
+      .then((lista) => setEvaluaciones(lista))
+      .catch((error) => console.error("Error al cargar evaluaciones:", error));
+
+    Promise.allSettled([pedirTareas, pedirEvaluaciones]).then(() => setCargando(false));
   }, [sesion?.id]);
 
   // pide los feriados cuando cambia el año
@@ -53,8 +69,12 @@ function Calendario() {
       .catch(() => {
         setFeriados([]);
         setEstadoFeriados("error");
-      });
+      })
+      .finally(() => setFeriadosListos(true));
   }, [anio]);
+
+  // el calendario se muestra cuando ya estan las tareas, las evaluaciones y los feriados
+  const cargandoVista = cargando || !feriadosListos;
 
   function cambiarMes(nuevoMes: number) {
     setMes(nuevoMes);
@@ -71,6 +91,7 @@ function Calendario() {
   const tareasSinFecha = filtrarSinFecha(tareas);
   const feriadoDelDia = buscarFeriado(feriados, seleccionado);
   const asignaturas = listarAsignaturas(tareas);
+  const evaluacionesDelDia = evaluaciones.filter((evaluacion) => evaluacion.fecha === seleccionado);
 
   async function guardarEdicion(datos: Record<string, FormDataEntryValue>) {
     if (tareaAbierta.id === "") {
@@ -124,36 +145,45 @@ function Calendario() {
       <HeaderFlotante titulo="Calendario" />
 
       <main className="cal-contenido">
-        <CalendarioMes
-          anio={anio}
-          mes={mes}
-          hoy={hoy}
-          seleccionado={seleccionado}
-          tareas={tareas}
-          feriados={feriados}
-          onCambioMes={cambiarMes}
-          onCambioAnio={cambiarAnio}
-          onSeleccionar={setSeleccionado}
-        />
+        {cargandoVista ? (
+          <EsqueletoCalendario />
+        ) : (
+          <>
+            <CalendarioMes
+              anio={anio}
+              mes={mes}
+              hoy={hoy}
+              seleccionado={seleccionado}
+              tareas={tareas}
+              feriados={feriados}
+              evaluaciones={evaluaciones}
+              onCambioMes={cambiarMes}
+              onCambioAnio={cambiarAnio}
+              onSeleccionar={setSeleccionado}
+            />
 
-        <p className="cal-mensaje">{mensaje}</p>
+            <p className="cal-mensaje">{mensaje}</p>
 
-        <TareasDelDia
-          titulo={fechaLarga(seleccionado)}
-          tareas={tareasDelDia}
-          feriado={feriadoDelDia}
-          mensajeVacio="Sin tareas"
-          onElegir={setTareaAbierta}
-        />
+            <TareasDelDia
+              titulo={fechaLarga(seleccionado)}
+              tareas={tareasDelDia}
+              feriado={feriadoDelDia}
+              mensajeVacio="Sin tareas"
+              onElegir={setTareaAbierta}
+            />
 
-        {tareasSinFecha.length > 0 && (
-          <TareasDelDia
-            titulo="Tareas sin fecha"
-            tareas={tareasSinFecha}
-            feriado={null}
-            mensajeVacio=""
-            onElegir={setTareaAbierta}
-          />
+            <EvaluacionesDelDia evaluaciones={evaluacionesDelDia} />
+
+            {tareasSinFecha.length > 0 && (
+              <TareasDelDia
+                titulo="Tareas sin fecha"
+                tareas={tareasSinFecha}
+                feriado={null}
+                mensajeVacio=""
+                onElegir={setTareaAbierta}
+              />
+            )}
+          </>
         )}
       </main>
 

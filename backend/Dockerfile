@@ -13,8 +13,10 @@ RUN npm ci
 # codigo del backend
 COPY . .
 
+ENV DATABASE_URL="postgresql://x:x@localhost:5432/x"
+
 # genera el cliente de Prisma y compila (la URL es de mentira, solo se usa para generar)
-RUN DATABASE_URL="postgresql://x:x@localhost:5432/x" npx prisma generate && npm run build
+RUN npx prisma generate && npm run build
 
 EXPOSE 3000
 

@@ -1,0 +1,91 @@
+// guarda y lee las evaluaciones (pruebas, controles, trabajos...) en la API
+import { pedir, soloFecha } from "./api";
+
+// asi llega una evaluacion desde la API
+interface EvaluacionApi {
+  id: number;
+  nombre: string;
+  tipo: string;
+  fecha: string;
+  ponderacion: number;
+  nota: number | null;
+  asignaturaId: number;
+  asignatura: { id: number; nombre: string; color: string };
+}
+
+export type Evaluacion = {
+  id: number;
+  nombre: string;
+  tipo: string;
+  fecha: string;
+  ponderacion: number;
+  nota: number | null;
+  ramoId: number;
+  ramo: string;
+  colorRamo: string;
+};
+
+// los ramos con el id de la base, porque la evaluacion se guarda con ese id
+export type RamoSimple = {
+  id: number;
+  nombre: string;
+  color: string;
+};
+
+// la API guarda el tipo en mayusculas y la pantalla lo muestra con este texto
+export const TIPOS_EVALUACION: Record<string, string> = {
+  PRUEBA: "Prueba",
+  CONTROL: "Control",
+  TRABAJO: "Trabajo",
+  PROYECTO: "Proyecto",
+  EXAMEN: "Examen",
+  PRESENTACION: "Presentación",
+};
+
+function aEvaluacion(evaluacion: EvaluacionApi): Evaluacion {
+  return {
+    id: evaluacion.id,
+    nombre: evaluacion.nombre,
+    tipo: evaluacion.tipo,
+    fecha: soloFecha(evaluacion.fecha) ?? "",
+    ponderacion: evaluacion.ponderacion,
+    nota: evaluacion.nota,
+    ramoId: evaluacion.asignaturaId,
+    ramo: evaluacion.asignatura.nombre,
+    colorRamo: evaluacion.asignatura.color,
+  };
+}
+
+export async function listarEvaluaciones(): Promise<Evaluacion[]> {
+  const lista = await pedir<EvaluacionApi[]>("/evaluaciones");
+  return lista.map(aEvaluacion);
+}
+
+export async function listarRamosSimples(): Promise<RamoSimple[]> {
+  const lista = await pedir<RamoSimple[]>("/asignaturas");
+  return lista.map((ramo) => ({ id: ramo.id, nombre: ramo.nombre, color: ramo.color }));
+}
+
+// datos que se mandan al crear o editar (la nota es null si todavia no se rinde)
+export type DatosEvaluacion = {
+  nombre: string;
+  tipo: string;
+  fecha: string;
+  ponderacion: number;
+  nota: number | null;
+};
+
+export async function crearEvaluacion(ramoId: number, datos: DatosEvaluacion): Promise<Evaluacion> {
+  const creada = await pedir<EvaluacionApi>("/evaluaciones", "POST", { ...datos, asignaturaId: ramoId });
+  return aEvaluacion(creada);
+}
+
+// al editar no se puede cambiar el ramo (la API no lo permite)
+export async function editarEvaluacion(id: number, datos: DatosEvaluacion): Promise<Evaluacion> {
+  const editada = await pedir<EvaluacionApi>("/evaluaciones/" + id, "PATCH", datos);
+  return aEvaluacion(editada);
+}
+
+export function eliminarEvaluacion(id: number): Promise<void> {
+  return pedir<void>("/evaluaciones/" + id, "DELETE");
+}
