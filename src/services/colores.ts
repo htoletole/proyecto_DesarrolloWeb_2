@@ -23,7 +23,7 @@ function luminancia(hex: string): number {
 }
 
 // contraste entre dos colores segun la WCAG (de 1 a 21; 4.5 o mas se lee bien)
-function contraste(hex1: string, hex2: string): number {
+export function contraste(hex1: string, hex2: string): number {
   const l1 = luminancia(hex1);
   const l2 = luminancia(hex2);
   return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
@@ -78,27 +78,49 @@ function desdeHsl(tono: number, saturacion: number, luz: number): string {
   );
 }
 
-// color complementario (tono girado 180°) que siempre se lee encima del fondo:
-// si el fondo es claro, el complementario se oscurece; si es oscuro, se aclara,
-// hasta llegar a un contraste de 4.5 (lo minimo que pide la WCAG para texto)
-export function colorComplementario(fondo: string): string {
-  const [tono, saturacion] = tonoYSaturacion(fondo);
-  const tonoOpuesto = (tono + 180) % 360;
-  const fondoClaro = luminancia(fondo) > 0.18;
+const CONTRASTE_MINIMO = 4.5; // lo minimo que pide la WCAG para texto normal
 
-  // se parte en el extremo (casi negro o casi blanco) y se acerca al medio mientras se siga leyendo
-  let luz = fondoClaro ? 0.08 : 0.95;
-  const paso = fondoClaro ? 0.02 : -0.02;
-  let mejor = desdeHsl(tonoOpuesto, saturacion, luz);
+// busca el complementario mas "colorido" que todavia se lee:
+// parte en el extremo (casi negro o casi blanco) y se acerca al medio mientras el contraste alcance
+function buscarComplementario(fondo: string, tono: number, saturacion: number, haciaOscuro: boolean): string | null {
+  let luz = haciaOscuro ? 0.08 : 0.95;
+  const paso = haciaOscuro ? 0.02 : -0.02;
+  let mejor = desdeHsl(tono, saturacion, luz);
 
-  while (luz > 0.05 && luz < 0.98) {
-    const candidato = desdeHsl(tonoOpuesto, saturacion, luz + paso);
-    if (contraste(candidato, fondo) < 4.5) {
+  // si ni siquiera el extremo se lee, este lado no sirve
+  if (contraste(mejor, fondo) < CONTRASTE_MINIMO) {
+    return null;
+  }
+
+  while (luz + paso > 0.05 && luz + paso < 0.98) {
+    const candidato = desdeHsl(tono, saturacion, luz + paso);
+    if (contraste(candidato, fondo) < CONTRASTE_MINIMO) {
       break;
     }
     luz += paso;
     mejor = candidato;
   }
-
   return mejor;
+}
+
+// color complementario (tono girado 180°) que siempre se lee encima del fondo
+export function colorComplementario(fondo: string): string {
+  const [tono, saturacion] = tonoYSaturacion(fondo);
+  const fondoClaro = luminancia(fondo) > 0.18;
+
+  // negro, blanco y grises no tienen tono: su "complementario" es el extremo opuesto
+  if (saturacion >= 0.1) {
+    const tonoOpuesto = (tono + 180) % 360;
+    // primero se prueba el lado que mas conviene (oscuro sobre claro, claro sobre oscuro) y despues el otro
+    const preferido = buscarComplementario(fondo, tonoOpuesto, saturacion, fondoClaro);
+    if (preferido) return preferido;
+    const otro = buscarComplementario(fondo, tonoOpuesto, saturacion, !fondoClaro);
+    if (otro) return otro;
+  }
+
+  // ultimo recurso: casi negro o casi blanco, y si no alcanza, negro o blanco puro
+  // (con cualquier fondo, uno de los dos siempre pasa de 4.5)
+  const oscuro = contraste("#1a1a1a", fondo) >= CONTRASTE_MINIMO ? "#1a1a1a" : "#000000";
+  const claro = contraste("#f5f5f5", fondo) >= CONTRASTE_MINIMO ? "#f5f5f5" : "#ffffff";
+  return contraste(oscuro, fondo) >= contraste(claro, fondo) ? oscuro : claro;
 }

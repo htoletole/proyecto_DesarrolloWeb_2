@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
+import { colorComplementario, contraste } from "../services/colores";
 import "../styles/formulario.css";
 
 type TipoFormulario = "ramo" | "tarea" | "evaluacion" | "periodo";
@@ -23,6 +25,15 @@ const Formulario = ({
   valoresIniciales = {},
   opcionesAsignatura = [],
 }: FormularioProps) => {
+  // color elegido en el selector, para mostrar como se vera el texto encima
+  const colorInicial = valoresIniciales.colorRamo ?? "#FFAE52";
+  const [colorVista, setColorVista] = useState(colorInicial);
+
+  // cada vez que se abre el formulario parte con el color del ramo
+  useEffect(() => {
+    if (abierto) setColorVista(colorInicial);
+  }, [abierto, colorInicial]);
+
   if (!abierto) {
     return null;
   }
@@ -114,8 +125,21 @@ const Formulario = ({
                   name="colorRamo"
                   defaultValue={valoresIniciales.colorRamo ?? "#FFAE52"}
                   className="formulario-color-picker"
+                  onChange={(e) => setColorVista(e.target.value)}
                 />
               </label>
+
+              {/* vista previa: el texto usa el color complementario para que siempre se lea */}
+              <div
+                className="formulario-vista-color"
+                style={{ backgroundColor: colorVista, color: colorComplementario(colorVista) }}
+              >
+                <strong>Así se verá tu ramo</strong>
+                <span>
+                  Texto en color complementario · contraste{" "}
+                  {contraste(colorVista, colorComplementario(colorVista)).toFixed(1)}:1
+                </span>
+              </div>
             </>
           ) : tipo === "tarea" ? (
             <>

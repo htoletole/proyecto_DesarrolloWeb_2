@@ -205,3 +205,22 @@
     height: 55px;
   }
 }
+/* vista previa del color del ramo con su texto complementario */
+.formulario-vista-color {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgb(0 0 0 / 10%);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.formulario-vista-color strong {
+  font-size: 17px;
+}
+
+.formulario-vista-color span {
+  font-size: 13px;
+  font-weight: 600;
+}

@@ -492,3 +492,19 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* texto complementario: cada tarjeta recibe --ramo-texto segun su color, asi se lee con cualquier color */
+.ramos-page .ramo-card.texto-complementario,
+.ramos-page .ramo-card.texto-complementario .ramo-card-info h3,
+.ramos-page .ramo-card.texto-complementario .ramo-card-info .ramo-card-id,
+.ramos-page .ramo-card.texto-complementario .ramo-card-flecha,
+.ramos-page .ramo-card.texto-complementario .ramo-card-logo-vacio,
+.ramos-page .ramo-card.texto-complementario .ramo-card-detalle-icono,
+.ramos-page .ramo-card.texto-complementario .ramo-card-detalle-titulo,
+.ramos-page .ramo-card.texto-complementario .ramo-card-detalle p {
+  color: var(--ramo-texto);
+}
+.ramos-page .ramo-card.texto-complementario .ramo-card-divisor {
+  background-color: var(--ramo-texto);
+  opacity: 0.3;
+}

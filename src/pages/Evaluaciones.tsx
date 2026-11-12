@@ -16,6 +16,7 @@ import {
 } from "../services/evaluacionesApi";
 import type { Evaluacion, RamoSimple } from "../services/evaluacionesApi";
 import { fechaCorta, fechaDeHoy } from "../services/fechas";
+import { colorComplementario } from "../services/colores";
 import { useSesion } from "../services/useSesion";
 import "../styles/tareas.css";
 import "../styles/evaluaciones.css";
@@ -215,7 +216,10 @@ function Evaluaciones() {
 
           return (
             <section key={ramo.id} className="evaluaciones-ramo">
-              <div className="evaluaciones-ramo-header" style={{ backgroundColor: ramo.color }}>
+              <div
+                className="evaluaciones-ramo-header"
+                style={{ backgroundColor: ramo.color, color: colorComplementario(ramo.color) }}
+              >
                 <h3>{ramo.nombre}</h3>
                 <span>
                   Ponderación {ponderacionUsada}% · Promedio {promedioDelRamo(delRamo)}
